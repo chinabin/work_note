@@ -1,22 +1,22 @@
 ## **grep**   
 `grep [option] pattern file`   
 可以使用 --exclude 指定忽略不搜索特定的文件名，或者使用 --exclude 指定只搜索特定的文件名。 --exclude-dir 选项来排除一些目录。   
-```
+```bash
 grep -no errorID:[^0].* -r . --include=QMT_2022-01-25_13-00.txt --exclude-dir=fut
 ```
 `-A<行数 x>`：除了显示符合范本样式的那一列之外，并显示该行之后的 x 行内容。   
 `-B<行数 x>`：除了显示符合样式的那一行之外，并显示该行之前的 x 行内容。   
 `-C<行数 x>`：除了显示符合样式的那一行之外，并显示该行之前后的 x 行内容。   
-```
+```bash
 grep -C3 "aaa" file_* test_file_*
 ```
 `-c`：统计匹配的行数   
-```
+```bash
 grep -c "order*" demo.txt
 ```
 `-o`：仅显示匹配到的字符串，而不是完整的整行内容。   
 `-s`：不显示不存在或者没有匹配文本的错误信息  
-```
+```bash
 grep lalala file1 file_1
 如果 file1 文件不存在就会出现一条 grep: file1: No such file or directory ，加上 -s 就不会有这个信息了。
 ```
@@ -24,7 +24,7 @@ grep lalala file1 file_1
 `-i`: 忽略字符大小写的差别   
 `-n --line-number`: 显示行号   
 `-r -R --recursive`: 递归搜索   
-```
+```bash
 grep "__main__" -r ./
 ```
 `-v`: 反转查找   
@@ -34,7 +34,7 @@ grep "__main__" -r ./
 `-x`: 匹配整行，即只有当文件中有整行内容与模式匹配时，grep命令才输出该行结果   
    
     
-```
+```bash
 ^    # 锚定行的开始 如：'^grep'匹配所有以grep开头的行。    
 $    # 锚定行的结束 如：'grep$' 匹配所有以grep结尾的行。
 .    # 匹配一个非换行符的字符 如：'gr.p'匹配gr后接一个任意字符，然后是p。    
@@ -57,12 +57,12 @@ x\{m,n\}  # 重复字符x，至少m次，不多于n次，如：'o\{5,10\}'匹配
 
 --------
 ## **echo**   
-```
+```bash
 > echo {0..9}
 0 1 2 3 4 5 6 7 8 9
 ```
 -e 解释转义字符
-```
+```bash
 > echo "a\tb\tc"
 a\tb\tc
 > echo -e "a\tb\tc"
@@ -82,30 +82,30 @@ xargs命令的作用，是将标准输入转为命令行参数。
 `echo "hello" | xargs echo`   
 xargs 命令格式是 `xargs [-options] [command]` ，真正执行的命令，紧跟在xargs后面，接受xargs传来的参数。   
 xargs后面的命令默认是echo。   
-```
+```bash
 > xargs
 # 等同于
 >xargs echo
 ```
 输入 xargs 按下回车以后，命令行就会等待用户输入，作为标准输入。你可以输入任意内容，然后按下 Ctrl d ，表示输入结束，这时 echo 命令就会把前面的输入打印出来。
-```
+```bash
 > xargs
 hello (Ctrl + d)
 hello
 ```
 默认情况下，xargs 将换行符和空格作为分隔符，把标准输入分解成一个个命令行参数。`-d` 参数可以更改分隔符。
-```
+```bash
 > echo -e "a\tb\tc" | xargs -d "\t" echo
 a b c
 ```
 `-p` 参数打印出要执行的命令，询问用户是否要执行。输入 y 才会真的执行。   
-```
+```bash
 > echo 'one two three' | xargs -p touch
 touch one two three ?...
 ```
 `-t` 参数则是打印出最终要执行的命令，然后直接执行，不需要用户确认。   
 如果标准输入包含多行，`-L`参数指定多少行作为一个命令行参数。
-```
+```bash
 > xargs find -name
 "*.txt"   
 "*.md"
@@ -118,7 +118,7 @@ find: paths must precede expression: `*.md'
 ./README.md
 ```
 `-L` 参数虽然解决了多行的问题，但是有时用户会在同一行输入多项。`-n` 参数指定每次将多少项，作为命令行参数。
-```
+```bash
 > echo {0..9} | xargs -n 2 echo
 0 1
 2 3
@@ -127,7 +127,7 @@ find: paths must precede expression: `*.md'
 8 9
 ```
 如果 xargs 要将命令行参数传给多个命令，可以使用 `-I` 参数。`-I` 指定每一项命令行参数的替代字符串。
-```
+```bash
 > cat foo.txt
 one
 two
@@ -145,12 +145,12 @@ three
 `find . -print`    
 使用正则表达式的时候注意单引号的添加。     
 根据名字查找文件
-```
+```bash
 find . -name '*.o' -print
 find . -name '[a-zA-Z]*.o' -print
 ```
 根据文件类型查找文件
-```
+```bash
 find . -type f -print | xargs ls -l
 f 普通文件
 d 目录
@@ -166,11 +166,19 @@ find . -mtime 7 -print
 
 --------   
     
+
+## **awk**
+```bash
+grep ord_status 1.txt | awk '{print $7}' | sort | uniq
+``` 
+
+
+-------
 ## **ssh**  
 1. SSH（Secure Shell 的缩写）是一种网络协议，用于加密两台计算机之间的通信，并且支持各种身份验证机制。OpenSSH 是 ssh 协议的开源实现。SSH 的软件架构是服务器-客户端模式（Server - Client）。在这个架构中，SSH 软件分成两个部分：向服务器发出请求的部分，称为客户端（client），OpenSSH 的实现为 ssh；接收客户端发出的请求的部分，称为服务器（server），OpenSSH 的实现为 sshd。另外，OpenSSH 还提供一些辅助工具软件（比如 ssh-keygen 、ssh-agent）和专门的客户端工具（比如 scp 和 sftp）。
 
 2. 
-    ```
+    ```bash
     -N 表示只连接远程主机，不打开远程 shell 执行命令，因为默认是连接上去要执行命令的。不加会报错，Cannot fork into background without a command to execute.
     -T 表示不为这个连接分配TTY。
     -f 参数表示 SSH 连接成功后，转后台运行。
@@ -180,7 +188,7 @@ find . -mtime 7 -print
 3. SSH 客户端的全局配置文件是 `/etc/ssh/ssh_config`，用户个人的配置文件在 `~/.ssh/config`，优先级高于全局配置文件。
 
 4. ssh 服务端，sshd 的配置文件在 `/etc/ssh` 目录，主配置文件是 `sshd_config`。[sshd config 解释](https://wangdoc.com/ssh/server.html)。
-    ```
+    ```bash
     # 启动
     $ sudo systemctl start sshd.service
 
@@ -192,7 +200,7 @@ find . -mtime 7 -print
     ```
 
 5. **动态转发**
-    ```
+    ```bash
     在 A 机器上执行
 
     ssh -D local-port user@host -N
@@ -200,7 +208,7 @@ find . -mtime 7 -print
     SSH会建立一个socket，去监听 local-port 端口。一旦有数据传向那个端口，就自动把它转移到 SSH 连接上面，发往远程主机。可以想象，如果 local-port 原来是一个不加密端口，现在将变成一个加密端口。
     ```
     注意，这种转发采用了 SOCKS5 协议。访问外部网站时，需要把 HTTP 请求转成 SOCKS5 协议，才能把本地端口的请求转发出去。举个例子:
-    ```
+    ```bash
     > ssh -D 2121 tab@123.123.123.123 -N
     > curl -x socks5://localhost:2121 http://www.example.com
     curl 的 -x 参数指定代理服务器，即通过 SOCKS5 协议的本地 2121 端口，访问http://www.example.com。
@@ -208,7 +216,7 @@ find . -mtime 7 -print
 
 6. **本地转发**
     本地转发（local forwarding）指的是，SSH 服务器作为中介的跳板机，建立本地计算机与特定目标之间的加密连接。本地转发指定一个本地端口（local-port），所有发向那个端口的请求，都会转发到 SSH 跳板机（tunnel-host），然后 SSH 跳板机作为中介，将收到的请求发到目标服务器（target-host）的目标端口（target-port）。
-    ```
+    ```bash
     > ssh -L local-port:target-host:target-port tunnel-host
     -L 参数表示本地转发，local-port 是本地端口，target-host 是你想要访问的目标服务器，target-port 是目标服务器的端口，tunnel-host 是 SSH 跳板机。
     ```
@@ -216,7 +224,7 @@ find . -mtime 7 -print
     把我本地的请求，转发出去。白话：访问本机器（执行命令的机器）的 local-port 端口，就等同于，通过 ssh 去到 tunnel-host 机器上之后，访问 target-host 机器的 target-port 端口。
 
 7. **远程转发**
-    ```
+    ```bash
     > ssh -R remote-port:target-host:target-port remotehost
     -R 参数表示远程端口转发，remote-port 是远程计算机的端口，target-host 和 target-port 是目标服务器及其端口，remotehost 是远程计算机。
     ```
@@ -228,7 +236,7 @@ find . -mtime 7 -print
 ## **free**   
 默认等于 `free -k`   
 `man free`
-```
+```bash
               total        used        free      shared  buff/cache   available
 Mem:       16266140     1976840     9208308       32636     5080992    13918424
 Swap:       2113532      462304     1651228
