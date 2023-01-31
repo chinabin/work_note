@@ -7,6 +7,9 @@ grep -no errorID:[^0].* -r . --include=QMT_2022-01-25_13-00.txt --exclude-dir=fu
 `-A<行数 x>`：除了显示符合范本样式的那一列之外，并显示该行之后的 x 行内容。   
 `-B<行数 x>`：除了显示符合样式的那一行之外，并显示该行之前的 x 行内容。   
 `-C<行数 x>`：除了显示符合样式的那一行之外，并显示该行之前后的 x 行内容。   
+
+grep "^14:[4-5]" 11| cut -c 1-8|sort |uniq -c
+
 ```bash
 grep -C3 "aaa" file_* test_file_*
 ```
@@ -142,8 +145,13 @@ three
 --------   
     
 ## **find**   
+find <何处> <何物> <做什么>   
 `find . -print`    
-使用正则表达式的时候注意单引号的添加。     
+使用正则表达式的时候注意单引号的添加。   
+```bash
+删除当前目录以及子目录下所有.jpg为后缀的文件，不会有删除提示，因此要慎用
+find -name "*.jpg" -delete
+```  
 根据名字查找文件
 ```bash
 find . -name '*.o' -print

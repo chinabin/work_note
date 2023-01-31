@@ -19,3 +19,18 @@ sudo yum install devtoolset-9-gcc*
 推荐使用最后一种方式，可以使用 `gcc -v` 查看版本。如果希望长期使用高版本（因为上述的方法都是只针对当前 terminal 单次有效），可将此命令写入 .bashrc 等配置文件。
 
 最后说一下，scl以及scl-rh源中的软件包都安装在/opt/rh/目录下，包含可执行文件、配置等。所以启用命令的路径是/opt/rh/xxx/enable，安装的服务重启命令则可能是systemctl restart rh-xxx，需要加rh或scl前缀以区别其他源的包。
+
+4.8.5 系统自带的在 /usr/bin/gcc 
+如果需要使用 4.8.5 版本，可以注释 .bashrc 文件的那行配置，然后输入 bash 重新开一个。
+
+
+
+## **切换 CentOS 软件源**    
+```bash
+1. 备份系统自带 yum 源配置文件 
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+2. 下载阿里云的 yum 源配置文
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+3. 生成缓存
+yum makecache
+```
