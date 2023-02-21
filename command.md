@@ -175,35 +175,6 @@ find . -mtime 7 -print
 --------   
     
 
-## **awk**
-- awk 动作 文件名   
-
--F: 参数指定分隔符为冒号
-```bash
-awk -F ':' '{ print $1 }' demo.txt
-```
-变量: `$ + 数字` 表示某个字段，`$NF` 是最后一个字段，`$(NF - 1)` 表示倒数第二个字段，`NR` 表示第几行
-```bash
-awk -F ':' '{print $1, $(NF-1)}' demo.txt
-awk -F ':' '{print NR ") " $1}' demo.txt
-```
-
-- awk '条件 动作' 文件名
-
-```bash
-# 只输出包含usr的行
-awk -F ':' '/usr/ {print $1}' demo.txt
-# 输出奇数行
-awk -F ':' 'NR % 2 == 1 {print $1}' demo.txt
-# 输出第一个字段等于指定值的行
-awk -F ':' '$1 == "root" || $1 == "bin" {print $1}' demo.txt
-# 使用 if else
-awk -F ':' '{if ($1 > "m") print $1; else print "---"}' demo.txt
-```
-
-```bash
-grep ord_status 1.txt | awk '{print $7}' | sort | uniq
-``` 
 
 
 -------

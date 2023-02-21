@@ -155,6 +155,8 @@ $ ethtool enp130s0f1 | grep Speed
 ```
 
 ### 3.2 sar
+
+详见 [sar](../perf/command/sar.md)
 ```bash
 # 显示网口的统计数据；
 $ sar -n DEV
