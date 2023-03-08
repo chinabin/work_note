@@ -84,7 +84,7 @@ UMA 只有一个节点， NUMA 可以有多个节点。
 
 `0x08048000` 是 `text` 段的起始位置，后面分别跟着 `data` 段、 `bss` 段。
 
-每个 segment 用一个 vm_area_struct (以下简称vma) 结构体表示。 /proc/PID/maps 查看一个进程的所有 vma 在虚拟地址空间的分布情况，其内部实现靠的就是对这个链表的遍历。
+每个 segment 用一个 vm_area_struct (以下简称vma) 结构体表示。 /proc/PID/maps ( 解析详情参见 [proc下的文件](./proc%E4%B8%8B%E7%9A%84%E6%96%87%E4%BB%B6.md) )查看一个进程的所有 vma 在虚拟地址空间的分布情况，其内部实现靠的就是对这个链表的遍历。
 ```C
 struct vm_area_struct 
 { 
