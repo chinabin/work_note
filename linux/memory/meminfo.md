@@ -89,6 +89,7 @@ Q:
 8. /proc/self/maps
 9. /proc/swaps
 10. /proc/zoneinfo
+11. pmap -x PID
 
 [linux github](https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst)
 
