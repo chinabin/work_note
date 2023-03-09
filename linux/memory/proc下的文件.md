@@ -1,9 +1,15 @@
-## /proc/PID/maps 或者 pmap -x PID
+# 0x00、导读
+
+1. /proc/pid/maps
+
+[The /proc Filesystem](https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst)
+
+# 0x01、/proc/PID/maps 或者 pmap -x PID
 
 显示进程的虚拟地址空间分布。
 
 
-[/proc/pid/maps简要分析](https://www.cnblogs.com/arnoldlu/p/10272466.html)
+[/proc/pid/maps 简要分析](https://www.cnblogs.com/arnoldlu/p/10272466.html)
 
 ```bash
 $ cat /proc/12098/maps
@@ -36,3 +42,5 @@ ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsysca
 |vm_file->f_dentry->d_inode->i_sb->s_dev|	第五列，如fd:00|	映射文件所属设备号。<br>对匿名映射来说，因为没有文件在磁盘上，所以没有设备号，始终为00:00。<br>对有名映射来说，是映射的文件所在设备的设备号
 |vm_file->f_dentry->d_inode->i_ino|	第六列，如9176473|	映射文件所属节点号。<br>对匿名映射来说，因为没有文件在磁盘上，所以没有节点号，始终为00:00。<br>对有名映射来说，是映射的文件的节点号
 | 	|第七列，如/lib/ld-2.5.so|	对有名来说，是映射的文件名。<br>对匿名映射来说，是此段虚拟内存在进程中的角色。[stack]表示在进程中作为栈使用，[heap]表示堆。其余情况则无显示
+
+![write-back](../../pic/linux/memory/process_virtual_space.png)

@@ -115,6 +115,8 @@ struct vm_area_struct
 }
 ```
 
+![1](../../pic/linux/memory/vma01.jpg)
+
 # 0x04、内核
     内核也是由一个 elf 文件（比如 vmlinux ）加载启动的，加载后也有 text 段， data 段， bss 段等。
 

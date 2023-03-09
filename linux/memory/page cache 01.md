@@ -2,13 +2,7 @@
 
 # 0x01、简介
 
-1. [vmtouch](https://github.com/hoytech/vmtouch)
-
-how many pages of a target file Page Cache contains.
-
-文件 page number ，文件大小。
-
-`vmtouch file_name -e`，驱逐文件
+[vmtouch](../perf/command/vmtouch.md)
 
 2. 
 ```bash
@@ -20,8 +14,6 @@ $ make
 $ cp page-types /usr/bin
 ```
 [pagemap.txt](https://www.kernel.org/doc/html/v5.0/admin-guide/mm/pagemap.html)
-
-[pagemap](https://geneblue.github.io/2017/05/10/android/sec--android-pagemap/)
 
 3. `mincore()` 报告在一个虚拟地址范围中哪些分页当前驻留在 RAM 中。
 
