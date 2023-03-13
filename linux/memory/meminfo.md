@@ -87,7 +87,6 @@ Q:
 6. /proc/vmallocinfo
 7. /proc/pid/statm, 可以用 self 代替自己的 pid
 9. /proc/swaps
-10. /proc/zoneinfo
 
 [linux github](https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst)
 
