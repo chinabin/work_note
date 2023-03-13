@@ -4,7 +4,7 @@
 
 # 0x01、简介
 
-1. 物理内存分为三个层级：节点(node)、区域(zone)、页面(page) ，类似国家的省、县、乡。
+1. 物理内存分为三个层级：节点(node)、管理区(zone)、页面(page) ，类似国家的省、县、乡。
 
 2. 提供不同的内存获取：buddy system、slab allocator和kmalloc。就像超市、批发部、小卖店去进货一样。
 
@@ -66,9 +66,6 @@ UMA 只有一个节点， NUMA 可以有多个节点。
     - 一般的计算机中没有这种内存，默认的内存分配也不会从这里分配内存。持久内存可用于内核崩溃时保存相关的调试信息。
 
 
-
-![1](../../pic/linux/memory/Linux-Memory-X86-32.jpg)
-
 ## 2.3 PAGE
 
 物理内存页面也叫做页帧( page frame )。  
@@ -117,7 +114,44 @@ struct vm_area_struct
 
 ![1](../../pic/linux/memory/vma01.jpg)
 
-# 0x04、内核
+# 0x04、详解
+
+![1](../../pic/linux/memory/Linux-Memory-X86-32.jpg)
+
+## 1. 保留区
+
+0x08048000 ，因为“历史原因”前面 128.28125MB 属于保留空间。  
+
+[On Linux, why does the text segment start at 0x08048000? What is stored below that address?](https://www.quora.com/On-Linux-why-does-the-text-segment-start-at-0x08048000-What-is-stored-below-that-address)  
+[Where are "the kernel stack", "Frames for C run-time startup functions", and "Frame for main()" in the memory layout of a program?](https://unix.stackexchange.com/questions/466389/where-are-the-kernel-stack-frames-for-c-run-time-startup-functions-and-fr)
+
+## 2. 代码段( TEXT )
+
+代码段也称正文段或文本段，通常用于存放程序执行代码(即CPU执行的机器指令)。通常代码段是可共享的，因此频繁执行的程序只需要在内存中拥有一份拷贝即可。代码段通常属于只读，以防止其他程序意外地修改其指令(对该段的写操作将导致段错误)。某些架构也允许代码段为可写，即允许修改程序。
+
+代码段指令中包括操作码和操作对象(或对象地址引用)。若操作对象是立即数(具体数值)，将直接包含在代码中；若是局部数据，将在栈区分配空间，然后引用该数据地址；若位于BSS段和数据段，同样引用该数据地址。
+
+## 3. 数据段( DATA )
+
+数据段通常用于存放程序中已初始化且初值不为0的全局变量和静态局部变量。数据段属于静态内存分配(静态存储区)，可读可写。
+
+数据段与BSS段的区别如下：
+
+- BSS段不占用物理文件尺寸，但占用内存空间；  
+    数据段占用物理文件，也占用内存空间。  
+    对于大型数组如 int ar0[10000] = {1, 2, 3, ...} 和 int ar1[10000] ，ar1 放在 BSS 段，只记录共有 10000*4 个字节需要初始化为 0，而不是像 ar0 那样记录每个数据 1、2、3... ，此时 BSS 为目标文件所节省的磁盘空间相当可观。
+
+- 当程序读取数据段的数据时，系统会出发缺页故障，从而分配相应的物理内存；当程序读取BSS段的数据时，内核会将其转到一个全零页面，不会发生缺页故障，也不会为其分配相应的物理内存。
+
+## 4. BSS
+
+BSS(Block Started by Symbol)段中通常存放程序中以下符号：
+
+- 未初始化的全局变量和静态局部变量
+- 初始值为0的全局变量和静态局部变量(依赖于编译器实现)
+- 未定义且初值不为0的符号(该初值即common block的大小)
+
+# 0x05、内核
     内核也是由一个 elf 文件（比如 vmlinux ）加载启动的，加载后也有 text 段， data 段， bss 段等。
 
     vmlinux是未经压缩的Linux内核，是编译出来的最原始的文件。
