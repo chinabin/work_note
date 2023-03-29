@@ -86,7 +86,9 @@ Q:
 5. /proc/vmstat 文件显示的是从内核导出的虚拟内存的统计信息。
 6. /proc/vmallocinfo
 7. /proc/pid/statm, 可以用 self 代替自己的 pid
+8. /proc/pagetypeinfo
 9. /proc/swaps
+10. /sys/devices/system/node/node*/meminfo
 
 [linux github](https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst)
 
