@@ -73,3 +73,10 @@ awk '{ print NF, NR, NF - 1}'
 awk '{ print $NF, $NR, $(NF - 1)}'
 输出的是第 a b c 列的内容，其中 a 等于 列数，b 等于行数，c 等于列数 - 1
 ```
+
+------
+
+```bash
+# 累加
+awk '{sum+=$1}END{print $sum}'
+```

@@ -38,10 +38,7 @@ Page Cache 本质上是 VFS(Virtual File System) 的一部分，其主要目的�
 
 linux 对文件的访问除了显示使用 O_DIRECT 标志，所有的访问都会经过 page cache 。
 
-回写缓存算法是页缓存的核心构建块。
-
-![write-back](../../pic/linux/memory/Write-back_with_write-allocation.png)
-![write-through](../../pic/linux/memory/Write-through_with_no-write-allocation.png)
+回写缓存算法是页缓存的核心构建块。[0x01 cache 策略](./cache02.md)
 
 
 ![write-back](../../pic/linux/memory/page-cache.png)

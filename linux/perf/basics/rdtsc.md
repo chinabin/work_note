@@ -92,3 +92,5 @@ cat /proc/cpuinfo | grep rdtscp
         乱序执行，导致程序读取的TSC结果可能不准。例如测试的代码被优化到 tsc 的范围外了。
     A:
         使用 RDTSCP 命令来代替 RDTSC ，开销略大一丁点。
+
+[ClockTimeAnalysis](https://gitlab.com/chriscox/CppPerformanceBenchmarks/-/wikis/ClockTimeAnalysis)
