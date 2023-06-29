@@ -154,6 +154,14 @@ $ ethtool enp130s0f1 | grep Speed
 # enp130s0f1 是万兆网卡
 ```
 
+```bash
+-i 显示网卡驱动的信息，如驱动的名称、版本等
+-S 查看网卡收发包的统计情况
+-g/-G 查看或者修改RingBuffer的大小
+-l/-L 查看或者修改网卡队列数
+-c/-C 查看或者修改硬中断合并策略
+```
+
 ### 3.2 sar
 
 详见 [sar](../perf/command/sar.md)

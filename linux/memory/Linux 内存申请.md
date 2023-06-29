@@ -22,11 +22,18 @@ buddy算法的数学原理：
 
     slab 和伙伴系统是上下级的调用关系，伙伴关系按照页管理内存，slab 按照字节管理，slab 先从伙伴系统获取数个页的内存，然后切成分成固定的小块(称为 object)，然后再按照声明的对象数据结构分配对象。
 
-2. `kmem_cache_create(创建高速缓存) kmem_cache_alloc(从高速缓存中返回一个指向对象的指针)`
+2. kmem_cache_crreate：创建高速缓存  
+kmem_cache_destroy: 撤销高速缓存  
+kmem_cache_alloc: 从高速缓存中返回一个指向对象的指针  
+kmem_cache_free：释放一个对象  
+常见的高速缓存，files_cache、task_struct、TCP 等，可以通过 `slabinfo` 的第一列查看。
+
+一个高速缓存有多个 slab ，一个 slab 存储若干个相同的 object 。
+
 3. `/proc/slabinfo`
 4. 内核中的slab可以分成2类：
-    - 专用slab：比如TCPv6、UDPv6等内核需要经常分配和释放的常用数据结构
-    - 通用slab：比如kmalloc-64、kmalloc-128等，只区分大小、不区分用途
+    - 专用slab：比如 TCPv6、UDPv6 等内核需要经常分配和释放的常用数据结构
+    - 通用slab：比如 kmalloc-64、kmalloc-128 等，只区分大小、不区分用途
 
 ## kmalloc
 
@@ -57,8 +64,6 @@ Kmalloc 底层用的还是 slab 机制， kmalloc 在启动的时候会预先创
 
 # 0x0
 
-[Linux 内存空间分布](./Linux%20%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%88%86%E5%B8%83.md)
-
 在虚拟内存空间的 normal memory 区域，内核使用 kmalloc() 来分配内存， kmalloc() 返回的也是虚拟地址，但是分到的内存在物理地址上是连续的（因为是直接映射，在虚拟地址上自然也是连续的）。
 
 在 VMALLOC_START 和 VMALLOC_END 之间的区域为 vmolloc area ，它和 normal memory 中有 8MB 的间隔。这部分间隔不作任何地址映射，相当于一个空洞，主要用做安全保护，防止不正确的越界内存访问，因为此处没有进行任何形式的映射，如果进入到空洞地带，将会触发处理器产生一个异常。
@@ -67,6 +72,7 @@ Kmalloc 底层用的还是 slab 机制， kmalloc 在启动的时候会预先创
 
 
 ![1](../../pic/linux/memory/kernel-virtmem-map.png)
+![1](../../pic/linux/memory/linux_memory_alloc.png)
 
 
 1. kmalloc/kfree 申请的是较小的连续的物理内存，虚拟地址上也是连续的。kmalloc和get_free_page最终调用实现是相同的，只不过在调用最终函数时所传的flag不同而已。除非被阻塞否则他执行的速度非常快，而且不对获得空间清零。

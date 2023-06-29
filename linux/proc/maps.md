@@ -1,5 +1,7 @@
 # 0x00、/proc/PID/maps 或者 pmap -x PID
 
+pmap -X `pidof hello`
+
 显示进程的虚拟地址空间分布。
 
 

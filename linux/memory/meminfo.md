@@ -1,3 +1,7 @@
+# 0x00. 导读
+
+# 0x01. 简介
+
 ```bash
 # cat /sys/devices/system/node/node*/meminfo
 # -w buffers/cache 分开显示， -k 用 KB单位
@@ -65,11 +69,12 @@ available |	MemAvailable
 
 内核使用的:    
 - slab
-- VmallocUser
+- VmallocUsed
 - PageTables
 - KernelStack
 - HardwareCorrupted
 - Bounce
+- x(未统计到的)
 
 用户使用的:
 - Active
@@ -80,44 +85,39 @@ available |	MemAvailable
 
 Q: 
 1. /proc/[pid]/smap  
-2. /proc/[pid]/status
-3. /proc/buddyinfo
-4. /proc/pagetypeinfo
+3. /proc/buddyinfo 包含当前系统的伙件系统简要信息
+4. /proc/pagetypeinfo 包含当前系统的伙伴系统详细信息
 5. /proc/vmstat 文件显示的是从内核导出的虚拟内存的统计信息。
 6. /proc/vmallocinfo
 7. /proc/pid/statm, 可以用 self 代替自己的 pid
-8. /proc/pagetypeinfo
-9. /proc/swaps
+9. /proc/swaps, 查看当前系统的swap分区总结
 10. /sys/devices/system/node/node*/meminfo
+11. /proc/self/statm
 
 [linux github](https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst)
 
-----------
+# 0x02. 单项解释
 
-# VSS USS RSS PSS
+## 2.1 **VSS USS RSS PSS**
 
 Linux 使用的是虚拟内存 (virtual memory)，因此要准确的计算一个进程实际使用的物理内存就比较麻烦，如下是在计算内存使用率时比较重要的指标：
 
-**VSS** (Virtual Set Size): 进程通过 malloc() 或者 mmap() 向内存申请内存之后(这部分内存大小称为 VSS )，内核并不会立刻为其分配实际的物理内存。   
+`VSS` (Virtual Set Size): 进程通过 malloc() 或者 mmap() 向内存申请内存之后(这部分内存大小称为 VSS )，内核并不会立刻为其分配实际的物理内存。   
 等到进程真正使用到内存时(比如调用了 memset() 函数)，内核才会为这个进程分配物理内存，并建立虚拟地址和物理地址之间的映射。
 
 问题来了，动态链接库本身也是要占据物理内存的，那这部分内存应该算在哪个进程头上呢？
 
 为此就出现了三种不同的计算方法：
-1. 一种是只计算进程自身占用的物理内存，完全不包含共享库所占用内存的 **USS** (Unique Set Size) 。
-2. 一种是把共享库占用的内存直接加到每个进程头上的 **RSS** (Resident Set Size) 。
-3. 最后一种是把一个共享库占用的内存，分摊到使用了这个共享库的各个进程头上，称为 **PSS** (Proportional Set Size) 。   
+1. 一种是只计算进程自身占用的物理内存，完全不包含共享库所占用内存的 `USS` (Unique Set Size) 。
+2. 一种是把共享库占用的内存直接加到每个进程头上的 `RSS` (Resident Set Size) 。
+3. 最后一种是把一个共享库占用的内存，分摊到使用了这个共享库的各个进程头上，称为 `PSS` (Proportional Set Size) 。   
 假如一个 so 大小是 3M ，现在三个进程共用，则一个是 1M ，假如一个进程被 kill 掉了，则一个是 1.5M 。
 
 使用 `ps -e u | head` 可以看到 VSZ(VSS) 和 RSS 。
 ```bash
 $ ps u | head
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-centos     959  0.0  0.0 157192     8 pts/16   Ss+  Feb01   0:13 /usr/bin/zsh -i
-centos    1858  0.0  0.0 153700  6696 pts/54   Ss   17:55   0:01 /bin/zsh -i
-centos    4320  0.0  0.0 151040  5808 pts/35   Ss+  Feb18   0:00 /bin/zsh -i
-centos    4509  0.0  0.0 151040  5808 pts/52   Ss+  Feb18   0:00 /bin/zsh -i
-centos    5890  0.0  0.0 153908  6760 pts/53   Ss+  Feb18   0:00 /bin/zsh -i
+centos   16235  199  0.0 394056   616 pts/4    Sl+  May10   38:11 ./LTTBif
 centos    9705  0.0  0.0 179016   392 pts/7    S+   Jan04   0:02 ssh QMT
 centos    9856  0.0  0.0 119720  1532 pts/25   S+   Feb18   0:00 tmux at -t tab
 centos   14243  0.0  0.0 160444  2696 pts/11   Ss+  Jan31   0:30 /usr/bin/zsh -i
@@ -131,18 +131,10 @@ top，也能显示 VSS 和 RSS 的信息，只不过叫法不一样，分别被�
  20295 centos    20   0 2043856   1.1g  18764 S   6.2  7.2  34:05.71 node   
 ```
 
------------------------
 
-# 内核分配内存
+## 2.2 **内核分配内存**
 
-Kernel的动态内存分配通过以下几种接口：
-
-- alloc_pages/__get_free_page: 以页为单位分配
-- vmalloc: 以字节为单位分配虚拟地址连续的内存块
-- slab allocator
-    - kmalloc: 以字节为单位分配物理地址连续的内存块，它是以 slab 为基础的，使用 slab 层的 general caches — 大小为 2^n ，名称是 kmalloc-32 、 kmalloc-64 等。
-
-通过 slab 层分配的内存会被精确统计，可以参见 /proc/meminfo 中的 slab/SReclaimable/SUnreclaim ；
+通过 slab 层分配的内存会被精确统计，可以参见 /proc/meminfo 中的 slab/SReclaimable/SUnreclaim ；或者 `/proc/slabinfo`
 
 通过 vmalloc 分配的内存也有统计，参见 /proc/meminfo 中的 VmallocUsed 和 /proc/vmallocinfo ；
 
@@ -151,6 +143,7 @@ Kernel的动态内存分配通过以下几种接口：
 /proc/meminfo 统计的是系统全局的内存使用状况，单个进程的情况要看 /proc/pid/smaps 等等。
 
 ## 1. MemTotal
+
     系统从加电开始到引导完成，firmware/BIOS 要保留一些内存，kernel 本身要占用一些内存，最后剩下可供 kernel 支配的内存就是 MemTotal 。这个值在系统运行期间一般是固定不变的。
 
 ## 2.MemFree
@@ -180,9 +173,10 @@ $ dd if=/dev/vda1 of=/dev/null count=20000
 
 所有的缓存页(page cache)的总和 = Buffers + Cached + SwapCached
 
-所有缓存页的总数量: `cat /proc/vmstat | grep nr_file_pages` ，单位是 page 个数。
+所有缓存页的总数量: `cat /proc/vmstat | grep nr_file_pages` ，单位是 page 个数。乘以 4 就是上面的值。
 
 ## 5. Cached
+
     Page Cache 里包括所有 file-backed pages ，统计在 /proc/meminfo 的 Cached 中。
 
 - Cached 是 Mapped 的超集，其不仅包括 mapped ，也包括 unmapped 的页面，当一个文件不再与进程关联之后，原来在 page cache 中的页面并不会立即回收，仍然被计入 Cached ，还留在 LRU 中，但是 Mapped 统计值会减小。   
@@ -193,7 +187,11 @@ Cached 和 SwapCached 两个统计值是互不重叠的。所以，Shared memory
 
 ## 6. SwapCached
 
-## 7. Active Inactive Active(anon) Inactive(anon) Active(file) Inactive(file) Unevictable
+SwapCached 包含的是被确定要 swap-out ，但是尚未写入 swap 的匿名内存页。
+
+SwapCached 内存页会同时被统计在 LRU 或 AnonPages 或 Shmem 中，它本身并不占用额外的内存。
+
+## 7. Active、Inactive、Active(anon)、Inactive(anon)、Active(file)、Inactive(file)、Unevictable
     Active = Active(anon) + Active(file)
     Inactive = Inactive(anon) + Inactive(file)
 
@@ -225,7 +223,13 @@ Cached 和 SwapCached 两个统计值是互不重叠的。所以，Shared memory
 
 ## 15. SwapTotal
 
+    swap 空间总计
+
+    可以用 `swapon -s` 验证
+
 ## 16. SwapFree
+
+    当前剩余 swap
 
 ## 17. Dirty
     系统中全部的 dirty pages ，但是不全。
@@ -236,26 +240,27 @@ Cached 和 SwapCached 两个统计值是互不重叠的。所以，Shared memory
     正准备回写硬盘的缓存页。
 
 ## 19. AnonPages
-> 用户进程的内存页分为两种：file-backed pages（与文件对应的内存页），和anonymous pages（匿名页）。
+> 用户进程的内存页分为两种：file-backed pages（与文件对应的内存页），和 anonymous pages（匿名页）。
 
-    用户进程的 Anonymous pages(匿名页)的数量统计在 /proc/meminfo 的 AnonPages 中。
+    用户进程的 Anonymous pages (匿名页)的数量统计在 /proc/meminfo 的 AnonPages 中。
 ## 20. Mapped
-> 用户进程的内存页分为两种：file-backed pages（与文件对应的内存页），和anonymous pages（匿名页）。
 
     用户进程的 file-backed pages 就对应着 /proc/meminfo 中的 Mapped 。
 
     Page cache 中包含了文件的缓存页：
         1. 有些文件当前已不在使用，page cache仍然可能保留着它们的缓存页面；
-        2. 另一些文件正被用户进程关联，比如shared libraries、可执行程序的文件、mmap的文件等
+        2. 另一些文件正被用户进程关联，比如 shared libraries 、可执行程序的文件、 mmap 的文件等
     情况 2 的这些文件的缓存页就称为 mapped 。情况 1 的缓存页会算在 Cached 里面。
 
     其统计了 page cache 中所有的 mapped 页面。 Mapped 是 Cached 的子集。
 
     因为进程所占的内存页分为 anonymous pages 和 file-backed pages ，理论上应该有：
     【所有进程的PSS之和】 == 【Mapped + AnonPages】。
-    实际测试发现结果非常详尽，但是无法精确相等。
+    实际测试发现结果非常相近，但是无法精确相等。
 
 ## 21. Shmem
+
+tmpfs 所使用的内存
 
 ## 22. Slab SReclaimable SUnreclaim
     在 Linux 中，内存是以页为单位管理和分配。但在内核中会有许多小对象，这些对象构造销毁十分频繁，比如i-node，dentry，它们的实际大小可能只有几个字节，这样就非常浪费。
@@ -263,32 +268,47 @@ Cached 和 SwapCached 两个统计值是互不重叠的。所以，Shared memory
     可以使用 slabtop 或者 slabinfo 来查看 slab 占用情况。
 
     slab 主要是两个作用：
-    - Slab对小对象进行分配，不用为每个小对象分配一个页，节省了空间。
-    - 内核中一些小对象创建析构很频繁，Slab对这些小对象做缓存，可以重复利用一些相同的对象，减少内存分配次数。
+    - Slab 对小对象进行分配，这样就不用为每个小对象分配一个页，节省了空间。
+    - 内核中一些小对象创建析构很频繁，Slab 对这些小对象做缓存，可以重复利用一些相同的对象，减少内存分配次数。
 
     Slab = SReclaimable + SUnreclaim, SReclaimable 表示可回收使用的内存。
 
+```bash
+$ cat /proc/slabinfo
+slabinfo - version: 2.1
+# name       <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+TCP                  194       336        1984       16            8        : tunables    0          0                   0 : slabdata     21                21      0
+inode_cache        16956     16956         592       27            4        : tunables    0          0                   0 : slabdata    628               628      0
+dentry            384392    386631         192       21            1        : tunables    0          0                   0 : slabdata  18411             18411      0
+kmalloc-8          93696     93696           8      512            1        : tunables    0          0                   0 : slabdata    183               183      0
+```
 - name：slab object对象的名称
 - active_objs：活动对象（slab object）个数，即被申请走的对象个数（正在被使用）。
 - num_objs：总对象（slab object）个数，slab本身具备缓存作用，所以num_objs可能会比active_objs要大，这是一种合理的现象。
 - objsize：每个对象（slab object）大小，以字节为单位。
-- objperslab：slab中存放的是对象（slab object），这个指标表示一个slab中包含多少个对象（slab object）。
+- objperslab：slab中存放的是对象（slab object），这个指标表示一个 slab 中包含多少个对象（slab object）。
 - pagesperslab : tunables：一个slab占用几个page内存页。可以算一下，一个slab的大小为320*12=3840，小于4096（我这里，内存页为4K），所以一个slab只需占用1个page内存页。另外，cache对象本身需要存储一个额外的管理信息，即有overhead，所以一个xfs_buf slab的大小不止3840。
-- active_slabs：活动slab个数。
-- num_slabs：总slab个数。
+- active_slabs：活动 slab 个数。
+- num_slabs：总 slab 个数。
+
+每种对象占用总内存量(单位是 位 B) = num_objs * objsize
 
 ## 25. KernelStack
-    每一个用户线/进程都会分配一个 kernel stack （内核栈），内核栈虽然属于线程，但用户态的代码不能访问，只有通过系统调用(syscall)、自陷(trap)或异常(exception)进入内核态的时候才会用到，也就是说内核栈是给 kernel code 使用的。在x86系统上Linux的内核栈大小是固定的8K或16K。
+    每一个用户线/进程都会分配一个 kernel stack （内核栈），内核栈虽然属于线程，但用户态的代码不能访问，只有通过系统调用(syscall)、自陷(trap)或异常(exception)进入内核态的时候才会用到，也就是说内核栈是给 kernel code 使用的。在 x86 系统上 Linux 的内核栈大小是固定的 8K 或 16K 。
 
 ## 26. PageTables
     Page Table 用于将内存的虚拟地址翻译成物理地址，随着内存地址分配得越来越多，Page Table 会增大， PageTables 统计了 Page Table 所占用的内存大小。
 
 ## 27. NFS_Unstable
 
+发给 NFS server 但尚未写入硬盘的缓存页
+
 ## 28. Bounce
     有些老设备只能访问低端内存，比如 16M 以下的内存，当应用程序发出一个 I/O 请求，DMA 的目的地址却是高端内存时（比如在 16M 以上），内核将在低端内存中分配一个临时 buffer 作为跳转，把位于高端内存的缓存数据复制到此处。这种额外的数据拷贝被称为" bounce buffering "，会降低 I/O 性能。大量分配的 bounce buffers 也会占用额外的内存。
 
 ## 29. WritebackTmp
+
+正准备回写硬盘的缓存页
 
 ## 30. CommitLimit Committed_AS
     Memory Overcommit 的意思是操作系统承诺给进程的内存大小超过了实际可用的内存。一个保守的操作系统不会允许 memory overcommit ，有多少就分配多少，再申请就没有了，这其实有些浪费内存，因为进程实际使用到的内存往往比申请的内存要少，比如某个进程 malloc() 了 200MB 内存，但实际上只用到了 100MB ，按照 UNIX/Linux 的算法，物理内存页的分配发生在使用的瞬间，而不是在申请的瞬间，也就是说未用到的 100MB 内存根本就没有分配，这 100MB 内存就闲置了。
@@ -372,3 +392,5 @@ N<node>=nr |	(Only on NUMA kernels) Number of pages allocated on memory node <no
     系统实际分配给了程序多少个 HugePages, 我们可以直接通过 HugePages_Total - HugePages_Free 计算得到。
 
 ## 42. DirectMap4K DirectMap2M DirectMap1G 
+
+映射为 4kB、2MB、1GB 的内存数量

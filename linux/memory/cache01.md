@@ -153,3 +153,5 @@ cache 被分成 2 路，每路包含 4 行 cache line 。我们将所有索引�
 - `tag` 是和 `Cacheline` 中的 `tag` 做匹配的。
 
 记得 `index` 和 `offset` 位数的计算方法，后续的 `VIPT` 什么时候不出现别名情况用得上。
+
+![1](../../pic/linux/memory/内存管理-Cache.png)

@@ -80,3 +80,8 @@ awk '{ print $NF, $NR, $(NF - 1)}'
 # 累加
 awk '{sum+=$1}END{print $sum}'
 ```
+
+```bash
+# 删除以 逗号 分隔的第一列
+awk -F',' 'OFS=","{$1="";print $0}' 3.txt | sed 's/^,//g' > 4.txt
+```
