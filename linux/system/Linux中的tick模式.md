@@ -42,7 +42,3 @@ adaptive-ticks CPUs must have their RCU callbacks offloaded.(卸载 RCU 回调)
 相反，CPU 将仅在需要时退出 adaptive-ticks 模式，例如，if that CPU enqueues an RCU callback.
 
 CONFIG_RCU_NOCB_CPU, rcu_nocbs=
-
-# 测试
-
-https://git.kernel.org/pub/scm/linux/kernel/git/frederic/dynticks-testing.git/
