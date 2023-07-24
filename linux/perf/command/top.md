@@ -23,13 +23,13 @@ KiB Swap: 33554428 total, 32846588 free,   707840 used. 82336672 avail Mem
 系统负载，即任务队列的平均长度，三个数值分别为 1分钟、5分钟、15分钟前到现在的平均值。
 
 计算公式：  
-![Alt text](../../pic/linux/top1.png)
+![Alt text](../../../pic/linux/top1.png)
 
-![Alt text](../../pic/linux/top1.png)
+![Alt text](../../../pic/linux/top1.png)
 
 例子：
 
-![Alt text](../../pic/linux/top1.png)
+![Alt text](../../../pic/linux/top1.png)
 
 ## 3. Tasks: 522 total,   4 running, 515 sleeping,   0 stopped,   3 zombie
 总进程数  
