@@ -1,11 +1,18 @@
-# 0x00、/proc/PID/maps 或者 pmap -x PID
-
-pmap -X `pidof hello`
+# 0x00. 导读
 
 显示进程的虚拟地址空间分布。
 
+```bash
+/proc/PID/maps 或者 pmap -x PID
+pmap -X `pidof hello`
+```
 
-[/proc/pid/maps 简要分析](https://www.cnblogs.com/arnoldlu/p/10272466.html)
+# 0x01. 简介
+
+参考： [/proc/pid/maps 简要分析](https://www.cnblogs.com/arnoldlu/p/10272466.html)
+
+# 0x02. 命令
+
 
 ```bash
 $ cat /proc/12098/maps
@@ -29,14 +36,42 @@ $ cat /proc/12098/maps
 ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
 ```
 
-| 内核每进程的vm_area_struct项      | /proc/pid/maps中的项 | 含义     |
-| :----:        |    :----:   |          :----: |
-|vm_start|	“-”前一列，如00377000|	此段虚拟地址空间起始地址|
-|vm_end|	“-”后一列，如00390000|	此段虚拟地址空间结束地址|
-|vm_flags|	第三列，如r-xp|	此段虚拟地址空间的属性。每种属性用一个字段表示。 <br>r 可读，w 可写，x 可执行，p 和 s 共用一个字段，互斥关系，p 表示私有段，s 表示共享段，如果没有相应权限，则用’-’代替
-|vm_pgoff|	第四列，如00000000|	对有名映射，表示此段虚拟内存起始地址在文件中以页为单位的偏移。<br>对匿名映射，它等于0或者vm_start/PAGE_SIZE
-|vm_file->f_dentry->d_inode->i_sb->s_dev|	第五列，如fd:00|	映射文件所属设备号。<br>对匿名映射来说，因为没有文件在磁盘上，所以没有设备号，始终为00:00。<br>对有名映射来说，是映射的文件所在设备的设备号
-|vm_file->f_dentry->d_inode->i_ino|	第六列，如9176473|	映射文件所属节点号。<br>对匿名映射来说，因为没有文件在磁盘上，所以没有节点号，始终为00:00。<br>对有名映射来说，是映射的文件的节点号
-| 	|第七列，如/lib/ld-2.5.so|	对有名来说，是映射的文件名。<br>对匿名映射来说，是此段虚拟内存在进程中的角色。[stack]表示在进程中作为栈使用，[heap]表示堆。其余情况则无显示
+## 2.1 解释
+
+`man 5 proc` + search 也可以查看帮助手册的解释。
+
+一共 6 列：
+
+    76093000-76096000 r-xp 00000000 b3:19 941 /system/lib/libmemalloc.so
+
+1. 所处虚拟内存地址(VMA)范围：`76093000-76096000`
+    - 对应虚拟地址空间的 起始-结束 地址
+    - 在Linux中将进程虚拟空间中的一个段叫做虚拟内存区域 VMA (Virtual Memory Area) 。
+    - VMA 对应 ELF 文件中的 segment 。
+    - ELF 文件有 section 和 segment 的概念。从链接的角度看， ELF 是按照 section 存储的，事实也的确如此；从装载的角度看，ELF 文件又按照 segment 进行划分，这是为了防止按照 section 装载时造成的内部碎片。 segment 相当与是将多个属性（读写执行）相同的 section 合并在一起进行。 program headers 存放 segment 的信息; section table 存放 section 的信息.
+
+2. VMA权限：r-xp
+
+    r=读，w=写,x=可执行,s=共享,p=私有
+
+3. 偏移量：00000000
+
+    表示 VMA 对应的 segment 在映射文件中的偏移。对于 匿名映射 则是 0 。
+
+4. b3:19
+
+    映射文件所属设备号。
+
+5. 941
+
+    映射文件的节点号 inode 
+
+6. /system/lib/libmemalloc.so
+
+    映射文件的路径。[stack] 表示在进程中作为栈使用，[heap] 表示堆。
+
+
+
+![Alt text](../../pic/linux/memory/vma_maps.png)
 
 ![1](../../pic/linux/memory/process_virtual_space.png)

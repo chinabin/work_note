@@ -20,17 +20,7 @@ KiB Swap: 33554428 total, 32846588 free,   707840 used. 82336672 avail Mem
 
 ## 2. **load average: 60.34, 60.62, 58.03**
 
-系统负载，即任务队列的平均长度，三个数值分别为 1分钟、5分钟、15分钟前到现在的平均值。
-
-计算公式：  
-![Alt text](../../../pic/linux/top1.png)
-
-![Alt text](../../../pic/linux/top1.png)
-
-例子：
-
-![Alt text](../../../pic/linux/top1.png)
-
+见 [loadavg.md](../basics/loadavg.md)
 ## 3. Tasks: 522 total,   4 running, 515 sleeping,   0 stopped,   3 zombie
 总进程数  
 正在运行的进程数  
