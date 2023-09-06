@@ -4,6 +4,8 @@
 
 # 0x01. 简介
 
+`/proc/schedstat` 和 `/proc/pid/schedstat` 的解释在 [Documentation/scheduler/sched-stats](https://github.com/torvalds/linux/blob/master/Documentation/scheduler/sched-stats.rst) 均有
+
 # 0x02. 命令
 
 文件内容的格式为：

@@ -42,6 +42,7 @@ perf stat [options] [command]
  
 -e 或 --event: 指定要收集的事件类型，例如：cache-misses, instructions 等。  
 -p 或 --pid: 指定要监视的进程ID。  
+-I: 指定 ms 为单位的时间间隔
 -t 或 --tid: 指定要监视的线程ID。  
 -a 或 --all-cpus: 监视所有CPU，而不仅仅是当前CPU。  
 -C 或 --cpu: 指定要监视的CPU列表。  
