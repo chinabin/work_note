@@ -46,7 +46,6 @@ procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
     - sy: 执行系统代码（内核）。 
     - id: 空闲。 
     - wa: 等待IO。 
-    - st: 如果正在使用虚拟化，显示了从虚拟机中”偷走”的百分比。 
 
 brendangregg 大神建议关注的部分：  
 ![brendangregg](../../pic/linux/vmstat.png)
