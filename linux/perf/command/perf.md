@@ -91,7 +91,9 @@ BPF 工具一般使用另一种 stack unwinding 技术：frame pointer（帧指�
 frame pointer 原理
 - 每个 stack trace (或称 activation records 或 call stacks) 包含很多 frames，这 些 frames 以 LIFO（后进先出）方式存储。这与栈的工作原理一样，stack frames 由此得名；
 - 每个 frame 包含了一个函数执行时的状态信息（参数所在的内存区域、局部变量、返回值等等）；
-- Frame pointer 是指向 frame 内存地址的指针，
+- Frame pointer 是指向 frame 内存地址的指针。fp 就是 x86 中的 EBP 寄存器，fp 指向当前栈帧栈底地址，此地址保存着上一栈帧的 EBP 值，具体可参考[此文章](https://people.cs.rutgers.edu/~pxk/419/notes/frames.html)的介绍，根据 fp 就可以逐级回溯调用栈。然而这一特性是会被优化掉的，而且这还是 GCC 的默认行为，在不手动指定 -fno-omit-frame-pointer 时默认都会进行此优化，此时 EBP 被当作一般的通用寄存器使用，以此为依据进行栈回溯显然是错误的。不过尝试指定 -fno-omit-frame-pointer 后依然没法获取到正确的调用栈，根据 GCC 手册的说明，指定了此选项后也并不保证所有函数调用都会使用 fp…… 看来只有放弃使用 fp 进行回溯了。
+
+dwarf 是一种调试文件格式，GCC 编译时附加的 -g 参数生成的就是 dwarf 格式的调试信息，其中包括了栈回溯所需的全部信息，使用 libunwind 即可展开这些信息。dwarf 的进一步介绍可参考 [“关于DWARF”](https://cwndmiao.github.io/programming%20tools/2013/11/26/Dwarf/)，值得一提的是，GDB 进行栈回溯时使用的正是 dwarf 调试信息。实际测试表明使用 dwarf 可以很好的获取到准确的调用栈。
 
 编译的时候，有没有 -g 参数都行， frame pointer 不会使用 dwarf 信息。
 perf 的时候 指定 --call-graph fp

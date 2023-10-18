@@ -84,7 +84,7 @@ available |	MemAvailable
 
 
 Q: 
-1. /proc/[pid]/smap  
+  
 3. /proc/buddyinfo 包含当前系统的伙件系统简要信息
 4. /proc/pagetypeinfo 包含当前系统的伙伴系统详细信息
 5. /proc/vmstat 文件显示的是从内核导出的虚拟内存的统计信息。

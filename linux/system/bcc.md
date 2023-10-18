@@ -76,8 +76,8 @@ cachetop      fileslower  offcputime      sslsniff     trace
 - softirqs: 统计软中断时间
 - hardirqs: 统计硬中断时间
 - llcstat: 按进程统计 LLC 命中率
-- cachestat: 每秒（或每个自定义时间间隔）打印一行摘要，显示文件系统缓存的统计信息。
-- cachetop: 以类似于 top 的方式展示文件系统缓存信息
+- cachestat: provides read and write hits for the entire system cache.
+- cachetop: provides cache hits for each process.
 - oomkill: 展示 OOM Killer 事件的详细信息
 - memleak: 展示可能有内存泄露的代码路径
 - shmsnoop: 跟踪共享内存相关的调用信息

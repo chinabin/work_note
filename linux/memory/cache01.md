@@ -10,6 +10,43 @@
 
 [memory-ordering](http://gavinchou.github.io/summary/c++/memory-ordering)
 
+
+
+缓存器设计中有四个重要的特性，确定了这四个特性，一个基本的缓存器也就慢慢成型了:
+
+1. 如何在缓存器里放置数据？（Cache Placement）  
+    Direct Mapped 直接映射，Fully Associative 全关联，Set-Associative 组关联
+
+2. 如何在缓存器里搜寻数据？（Cache Searching）  
+    Tag 标签，Address 地址
+
+3. 如何在缓存器里替换数据？（Cache Replacement）  
+    Random 随机替换，Least Recent Used （LRU）替换最不常用，FIFO (First-In First-Out)。
+
+4. 如何通过缓存器向主存写数据？（Cache Write Policy）  
+    Write Through 写穿，Write Back 写回，Write Allocate 写分配，No-Write Allocate 写不分配。  
+
+    当发生写命中时（Write Hit）  
+        当向缓存器发出写入指令（Store），并且要写的数据恰好在缓存器中，面临着两种选择：
+
+            同时更新缓存器和主存。这样做的好处，设计起来很简单，并且，可以保持主存数据是最新的，这一点可以在缓存一致性（Cache Coherency） 里很重要。这种方法称为写穿（Write Through）。
+
+            只更新缓存器，但在这个数据块要被替换的时候，才写回主存。这样做的好处，可以减少从 缓存器写数据进主存的频率，并且可以减少使用主存的带宽，这一点在多核处理器（Multicore Processor），很受欢迎。这样的方法称为写回（Write Back）。
+
+    当发生写不命中时（Write Miss）
+
+        当向缓存器发出写入指令（Store），并且要写的数据不在缓存器中，面临着两种选择：
+
+            写进主存，并把写的数据存放在缓存器中，这样，下次就有几率命中这个数据。这样的方法称为写分配（Write Allocate）。
+
+            写进主存，但不把这个数据写进缓存器。这种方法称为写不分配（No-Write Allocate）。
+
+    一般缓存的搭配是这样的：
+
+        写穿 & 写不分配（Write Through & No-Write Allocate）
+
+        写回 & 写分配 （Write Back & Write Allocate）
+
 # 0x01 简介
 
 当 CPU 试图从某地址 load 数据时，首先从 L1 cache 中查询是否命中，如果命中则把数据返回给 CPU 。如果 L1 cache 缺失，则继续从 L2 cache 中查找。当 L2 cache 命中时，数据会返回给 L1 cache 以及 CPU 。如果 L2 cache 也缺失，则需要从主存中 load 数据，将数据返回给 L2 cache 、 L1 cache 及 CPU 。

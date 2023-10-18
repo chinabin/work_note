@@ -3,72 +3,48 @@
 
 ```bash
 [alfred@bbro-ZJDG1 fpga_radar]$ cat /proc/37730/status 
-Name:   adk-ioe-rxactor
-Umask:  0022
-State:  R (running)
-Tgid:   37703
-Ngid:   37730
-Pid:    37730
-PPid:   1
-TracerPid:      0
-Uid:    0       0       0       0
-Gid:    0       0       0       0
-FDSize: 256
-Groups: 0 
-VmPeak: 39574712 kB
-VmSize: 39574712 kB
-VmLck:         0 kB
-VmPin:         0 kB
-VmHWM:  38590960 kB
-VmRSS:  31393652 kB
-RssAnon:         1870308 kB
-RssFile:        26377604 kB
-RssShmem:        3145740 kB
-VmData:  2647752 kB
-VmStk:       132 kB
-VmExe:       132 kB
-VmLib:     49508 kB
-VmPTE:     75720 kB
-VmSwap:        4 kB
-Threads:        16
-SigQ:   0/513302
-SigPnd: 0000000000000000
+Name: Log2Hostflush
+Umask: 0022
+State: D (disk sleep)-----------------------表示此时线程处于sleeping，并且是uninterruptible状态的wait。
+
+Tgid: 157-----------------------------------线程组的主pid为157。
+Ngid: 0
+Pid: 159------------------------------------线程自身的pid为159。
+PPid: 1-------------------------------------线程组是由init进程创建的。
+TracerPid: 0
+Uid: 0 0 0 0
+Gid: 0 0 0 0
+FDSize: 256---------------------------------表示到目前为止进程使用过的描述符总数。
+Groups: 0 10
+VmPeak: 1393220 kB--------------------------虚拟内存峰值大小。
+VmSize: 1390372 kB--------------------------当前使用中的虚拟内存，小于VmPeak。
+VmLck: 0 kB
+VmPin: 0 kB
+VmHWM: 47940 kB-----------------------------RSS峰值。
+VmRSS: 47940 kB-----------------------------RSS实际使用量=RSSAnon+RssFile+RssShmem。
+RssAnon: 38700 kB
+RssFile: 9240 kB
+RssShmem: 0 kB
+VmData: 366648 kB--------------------------进程数据段共366648KB。
+VmStk: 132 kB------------------------------进程栈一共132KB。
+VmExe: 84 kB-------------------------------进程text段大小84KB。
+VmLib: 11488 kB----------------------------进程lib占用11488KB内存。
+VmPTE: 1220 kB
+VmPMD: 0 kB
+VmSwap: 0 kB
+Threads: 40-------------------------------进程中一个40个线程。
+SigQ: 0/3142------------------------------进程信号队列最大3142，当前没有pending状态的信号。
+SigPnd: 0000000000000000------------------没有进程pending，所以位图为0。
 ShdPnd: 0000000000000000
 SigBlk: 0000000000000000
-SigIgn: 0000000000001006
-SigCgt: 0000008180000000
+SigIgn: 0000000000000006------------------被忽略的信号，对应信号为SIGINT和SIGQUIT，这两个信号产生也不会进行处理。
+SigCgt: 0000000180000800------------------已经产生的信号位图，对应信号为SIGUSR2、以及实时信号32和33。
 CapInh: 0000000000000000
-CapPrm: 0000001fffffffff
-CapEff: 0000001fffffffff
-CapBnd: 0000001fffffffff
+CapPrm: 0000003fffffffff
+CapEff: 0000003fffffffff
+CapBnd: 0000003fffffffff
 CapAmb: 0000000000000000
-NoNewPrivs:     0
-Seccomp:        0
-Speculation_Store_Bypass:       thread vulnerable
-Cpus_allowed:   ffffff,ffffffff
-Cpus_allowed_list:      0-55
-Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003
-Mems_allowed_list:      0-1
-voluntary_ctxt_switches:        2506
-nonvoluntary_ctxt_switches:     15976
+Cpus_allowed: 1---------------------------仅在第1个cpu上执行。
+Cpus_allowed_list: 0
+voluntary_ctxt_switches: 2377-------------线程主动切换2377次，被动切换5次。
 ```
-
-
-- Name：进程的名称
-- Pid:PID。
-- VmPeak：进程使用的最大虚拟内存，通常情况下它等于进程的内存描述符mm中的total_vm
-- VmSize：进程使用的虚拟内存，它等于mm->total_vm
-- VmLck：进程锁住的内存，它等于m->locked_vm，这里指使用 mlock()锁住的内存。
-- VmPin：进程固定住的内存，它等于mm->pinned_vm，这里指使用get_user_page()固定住的内存。
-- VmHWM：进程使用的最大物理内存，它通常等于进程使用的匿名页面、文件映射页面以及共享内存页面的大小总和
-- VmRSS：进程使用的最大物理内存，它常常等于VmHWM，计算公式为 VmRSS = RssAnon + RssFile + RssShmem
-- RssAnon：进程使用的匿名页面，通过 get_mm_counter（mm， MM_ANONPAGES）获取。
-- RssFile：进程使用的文件映射页面，通过 get_mm_counter（mm， MM_FILEPAGES）获取
-- RssShmem：进程使用的共享内存页面，通过 get_mm_counter（mm， MM_SHMEMPAGES）获取。
-- VmData：进程私有数据段的大小，它等于mm->data_vm
-- VmStk：进程用户栈的大小，它等于mm->stack_vm
-- VmExe：进程代码段的大小，通过内存描述符mm中的 start_code和 end_code两个成员获取
-- VmLib：进程共享库的大小，通过内存描述符mm中的 exec_vm和 VmExe计算。
-- VmPTE：进程页表大小，通过内存描述符mm中的 pgtables_byes成员获取。
-- VmSwap：进程使用的交换分区的大小，通过 get_mm_counter(mm， MM_SWAPENTS)获取
-- HugetlbPages：进程使用巨页的大小，通过内存描述符mm中的 hugetlb_usage成员获取

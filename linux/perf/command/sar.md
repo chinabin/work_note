@@ -4,6 +4,9 @@
 
 [系统性能工具篇(sar)](https://www.cnblogs.com/549294286/p/10319036.html)
 
+Brendan 总结 sar 的功能:
+![Alt text](../../../pic/linux/perf/sar_usage.png)
+
 # 0x01. 简介
 
 sar是 System Activity Reporter （系统活动情况报告）的缩写。 sar 工具将对系统当前的状态进行取样，然后通过计算数据和比例来表达系统的当前运行状态。 
