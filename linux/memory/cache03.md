@@ -1,13 +1,12 @@
-# 0x00 导读
+# 0x00. 导读
+
+Cache 组织方式。
+
+# 0x01. 简介
 
 传入 Cache 中的地址是虚拟地址或者物理地址可以划分不同种类。
 
-# 0x01 简介
-
-歧义(ambiguity)   
-别名(alias)
-
-# 0x02 问题
+# 0x02. 问题
 
 # 2.1 歧义(ambiguity)
 
@@ -23,9 +22,10 @@
 
 **具体表现是那些不同的虚拟地址的 `index` 相同。**
 
-例如虚拟地址 0x1234 在 cache 中存在两份数据，当发生改动并且才用 write-back 策略，则另一份数据就是错的了。
+例如物理地址 0x8000 被两个虚拟地址 0x2000 0x4000 映射，先修改 0x2000 中的数据，接着访问 0x4000 ，由于采用 write-back 策略，使得 0x4000 的数据是旧的。
 
-# 0x03 虚拟高速缓存(VIVT Virtual Index Virtual Tag)
+# 0x03. 种类 
+## 3.1 虚拟高速缓存(VIVT Virtual Index Virtual Tag)
 
 虚拟地址做 `index` ，虚拟地址做 `tag` ，传入 Cache 的地址是虚拟地址。
 
@@ -35,7 +35,7 @@ VIVT 存在 歧义 和 别名 问题，对于歧义，解决办法是：
 对于别名，解决办法是：
 - 不使用 cache 。
 
-# 0x04 物理高速缓存(PIPT Physical Index Physical Tag)
+## 3.2 物理高速缓存(PIPT Physical Index Physical Tag)
 
 物理地址做 `index` ，物理地址做 `tag` ，传入 Cache 的地址是 MMU 转换后的物理地址。
 
@@ -43,9 +43,7 @@ VIVT 存在 歧义 和 别名 问题，对于歧义，解决办法是：
 
 并且为了加快 MMU 转换地址，还加了一个 TLB 的硬件。
 
-# 0x05 物理标记的虚拟高速缓存(VIPT Virtual Index Physical Tag)
-
-## 5.1
+## 3.3 物理标记的虚拟高速缓存(VIPT Virtual Index Physical Tag)
 
 虚拟地址做 `index` ，物理地址做 `tag` ，传入的还是虚拟地址。
 
@@ -53,7 +51,7 @@ VIVT 存在 歧义 和 别名 问题，对于歧义，解决办法是：
 
 因为使用物理地址做 tag ，所以不存在歧义问题。存在 别名 问题。
 
-## 5.2 何时出现别名
+### 3.3.1 何时出现别名
 
 因为 Linux 映射的最小单位是 页 ，大小是 4KB 。所以虚拟地址和物理地址的低 12 位是相等的，也就是说，经过转换后的地址低 12 位一样，那么就是 VI = PI。
 
@@ -63,11 +61,16 @@ VIVT 存在 歧义 和 别名 问题，对于歧义，解决办法是：
 假如是直接映射缓存， cache size 等于 8KB ，cache line size 等于 256 字节。可以算出来 index 是 5(8-12) 位， offset 是 8(0-7) 位，13 大于 12 ，有一位无法保证不同，所以可能会出现别名（当 **index + offset > 12 bit** 时，也就是 **单个 way 的 cache size 小于等于 4KB** ）。
 
 市面上很多产品都满足这个要求：
-- intel 的sunny cove L1D： 48KB， 12 way-associative ，每块64Bytes
-- AMD的ZEN3 L1D: 32KB, 8 way-associative ，每块64Bytes
+- intel 的 sunny cove L1D: 48KB， 12 way-associative, 每块 64Bytes
+- AMD的ZEN3 L1D: 32KB, 8 way-associative, 每块 64Bytes
+
+## 3.4 PIVT
+
+不存在。
 
 # 0x06 总结
 
 牢记 `别名` 和 `歧义` 的具体表现，就能明白 `PIPT` 、 `VIVT` 、 `VIPT` 为什么会有/没有这些问题了。
 
-现在使用的方式是 PIPT 或者 VIPT。
+现在使用的方式是 PIPT 或者 VIPT。如果多路组相连高速缓存的一路的大小小于等于 4KB ，一般硬件采用 VIPT 方式，因为这样相当于 PIPT ，岂不美哉。  
+当然，如果一路大小大于 4KB ，一般采用 PIPT 方式，也不排除 VIPT 方式，这就需要操作系统多操点心了。

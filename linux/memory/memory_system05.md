@@ -2,7 +2,7 @@
 
 # 0x01. 简介
 
-# 0x02 
+# 0x02. PageTable 
 
 32bit 的 Linux 采用三级映射: PGD-->PMD-->PTE， 64bit 的 Linux 采用四级映射: PGD-->PUD-->PMD-->PTE ，多了个 PUD 。
 
@@ -20,3 +20,6 @@
 这个过程在 ARM32 架构中由 MMU 硬件完成，软件不需要接入。
 
 ![1](../../pic/linux/memory/32bit_address.png)
+
+![1](../../pic/linux/memory/Corei7LoadData.png)
+![1](../../pic/linux/memory/VirtualAddressToPhysicalAddress.png)

@@ -4,9 +4,11 @@
 
 虚拟地址空间中，内存分为哪些部分，作用是如何？
 
-虚拟地址空间分为 `用户地址空间(0~3G)` 和 `内核地址空间(3~4G)`。
-
-`内核地址空间` 又分为 `高端内存(high-mem)` 和 `低端内存(low-mem)` .
+虚拟地址空间分为： 
+- `用户地址空间(0~3G)` 
+- `内核地址空间(3~4G)`。
+    - `高端内存(high-mem)` 
+    - `低端内存(low-mem)` .
 
 ![1](../../pic/linux/memory/Linux-Memory-X86-32.jpg)
 
@@ -60,9 +62,7 @@ mmap() 系统调用映射出来的。 mmap 映射的大小也是不确定的。
 
 在 Linux 中，上面提到的每个 segment( 例如 TEXT、DATA、BSS 等 ) 用一个 `vm_area_struct` （简称 vma ）结构体表示。
 
-`/proc/PID/maps` 中记录了进程所有的 vma 在虚拟地址空间中的分布情况。
-
-[/proc/pid/maps 简要分析](../proc/maps.md)
+`/proc/PID/maps` 中记录了进程所有的 vma 在虚拟地址空间中的分布情况。([/proc/pid/maps 详解](../proc/maps.md))
 
 ```C
 struct vm_area_struct 
@@ -94,6 +94,7 @@ struct vm_area_struct
 }
 ```
 
+![1](../../pic/linux/memory/vma01.jpg)
 
 # 0x03. 内核地址空间
 
@@ -160,7 +161,7 @@ x86-32 下特有的（ x64 下没有这个东西），因为内核虚拟空间�
 - 由于 kmalloc() 基于的是直接映射，其虚拟地址和物理地址之间是一个固定的偏移，因此可以利用既有的内核页表，而不需要为新的地址增加新的 page table entries ，因此其分配速度也比 vmalloc() 更快。
 - 因为物理地址不连续，通过 vmalloc() 获得的每个 page 需要单独映射，而 TLB 资源很有限，因此这将比直接映射造成更严重的 TLB thrashing(颠簸) 问题。
 
-## 3.3. `持久映射`
+### 3.2.3 `持久映射`
 
 从 `PKMAP_BASE` 到 `FIXADDR_START` .
 
@@ -180,7 +181,7 @@ kunmap: 永久映射的数量有限，应通过 kunmap 及时解除映射
 kmap_atomic: 临时映射   
 kunmap_atomic: 解除临时映射
 
-## 3.4. `固定映射/临时映射`
+### 3.2.4 `固定映射/临时映射`
 
 `FIXADDR_START` 到 `FIXADDR_TOP` ( 0xFFFF F000 ) 的空间，称为 `固定映射区域` ，主要用于满足特殊需求。  
 

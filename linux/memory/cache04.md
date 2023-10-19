@@ -1,14 +1,12 @@
-# 0x00 导读
+# 0x00. 导读
 
-多核 Cache 一致性由硬件保证，对软件来说是透明的。因此我们不用再考虑多核 Cache 一致性问题。另外，现在 CPU 硬件采用的一致性协议一般是 MESI 的变种。例如 ARM64 架构采用的 MOESI Protocol 。多一种 Owned 状态。多出来的状态也是为了更好的优化性能。
+多核 cache 如何保持一致性。  
 
-atomic 硬件实现方式。
-
-# 0x01 简介
+# 0x01. 简介
 
 我们知道每个 CPU 都有一个私有的 L1 Cache 。假设一个 2 核的系统，我们将会有 2 个 L1 Cache 。这就引入了一个问题，不同 CPU 之间的 L1 Cache 如何保证一致性呢？
 
-# 0x02
+# 0x02. MESI
 
 ## 2.1 Bus Snooping
 
@@ -50,7 +48,7 @@ atomic 硬件实现方式。
 以上是 `cache line` 状态改变的举例。我们可以知道 `cache line` 具有4中状态，分别是 `Modified` 、 `Exclusive` 、 `Shared` 和 `Invalid` 。取其首字母简称 `MESI` 。当 `cache line` 状态是 `Modified` 或者 `Exclusive` 状态时，修改其数据不需要发送消息给其他 `CPU` ，这在一定程度上减轻了带宽压力。
 
 
-# 0x03 MESI Protocol Messages
+# 0x03. MESI Protocol Messages
 
 `Cache` 之间数据和状态同步沟通，是通过发送 `message` 同步和沟通。 `MESI` 主要涉及一下几种 `message` 。
 
@@ -74,9 +72,9 @@ atomic 硬件实现方式。
 
 
 
-# 0x04 atomic
+# 0x04. atomic
 
-我们可以借助多核 Cache 一致性协议 MESI 实现原子操作。
+我们可以借助 MESI 实现原子操作。
 
 ## 4.1 Bus Lock
 
@@ -91,13 +89,10 @@ atomic 硬件实现方式。
 2. 然后 `CPU0` 读取原子变量，修改，最后写入 `cache line` 。
 3. 将 `cache line` 置位 `unlocked` 。
 
-在步骤 `a` 和 `c` 之间，如果其他 CPU（例如 CPU1 ）尝试执行一个原子递增操作， CPU1 会发送一个 `Read Invalidate` 消息， `CPU0` 收到消息后，检查对应的 `cache line` 的状态是 `locked` ，暂时不回复消息（ `CPU1` 会一直等待 `CPU0` 回复 `Invalidate Acknowledge` 消息）。直到 `cache line` 变成 `unlocked` 。这样就可以实现原子操作。我们称这种方式为 `锁cache line` 。这种实现方式必须要求操作的变量位于一个 `cache line` 。
-
-## 4.3 LL/SC
-
-LL/SC(Load-Link/Store-Conditional) 是另一种硬件实现方法。
+在步骤 `1` 和 `3` 之间，如果其他 CPU（例如 CPU1 ）尝试执行一个原子递增操作， CPU1 会发送一个 `Read Invalidate` 消息， `CPU0` 收到消息后，检查对应的 `cache line` 的状态是 `locked` ，暂时不回复消息（ `CPU1` 会一直等待 `CPU0` 回复 `Invalidate Acknowledge` 消息）。直到 `cache line` 变成 `unlocked` 。这样就可以实现原子操作。我们称这种方式为 `锁cache line` 。
+**这种实现方式必须要求操作的变量位于一个 `cache line` 。**
 
 
 # 0x05 总结
 
-cache coherence 解决了核之间数据可见性以及顺序的问题, 本质上可以把 cache 当做内存系统的一部分, 有没有 cache 对各个 CPU 来说都是一样的, 只要写到了 cache (所以可以有很多级 cache ), 其他核就可以看到该数据, 并且顺序是确定的 – 保证顺序一致性.([出处](http://gavinchou.github.io/summary/c++/memory-ordering/#34-cache-coherence))
+多核 Cache 一致性由硬件保证，对软件来说是透明的。因此我们不用再考虑多核 Cache 一致性问题。另外，现在 CPU 硬件采用的一致性协议一般是 MESI 的变种。例如 ARM64 架构采用的 MOESI Protocol 。多一种 Owned 状态。多出来的状态也是为了更好的优化性能。

@@ -1,137 +1,33 @@
-# 0x00 导读
+# 0x00. 导读
 
-```bash
-# 查看 CPU cache 信息
-$ sudo dmidecode -t cache
+cache 策略: Cache update policy and Cache allocation policy
 
-dmidecode 3.1
-Getting SMBIOS data from sysfs.
-SMBIOS 3.1.1 present.
+# 0x01. 简介
 
-Handle 0x0069, DMI type 7, 27 bytes
-Cache Information
-        Socket Designation: L1-Cache
-        Configuration: Enabled, Not Socketed, Level 1
-        Operational Mode: Write Back
-        Location: Internal
-        Installed Size: 768 kB
-        Maximum Size: 768 kB
-        Supported SRAM Types:
-                Synchronous
-        Installed SRAM Type: Synchronous
-        Speed: Unknown
-        Error Correction Type: Single-bit ECC
-        System Type: Unified
-        Associativity: 8-way Set-associative
+# 0x02. cache 策略
 
-Handle 0x006A, DMI type 7, 27 bytes
-Cache Information
-        Socket Designation: L2-Cache
-        Configuration: Enabled, Not Socketed, Level 2
-        Operational Mode: Varies With Memory Address
-        Location: Internal
-        Installed Size: 12288 kB
-        Maximum Size: 12288 kB
-        Supported SRAM Types:
-                Synchronous
-        Installed SRAM Type: Synchronous
-        Speed: Unknown
-        Error Correction Type: Single-bit ECC
-        System Type: Unified
-        Associativity: 16-way Set-associative
+[Cache wiki](https://en.wikipedia.org/wiki/Cache_(computing))
 
-Handle 0x006B, DMI type 7, 27 bytes
-Cache Information
-        Socket Designation: L3-Cache
-        Configuration: Enabled, Not Socketed, Level 3
-        Operational Mode: Varies With Memory Address
-        Location: Internal
-        Installed Size: 25344 kB
-        Maximum Size: 25344 kB
-        Supported SRAM Types:
-                Synchronous
-        Installed SRAM Type: Synchronous
-        Speed: Unknown
-        Error Correction Type: Single-bit ECC
-        System Type: Unified
-        Associativity: Fully Associative
-
-Handle 0x006D, DMI type 7, 27 bytes
-Cache Information
-        Socket Designation: L1-Cache
-        Configuration: Enabled, Not Socketed, Level 1
-        Operational Mode: Write Back
-        Location: Internal
-        Installed Size: 768 kB
-        Maximum Size: 768 kB
-        Supported SRAM Types:
-                Synchronous
-        Installed SRAM Type: Synchronous
-        Speed: Unknown
-        Error Correction Type: Single-bit ECC
-        System Type: Unified
-        Associativity: 8-way Set-associative
-
-Handle 0x006E, DMI type 7, 27 bytes
-Cache Information
-        Socket Designation: L2-Cache
-        Configuration: Enabled, Not Socketed, Level 2
-        Operational Mode: Varies With Memory Address
-        Location: Internal
-        Installed Size: 12288 kB
-        Maximum Size: 12288 kB
-        Supported SRAM Types:
-                Synchronous
-        Installed SRAM Type: Synchronous
-        Speed: Unknown
-        Error Correction Type: Single-bit ECC
-        System Type: Unified
-        Associativity: 16-way Set-associative
-
-Handle 0x006F, DMI type 7, 27 bytes
-Cache Information
-        Socket Designation: L3-Cache
-        Configuration: Enabled, Not Socketed, Level 3
-        Operational Mode: Varies With Memory Address
-        Location: Internal
-        Installed Size: 25344 kB
-        Maximum Size: 25344 kB
-        Supported SRAM Types:
-                Synchronous
-        Installed SRAM Type: Synchronous
-        Speed: Unknown
-        Error Correction Type: Single-bit ECC
-        System Type: Unified
-        Associativity: Fully Associative
-```
-
-# 0x01 cache 策略
-
-[Cache_(computing)](https://en.wikipedia.org/wiki/Cache_(computing))
-
-## 1.1 Cache 更新策略(Cache update policy)
+## 2.1 Cache 更新策略( Cache update policy )
 
 指当发生 `cache hit` 时，数据已经写入 cache 了，何时更新内存数据。 
 
+- `write through` (写直通)  
+    write is done synchronously both to the cache and to the backing store. 
+- `write back` (写回)  
+    initially, writing is done only to the cache. The write to the backing store is postponed until the modified content is about to be replaced by another cache block. 
 
-- `write through` (写直通)
-    - write is done synchronously both to the cache and to the backing store. 
-- `write back` (写回)
-    - initially, writing is done only to the cache. The write to the backing store is postponed until the modified content is about to be replaced by another cache block.  
-        每个 cache line 中会有一个 bit 位记录数据是否被修改过，称之为 dirty bit。我们会将 dirty bit 置位。主存中的数据只会在 cache line 被替换或者显式的 clean 操作时更新。  
-        因此，主存中的数据可能是未修改的数据，而修改的数据躺在 cache 中。 cache 和主存的数据可能不一致。
-
-## 1.2 Cache 分配策略( Cache allocation policy )
+## 2.2 Cache 分配策略( Cache allocation policy )
 
 指当发生 `cache miss` 时，是否需要将数据加载到 cache 。
 
-- `no write allocate policy`( 也叫 `write around` )   
-写指令直接更新主存数据。
-- `write allocate policy`( 也叫 `fetch on write` )   
-首先从主存中加载数据到 cache line 中（相当于先做个读分配动作，因为 cache line 中没有想要写的地址的，所以先加载，再写），然后会更新 cache line 中的数据。
+- `no write allocate policy`( `write around` )   
+    写指令直接更新主存数据。
+- `write allocate policy`( `fetch on write` )   
+    首先从主存中加载数据到 cache line 中（相当于先做个读分配动作，因为 cache line 中没有想要写的地址的，所以先加载，再写），然后会更新 cache line 中的数据。
 
 
-## 1.3 wiki 流程图
+## 2.3 wiki 流程图
 
 一般是 `write-back + write allocate` ，也就是说，当 write miss 的时候用 write allocate ，当 write hit 的时候用 write-back 。   
 `write-through + no-write allocate` 。也就是说，当 write miss 的时候用 no-write allocate ，当 write hit 的时候用 write-through 。   
@@ -147,7 +43,7 @@ Cache Information
 ![write-through](../../pic/linux/memory/Write-through_with_no-write-allocation.png)
 
 
-## 1.4 例子
+## 2.4 例子
 
 有一个 64 Bytes 大小直接映射缓存， cache line 大小是 8 Bytes ，采用 `write-back + write allocate`。
 
