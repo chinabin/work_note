@@ -89,10 +89,8 @@ Q:
 4. /proc/pagetypeinfo 包含当前系统的伙伴系统详细信息
 5. /proc/vmstat 文件显示的是从内核导出的虚拟内存的统计信息。
 6. /proc/vmallocinfo
-7. /proc/pid/statm, 可以用 self 代替自己的 pid
 9. /proc/swaps, 查看当前系统的swap分区总结
 10. /sys/devices/system/node/node*/meminfo
-11. /proc/self/statm
 
 [linux github](https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst)
 
