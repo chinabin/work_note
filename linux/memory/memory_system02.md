@@ -60,6 +60,11 @@ mmap() 系统调用映射出来的。 mmap 映射的大小也是不确定的。
 
 ## 2.8. vm_area_struct
 
+内核为每个进程维护了一个单独的任务结构 task_strcut ，该结构中包含了进程运行时所需的全部信息，其中有一个内存管理(memory manage)相关的成员结构 mm_struct, 其中 gpd 和 mmap 是我们需要关注的：
+- pgd 指向第一级页表的基地址，是实现虚拟地址和物理地址的重要部分
+- mmap 指向一个双向链表(dlinklist)，链表节点是 vm_area_struct 结构体， vm_area_struct 描述了虚拟空间中的一个区域
+- mm_rb 指向一个红黑树的根结点，节点结构也是 vm_area_struct
+
 在 Linux 中，上面提到的每个 segment( 例如 TEXT、DATA、BSS 等 ) 用一个 `vm_area_struct` （简称 vma ）结构体表示。
 
 `/proc/PID/maps` 中记录了进程所有的 vma 在虚拟地址空间中的分布情况。([/proc/pid/maps 详解](../proc/maps.md))
@@ -95,6 +100,7 @@ struct vm_area_struct
 ```
 
 ![1](../../pic/linux/memory/vma01.jpg)
+![Alt text](../../pic/linux/memory/vma02.png)
 
 # 0x03. 内核地址空间
 

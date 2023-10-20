@@ -1,4 +1,10 @@
 # 0x00. 导读
+ 
+内存模型主要解决问题： PFN <-> Page 
+
+![Alt text](../../pic/linux/memory/vpn_and_pfn.png)
+
+![Alt text](../../pic/linux/memory/page_and_pfn.png)
 
 # 0x01. 简介
 
@@ -7,6 +13,12 @@
 > PFN, Page Frame Number = PPN, Physical Page Number, 是一样东西。
 
 Linux 目前支持三种内存模型： `FLATMEM`、 `DISCONTIGMEM` 和 `SPARSEMEM` 。某些体系架构支持多种内存模型，但在内核编译构建时只能选择使用一种内存模型。
+
+- 如果从系统中任意一个 processor 的角度来看，当它访问物理内存的时候，物理地址空间是一个连续的，没有空洞的地址空间，那么这种计算机系统的内存模型就是 Flat memory 。这种内存模型下，物理内存的管理比较简单，系统中存在一个 struct page 的数组 (mem_map) ，每一个数组条目指向一个实际的物理页帧 (page frame) 。在 flat memory 的情况下，PFN(page frame number) 和 mem_map 数组 index 的关系是线性的，不需要再为其建立 page table 。
+
+- 如果 cpu 在访问物理内存的时候，其地址空间有一些空洞，是不连续的，那么这种计算机系统的内存模型就是 Discontiguous memory 。
+
+- Memory model 也是一个演进过程，刚开始的时候，使用 flat memory 去抽象一个连续的内存地址空间，出现 NUMA 之后，整个不连续的内存空间被分成若干个 node ，每个 node 上是连续的内存地址空间，也就是说，原来的单一的一个 mem_maps[] 变成了若干个 mem_maps[] 了。但是 memory hot-plug 的出现让原来完美的设计变得不完美了，因为即便是一个 node 中的 mem_maps[] 也有可能是不连续了。在 sparse memory 内存模型下，连续的地址空间按照 SECTION(例如 1 G ) 被分成了一段一段的，其中每一 section 都是 hot-plug 的，因此 sparse memory 下，内存地址空间可以被切分的更细，支持更离散的 Discontiguous memory 。此外，在 sparse memory 没有出现之前， NUMA 和 Discontiguous memory 总是剪不断，理还乱的关系： NUMA 并没有规定其内存的连续性，而 Discontiguous memory 系统也并非一定是 NUMA 系统，但是这两种配置都是 multi node 的。有了sparse memory之后，我们终于可以把内存的连续性和 NUMA 的概念剥离开来：一个 NUMA 系统可以是 flat memory ，也可以是 sparse memory ，而一个 sparse memory 系统可以是 NUMA ，也可以是 UMA 的。
 
 # 0x02. 内存模型
 
