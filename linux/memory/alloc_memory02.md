@@ -4,6 +4,41 @@
 
 # 0x01. 简介
 
+每个高速缓存 (Cache) 包含若干个 slab 单元，一个 slab 单元一般就 1 页(可能多页)，每个 slab 单元存放若干个对象(数据结构)。
+
+同一个高速缓存中只存放一种类型对象(如存放 struct inode 磁盘索引节点结构)。多个高速缓存构成一个组，用于缓存多种类型的对象。
+
+![Alt text](../../pic/linux/memory/slab.png)
+
+```c
+// 每个高速缓存都是用 kmem_cache 结构来表示
+
+// 创建高速缓存
+struct kmem_cache *kmem_cache_create(const char *name, size_t size, size_t align, unsigned long flags, void (*ctor)(void *))
+
+// 撤销高速缓存
+int kmem_cache_destroy(struct kmem_cache *cachep)
+
+// 从高速缓存中返回一个指向对象的指针
+void * kmem_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
+
+// 释放一个对象
+void kmem_cache_free(struct kmem_cache *cachep, void *objp)
+```
+
+```c
+// kmem_getpages() 使用 __get_free_pages 申请新的页，然后创建 slab。
+static inline void *kmem_getpages(struct kmem_cache *cachep, gfp_t flags)
+{
+    void *addr;
+    flags |= cachep->gfpflags;
+    addr = (void *)__get_free_pages(flags, cachep->gfporder);
+    // 创建slab
+    ...
+    return addr;
+}
+```
+
 # 0x02. Slab Allocator
 
 Linux 中的 buddy 分配器是以 page frame 为最小粒度的，而现实的应用多是以内核 objects （比如描述文件的 struct inode ）的大小来申请和释放内存的，这些内核 objects 的大小通常从几十字节到几百字节不等，远远小于一个 page 的大小。

@@ -100,6 +100,7 @@ struct vm_area_struct
 ```
 
 ![1](../../pic/linux/memory/vma01.jpg)
+![Alt text](../../pic/linux/memory/vma03.png)
 ![Alt text](../../pic/linux/memory/vma02.png)
 
 # 0x03. 内核地址空间

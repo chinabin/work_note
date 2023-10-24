@@ -19,22 +19,4 @@ buddy算法的数学原理：
     - 查看是否存在空闲的（n+1）阶页块，如果有，把（n+1）阶页块分裂为两个 n 阶页块，一个插入空闲 n 阶页块链表，另一个分配出去；否则继续执行下一步。如果没有，继续查看更高阶是否存在空闲页块。
 3. `/proc/buddyinfo` 可以查看各个 n 阶页块空闲数量。
 
-## vmalloc
 
-1. 内核申请非常大块内存的接口，申请的内存使用的虚拟地址空间是“vmalloc映射区”
-2. 特点：内核空间使用，虚拟地址连续。
-
-## malloc
-
-2. 特点：用户空间使用，虚拟地址连续。
-
-## CMA
-
-连续内存分配器， continuous memory allocater ，它并非独立存在而是与 DMA 的 API 结合在一起的，是 DMA 内存申请 API 的后端。
-
-目的是为 DMA 提供连续的物理地址空间，避免因 buddy 内存碎片化导致 DMA 无法使用内存的情况。
-
-
-
-![1](../../pic/linux/memory/kernel-virtmem-map.png)
-![1](../../pic/linux/memory/linux_memory_alloc.png)
