@@ -67,63 +67,6 @@ collisions 表示冲突、碰撞数据包数；
     命令： netstat 或者 ss
     查看 socket、网络协议栈、网口以及路由表的信息。
 
-### 2.1 netstat
-```bash
-# -a: 显示所有连接
-# -n: 不显示别名，以数字形式显示 ip 和端口
-# -l: 只显示 listen 状态的 socket
-# -u: 显示 udp 连接
-# -t: 显示 tcp 连接
-# -p: 显示进程信息
-$ netstat -nlp
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 0.0.0.0:13579           0.0.0.0:*               LISTEN      7536/./LTTBif
-
-# -s: 协议栈统计
-$ netstat -s
-
-# -g: 显示组播组的关系。
-# 224.0.0.0～239.255.255.255 所有组播地址
-# 224.0.0.0～224.0.0.255 为预留的组播地址（永久组地址），地址224.0.0.0保留不做分配，其它地址供路由协议使用；
-# 224.0.0.1 同一网段所有主机
-# 224.0.0.2 同一网段所有组播路由器
-# 224.0.1.0～238.255.255.255 公用组播地址，可以用于Internet；
-# 239.0.0.0～239.255.255.255 私网组播地址
-
-$ netstat -g
-IPv6/IPv4 Group Memberships
-Interface       RefCnt Group
---------------- ------ ---------------------
-lo              1      all-systems.mcast.net
-ens20f0         1      all-systems.mcast.net
-ens20f1         1      all-systems.mcast.net
-ens20f2         1      all-systems.mcast.net
-ens20f3         1      all-systems.mcast.net
-enp130s0f0      1      all-systems.mcast.net
-enp130s0f1      1      239.8.8.9
-enp130s0f1      1      239.8.8.8
-enp130s0f1      1      all-systems.mcast.net
-ens2f0          1      224.1.2.12
-ens2f0          2      224.1.1.24
-ens2f0          3      224.1.2.8
-ens2f0          2      224.1.2.11
-ens2f0          1      224.1.1.2
-ens2f0          1      239.6.6.6
-ens2f0          1      all-systems.mcast.net
-ens2f1          1      all-systems.mcast.net
-lo              1      ff02::1
-lo              1      ff01::1
-ens20f0         1      ff02::1:ff3a:983c
-ens20f0         1      ff02::1
-ens20f0         1      ff01::1
-ens20f1         1      ff02::1
-ens20f1         1      ff01::1
-ens20f2         1      ff02::1
-ens20f2         1      ff01::1
-ens20f3         1      ff02::1
-```
-
 ### 2.2 ss
 ```bash
 # -a: 显示所有连接

@@ -4,19 +4,20 @@
 [linux-sched](https://s3.shizhz.me/linux-sched/task)
 # 0x01. 简介
 
-# 0x02. 进程优先级
+![Alt text](../../pic/linux/sched/nice_priority.png)
 
-## 2.1 nice 值
+# 0x02. 用户空间角度
 
-对于操作系统用户来说，能看到的只有 nice 值，其它的静态优先级、动态优先级都是内核可见的。 nice 值可以影响静态优先级，而静态优先级又可以影响动态优先级。
+从用户空间来看，进程优先级就是 nice value 和 scheduling priority.
 
-`nice 值`，取值范围为 -20~19，默认为0。这个值越小，表示进程”优先级”越高，而值越大“优先级”越低。当nice值设定好了之后，除非我们用 renice 去改它，否则它是不变的。
-
-## 2.2 优先级
-
-`rtpriority`: 实时优先级 记录上文中的实时优先级，有效范围是 [1, 99], 数字越大优先级越高，当数值是0时表示该进程是普通进程。
-
-`staticprio`: 静态优先级。
+```c
+#define MAX_NICE 19
+#define MIN_NICE -20
+#define NICE_WIDTH (MAX_NICE - MIN_NICE + 1)
+// 100 + 40 / 2 = 120 
+// 实际上对应的就是 nice 值的 0
+#define DEFAULT_PRIO            (MAX_RT_PRIO + NICE_WIDTH / 2)
+```
 
 ```c
 #define NICE_TO_PRIO(nice)  (MAX_RT_PRIO + (nice) + 20)
@@ -24,16 +25,65 @@
 #define TASK_NICE(p)        PRIO_TO_NICE((p)->static_prio)
 
 // MAX_RT_PRIO = 100
-// NICE_TO_PRIO 得到的是静态优先级，所以取值范围是 [100, 139]
 ```
 
-`normalprio`: 归一化优先级 如果我们使用了不同的方式来刻画同一个概念，那么势必会带来管理上的麻烦，所谓归一化，就是设计一种转换方式，将这些不同的方法统一到同一种方法上去，从而简化问题的模型。
-例如在前文中，我们提到 rtpriority 数字越大，优先级越高；nice 值则相反，而 deadline 进程始终要维持最高优先级。为了便于管理，内核设计了一种归一化算法，将所有的优先级统一到 [-1, 139] 这个区间上，并且数字越小优先级越大，该优先级就叫着归一化优先级。
-所有优先级值在0-99范围内的，都是实时进程，所以这个优先级范围也可以叫做实时进程优先级，而100-139范围内的是非实时进程。
+## 2.1 nice 值
 
-`prio`: 动态优先级 调度器工作时实际使用的优先级。
+`nice 值`，取值范围为 -20~19，默认为 0 。这个值越小，表示进程”优先级”越高，而值越大“优先级”越低。当 nice 值设定好了之后，除非我们用 renice 去改它，否则它是不变的。
+
+对于普通进程而言，进程优先级就是 nice value.
+
+## 2.2 scheduling priority
+
+随着实时需求的提出，进程又被赋予了另外一种属性 scheduling priority ，这些进程就是实时进程。
+实时进程的 scheduling priority 的范围是 1（优先级最低）～99（优先级最高） 。当然，普通进程也有 scheduling priority ，被设定为 0。
+
+# 0x03. 内核空间角度
+
+task struct数据结构中有4个成员，用来描述进程的优先级。
+```c
+struct task_struct {
+    int prio;
+    int static_prio;
+    int normal_prio;
+    unsignea int rt_priority;
+};
+```
+- `staticprio`
+
+    1. 静态优先级，用于普通进程。 120 + nice ，范围是 100 ~ 139 ，缺省值是 120 ，值越小，优先级越高
+
+- `rt_priority`
+
+    1. 实时优先级，也就是从用户空间的视角来看的 scheduling priority 。范围是 1 ~ 99, 数字越大优先级越高， 0 表示该进程是普通进程。
+
+- `normalprio`
+
+    1. 归一化优先级，根据静态优先级、 scheduling priority 和调度策略来计算得到。何为归一，如果我们使用了不同的方式来刻画同一个概念，那么势必会带来管理上的麻烦，所谓归一化，就是设计一种转换方式，将这些不同的方法统一到同一种方法上去，从而简化问题的模型。
+    2. 范围是 -1 ~ 139 ，并且数字越小优先级越大。
+    3. -1 是 deadline 进程的优先级。对于普通进程来说，normal_prio 等同于 static_prio ；对于实时进程，会根据 rt_priority 重新计算 normal_prio = 99 - rt_priority, 最高 0 ，最低 99.
+
+    ```c
+    static inline int normal_prio(struct task_struct *p)
+    {
+        int prio;
+
+        if (task_has_dl_policy(p))
+            prio = MAX_DL_PRIO-1;
+        else if (task_has_rt_policy(p))
+            prio = MAX_RT_PRIO-1 - p->rt_priority;
+        else
+            prio = __normal_prio(p);
+        return prio;
+    }
+    ```
+
+- `prio`
+
+    保存着进程的动态优先级，也是调度类使用的优先级。
 
 # 0x03. 时间⽚ (time slice)
+
 表示进程被调度进来和被调度出去所能持续的时间⻓度；
 
 # 0x04. Linux 调度器
@@ -42,7 +92,7 @@
 - 吞吐量
 - 响应时间
 - 公平性
-- 功耗 （移动设备）
+- 功耗 
 
 调度类型
 1. 主动放弃 CPU (由于需要等待或者主动进⼊ Sleep)
