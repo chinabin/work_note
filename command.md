@@ -261,63 +261,6 @@ swap space 是磁盘上的一块区域，可以是一个分区，也可以是一
 
 --------   
     
-## **strace**   
-它可以捕获和记录进程的所有系统调用，以及这个进程接收的所有信号。
-
-基本用法:
-```bash
-$ strace df -h
-```
-
-根据进程PID进行追踪:
-```bash
-$ strace -p 3569
-```
-
-得到进程的汇总信息:
-```bash
-$ strace -c -p 3569
-```
-
-显示每一次系统调用的时候的指令指针:
-```bash
-$ strace -i df -h
-```
-
-显示时间戳:
-```bash
-$ strace -t df -h
-```
-
-显示系统调用的耗时:
-```bash
-$ strace -T df -h
-```
-
-只追踪特定的系统调用，signal, abbrev, verbose, raw, read 和 write等几种类型:
-```bash
-$ strace -e trace=write df -h
-$ strace -e trace=open,close df -h
-$ strace -e trace=open,close,read,write df -h
-$ strace -e trace=all df -h
-```
-
-基于特定条件的系统调用(process、file、memory、network、signal):
-```bash
-$ strace -q -e trace=process df -h
-$ strace -q  -e trace=file df -h	
-$ strace -q  -e trace=memory df -h	
-$ strace -q  -e trace=network df -h	
-$ strace -q  -e trace=signal df -h	
-```
-
-将追踪结果写入到文件:
-```bash
-$ strace -o df_debug.txt df -h
-```
-
-
---------   
     
 ## **taskset**   
 
@@ -456,13 +399,16 @@ C (cache entry)： 缓存的路由信息
 
 
 
-uptime
+uptime 快速查看平均负载
 dmesg | tail
-vmstat 1
-mpstat -P ALL 1
+vmstat 1    看看虚拟内存相关数据，vmstat 一般都预装的
+mpstat -P ALL 1 用来检查 CPU 分工状态
 pidstat 1
 iostat -xz 1
 free -m
-sar -n DEV 1
+sar -n DEV 1    网卡吞吐量
 sar -n TCP,ETCP 1
 top
+
+strace -p / pstack
+perf 看进程/CPU

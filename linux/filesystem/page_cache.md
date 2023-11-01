@@ -10,7 +10,7 @@ CPU 如果要访问外部磁盘上的文件，需要首先将这些文件的内�
 
 如果进程在 open() 一个文件的时候指定 flags 为 O_DIRECT ，那进程和这个文件的数据交互就直接在用户提供的 buffer 和磁盘之间进行， page cache 就被 bypass 了，借用硬件 cache 的术语就是 `uncachable` ，这种文件访问方式被称为 direct I/O ，适用于用户使用自己设备提供的缓存机制的场景，比如某些数据库应用。
 
-[vmtouch](../perf/command/vmtouch.md)
+[vmtouch](../util/vmtouch.md)
 
 # 0x02. Buffer Cache
 
@@ -53,7 +53,7 @@ Page Cache 本质上是 VFS(Virtual File System) 的一部分，其主要目的�
 
 linux 对文件的访问除了显示使用 O_DIRECT 标志，所有的访问都会经过 page cache 。
 
-回写缓存算法是页缓存的核心构建块。[0x01 cache 策略](./cache02.md)
+回写缓存算法是页缓存的核心构建块。[0x01 cache 策略](../memory/cache02.md)
 
 
 ![write-back](../../pic/linux/memory/page-cache.png)
