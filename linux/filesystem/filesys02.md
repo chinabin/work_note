@@ -91,7 +91,7 @@ $ sudo mkfs -t ext4 /dev/sdb2
 
 ## 2.4 如何挂载
 
-在创建完分区和文件系统之后，我们需要挂载它们以便使用。我们需要创建一个挂载点来挂载分区，使用 mkdir 来创建一个挂载点。
+在创建完分区和文件系统之后，我们需要挂载它们以便使用（将这个文件系统加入到 Linux 的管理，这样用户才能看到并访问）。我们需要创建一个挂载点来挂载分区，使用 mkdir 来创建一个挂载点。
 
 ```bash
 $ sudo mkdir -p /mnt/lalala
@@ -211,6 +211,8 @@ Linux 通过 mount 将一个分区和一个目录联系起来，组成文件系�
 分区和文件关系示意图：  
 
 ![Alt text](../../pic/linux/filesystem/filesystem_hard_drive.png)
+
+可以使用 `mount` 或者 `findmnt` 命令查看挂载的文件系统。
 
 # 0x03. 磁盘
 
