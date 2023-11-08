@@ -1,7 +1,17 @@
+# 0x00. 导读
+
+# 0x01. 简介
+
+# 0x02. 
+
+```bash
 -O3 (enables machine-independent optimizations)  
--march (enables optimizations for particular
-CPU generation)  
+-march (enables optimizations for particular CPU generation)  
+
 -flto (enables inter-procedural optimizations)
+# LTO=Link-Time Optimization
+# 由于编译器一次只编译优化一个编译单元，所以只是在做局部优化，而利用 LTO，利用链接时的全局视角进行操作，从而得到能够进行更加极致的优化。
+```
 
 ```bash
 # 会列出可选项
@@ -32,3 +42,9 @@ ld.so,ld-linux.so* ：动态链接器/加载器
 ld.so和ld-linux.so*查找并且装载其他程序所依赖的动态链接对象，当装载完毕之后，就开始运行程序
 
 当在 linux 系统中启动一个可执行文件时，首先发挥作用的是程序加载器 (program loader) ，这个加载器也是一个 so 文件，通常具有 ld-linux.so.X 这样的文件名，其中的 X 是版本号。例如 /lib64/ld-linux-x86-64.so.2 。 linux 下的 elf 格式的可执行文件在运行时，首先加载 ld-linux.so ，再由这个加载器去加载其他的 so 文件，当其他 so 文件都已经加载完成之后，我们自己编写的 main 函数才会被执行。
+
+
+---
+
+rpath: 链接器找不到这个东西，因为它不在系统的搜索路径里。一个办法是使用 LD_LIBRARY_PATH : `$ LD_LIBRARY_PATH=. ldd ./main`  
+好一点的做法是在编译链接时把搜索路径写入目标文件里，运行时链接器就知道到哪去找了，这就是 rpath 
