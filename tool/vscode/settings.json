@@ -1,0 +1,80 @@
+{
+    "remote.SSH.remotePlatform": {
+        "tecent": "linux",
+        "ubuntu": "linux",
+        "centos": "linux",
+        "centos-90": "linux",
+        "centos-145": "linux",
+        "cicc": "linux",
+        "10.51.166.196": "linux",
+        "QMT": "linux",
+        "192.168.1.90": "linux",
+        "work": "linux"
+    },
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
+    "git.ignoreLegacyWarning": true,
+    "cmake.configureOnOpen": true,
+    "settingsSync.ignoredExtensions": [
+    
+    ],
+    "git.enabled": true,
+    "git.path": "/usr/bin/git",
+    "files.autoGuessEncoding": true,
+    "gitlens.advanced.messages": {
+        "suppressGitVersionWarning": true
+    },
+    "files.exclude": {
+        "**/.git": false
+    },
+    "gitHistory.showEditorTitleMenuBarIcons": false,
+    "customizeUI.stylesheet": {
+        ".editor-actions": "display: none !important;",
+    },
+    "sync.gist": "501a92ec144800bc08353cf266717f03",
+    "workbench.iconTheme": "vscode-icons",
+    "security.workspace.trust.untrustedFiles": "open",
+    "bookmarks.navigateThroughAllFiles": false,
+    "workbench.settings.editor": "json",
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "clang-format.executable": "/usr/bin/clang-format",
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.scrollback": 10000,
+    "vsicons.dontShowNewVersionMessage": true,
+    "bracketPairColorizer.depreciation-notice": false,
+    "editor.insertSpaces": true,
+    "dotnetAcquisitionExtension.installTimeoutValue": 180,
+    "blockman.n01LineHeight": 0,
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced11f"
+    },
+    "editor.wordWrap": "off",
+    "editor.guides.indentation": false,
+    "editor.inlayHints.enabled": false,
+    "editor.guides.bracketPairs": false,
+    "terminal.integrated.fontFamily": "Space Mono for Powerline",
+    "dotnetAcquisitionExtension.existingDotnetPath": [
+        "C:\\Program Files\\dotnet\\dotnet.exe"
+    ],
+    "git-assistant.branchWarn": "disabled",
+    "projectManager.git.baseFolders": [
+        "/data/work_sp/"
+    ],
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "codeium.enableConfig": {
+        "*": true
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    "workbench.colorTheme": "One Dark Pro",
+    "yaml.schemas": {
+        "file:///data/.vscode-server/extensions/docsmsft.docs-yaml-1.0.1/dist/toc.schema.json": "/toc\\.yml/i"
+    },
+    "redhat.telemetry.enabled": true,
+}
