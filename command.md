@@ -144,33 +144,6 @@ three
 
 --------   
     
-## **find**   
-find <何处> <何物> <做什么>   
-`find . -print`    
-使用正则表达式的时候注意单引号的添加。   
-```bash
-删除当前目录以及子目录下所有.jpg为后缀的文件，不会有删除提示，因此要慎用
-find -name "*.jpg" -delete
-```  
-根据名字查找文件
-```bash
-find . -name '*.o' -print
-find . -name '[a-zA-Z]*.o' -print
-```
-根据文件类型查找文件
-```bash
-find . -type f -print | xargs ls -l
-f 普通文件
-d 目录
-l 软链接
-```
-根据时间查找文件
-```
-mtime: 上一次修改时间，写入
-atime: 上一次访问时间，读取，执行
-ctime: 上一次 改变 时间，写入，修改所有者，修改权限，设置软链接
-find . -mtime 7 -print
-```
 
 --------   
     
