@@ -11,6 +11,8 @@ sockfd = socket(int socket_family, int socket_type, int protocol);
 
 # 0x02. 参数详解
 
+第一个参数叫做 “套接字协议簇”。第二个参数是表示这个套接字的类型。
+
 ## 2.1 socket_family
 
 第一个参数表示创建的 socket 所属的地址簇或者协议簇，取值以 AF 或者 PF 开头定义在 `(include\linux\socket.h)` ，实际使用中并没有区别(有两个不同的名字只是因为是历史上的设计原因)。最常用的取值有 AF_INET, AF_PACKET, AF_UNIX 等。 AF_UNIX 用于主机内部进程间通信。 AF_INET 与 AF_PACKET 的区别在于使用前者只能看到 IP 层以上的东西，而后者可以看到链路层的信息。

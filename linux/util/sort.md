@@ -1,12 +1,29 @@
+# 0x00. 导读
+
+# 0x01. 简介
+
+sort 将文件/文本的每一行作为一个单位相互比较，比较原则是从首字符向后依次按ASCII码值进行比较，最后将他们按升序输出。
+
+# 0x02. 参数
+
 ```
+-b, --ignore-leading-blanks    忽略开头的空白。
+-d, --dictionary-order         仅考虑空白、字母、数字。
+-f, --ignore-case              
+-g, --general-numeric-sort     根据数字排序。
+-i, --ignore-nonprinting       排除不可打印字符。
+-n, --numeric-sort             根据数字排序。
+-r, --reverse                  将结果倒序排列。
+```
+
+```bash
+$ cat test
 1,tan,bin,23,10000000
 2,xiao,li,25,2300
 3,liu,gang,26,12000
 4,li,lei,23,99999
 1,tan,bin,23,10000000
 ```
-
-    sort将文件/文本的每一行作为一个单位相互比较，比较原则是从首字符向后依次按ASCII码值进行比较，最后将他们按升序输出。
 
 ```bash
 # 去重

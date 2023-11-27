@@ -44,3 +44,16 @@ http://mirrors.163.com/.help/CentOS7-Base-163.repo
 3. 生成缓存
 yum makecache
 ```
+
+## 3.1 扩展 yum 源
+
+```
+# 扩展 yum 源
+yum install -y epel-release
+# 启用 epel 库
+yum-config-manager --enable epel
+# 刷新仓库缓存
+yum clean all && yum makecache
+# 查看启用的仓库
+yum repolist
+```

@@ -27,6 +27,8 @@ worker pool：worker 的集合。负责管理 worker。
 
 按照运行特性，主要 `CPU bound` 和 `CPU unbound` 分为两类。
 
+[kworker vs events](https://unix.stackexchange.com/questions/436671/difference-between-kworker-n-and-events-n)
+
 ## 2.1 CPU bound worker pool
 
 绑定特定 CPU，其管理的 worker 都运行在该 CPU 上。

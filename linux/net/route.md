@@ -152,23 +152,3 @@ echo "1" > /proc/sys/net/ipv4/ip_forward     # 临时开启
 ```
 sysctl  net.ipv4.ip_forward
 ```
-
-
-# 配置网卡信息
-```
-$ vim /etc/sysconfig/network-scripts/ifcfg-ens33
-TYPE=Ethernet                   #网卡类型为以太网
-HWADDR=00:0C:29:FE:1A:09        #网卡MAC地址 
-UUID=99-6217--a******           #UUID号，没事不要动它，否则你会后悔的
-NAME=em1                        #网卡名称
-DEVICE=eth0						#物理设备名
-IPADDR=192.168.1.10 			#IP地址
-NETMASK=255.255.255.0 			#掩码值
-NETWORK=192.168.1.0				#网络地址(可不要)
-BROADCAST=192.168.1.255			#广播地址（可不要）
-GATEWAY=192.168.1.1				#网关地址
-DEFROUTE=yes                    #default route
-ONBOOT=yes 						#[yes|no]（启动时是否激活设备）
-USERCTL=no						#[yes|no]（非root用户是否可以控制该设备）
-BOOTPROTO=static				#[none|static|bootp|dhcp]（启动时不使用协议|静态分配|BOOTP协议|DHCP协议）
-```
