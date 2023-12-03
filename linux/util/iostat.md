@@ -87,3 +87,5 @@ svctm: 平均每次 IO 请求的处理时间(毫秒为单位)
 - 如果 svctm 比较接近 await，说明 I/O 几乎没有等待时间；
 - 如果 await 远大于 svctm，说明 I/O 队列太长，I/O 响应太慢，则需要进行必要优化。
 - 如果 avgqu-sz 比较大，也表示有大量 IO 在等待。
+
+输出设备中的 dm-0 dm-1 之类的可以参考 [DeviceMapper](../system/DeviceMapper.md)

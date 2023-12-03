@@ -70,7 +70,7 @@ $ perf stat -e cpu-cycles,cache-references,page-faults ls
 ## 2.2 -p 或 --pid, -t 或 --tid
 
 ```
-$ perf -p 123456
+$ perf stat -p 123456
 ```
 
 ## 2.3 -C 或 --cpu

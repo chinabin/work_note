@@ -140,6 +140,8 @@ linux 实现了 6 种调度策略，而依据其调度策略的不同实现了 5
 
 可以使用 `chrt` 可查看或修改进程的调度属性。
 
+![Alt text](../../pic/linux/sched/sched_class_policy_alg.png)
+
 ## 2.5 vruntime
 
 - vruntime 表示进程真正在 CPU 上执行的时间，不包括任何形式的等待时间；
