@@ -318,4 +318,9 @@ sar -n TCP,ETCP 1
 top
 
 strace -p / pstack
-perf 看进程/CPU
+perf 看进程/CPU:
+    perf stat -p 123456
+    perf stat -C 1,2,3-5
+    perf top
+    perf record
+进程优先级
