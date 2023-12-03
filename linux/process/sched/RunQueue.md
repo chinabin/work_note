@@ -15,5 +15,5 @@ Linux 内核使用运行队列 (runqueue) 来存放可运行的任务，这个�
 
 该运⾏队列中包含 dl_rq/rt_rq/cfs_rq 等多个调度类的运行队列。
 
-![Alt text](../../pic/linux/sched/run_queue.png)
+![Alt text](../../../pic/linux/sched/run_queue.png)
 

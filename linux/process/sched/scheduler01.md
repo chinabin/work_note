@@ -17,7 +17,7 @@ linux 操作系统需要解决几个互相冲突的目标
 
 简答概况就是要有一个办法，**决定什么时候以一种怎么样的方式选择一个新进程占用CPU运行，并且大家都拍手较好，谁也没有二话**。
 
-![Alt text](../../pic/linux/sched/scheduler_purpose.png)
+![Alt text](../../../pic/linux/sched/scheduler_purpose.png)
 
 ## 调度器种类
 

@@ -10,7 +10,7 @@
 
 CFS 的设计思路发生了很大的变化，完全切换了一个方向来思考“公平”这件事情。调度器抛弃了基于时间片来划分调度周期的做法，引入了 vruntime (虚拟时间) 的概念来度量公平，并使用红黑树来管理任务。
 
-![Alt text](../../pic/linux/sched/cfs_scheduler_example.png)
+![Alt text](../../../pic/linux/sched/cfs_scheduler_example.png)
 
 ## 1.1 CFS 优先级与权重
 
@@ -140,7 +140,7 @@ linux 实现了 6 种调度策略，而依据其调度策略的不同实现了 5
 
 可以使用 `chrt` 可查看或修改进程的调度属性。
 
-![Alt text](../../pic/linux/sched/sched_class_policy_alg.png)
+![Alt text](../../../pic/linux/sched/sched_class_policy_alg.png)
 
 ## 2.5 vruntime
 
