@@ -4,6 +4,11 @@
 
 [Hex Packet Decoder](https://hpd.gasmi.net/)
 
+应用层数据 --->  
+tcp/udp头部(20字节) + 应用层数据 --->  
+ip头部(20字节) + tcp/udp头部(20字节) + 应用层数据 --->  
+以太网头部(18字节) + ip头部(20字节) + tcp/udp头部(20字节) + 应用层数据
+
 # 0x02. 
 
 `sk_buff`:This is where a packet is stored

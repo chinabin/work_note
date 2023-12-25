@@ -1,14 +1,24 @@
-## **centos 升级 gcc**    
-升级的办法有两个：手动编译安装，或从源安装。大多数情况都不推荐第一种，因为有各种依赖问题需要人工手动解决，并且极其费时费力。推荐第二种：   
-红帽其实已经编译好了高版本的gcc，但未更新到base和epel这两个常用的源中，而是放在scl中。第一步便是安装scl：
+# 0x00. 导读
+
+# 0x01. 简介
+
+# 0x02. 
+
+升级的办法有两个：手动编译安装，或从源安装。大多数情况都不推荐第一种，因为有各种依赖问题需要人工手动解决，并且极其费时费力。
+
+推荐第二种：   
+红帽其实已经编译好了高版本的gcc，但未更新到 base 和 epel 这两个常用的源中，而是放在 scl 中。第一步便是安装 scl ：
+```bash
+$ sudo yum install -y centos-release-scl
 ```
-sudo yum install -y centos-release-scl
-```
-gcc 包含在 Development Tools 这个组中。所以 scl 中的 gcc/g++ 软件包的前缀都是 devtoolset 。安装 gcc 9 版本的命令是
-```
-sudo yum install devtoolset-9-gcc*
+gcc 包含在 Development Tools 这个组中。所以 scl 中的 gcc/g++ 软件包的前缀都是 devtoolset 。
+
+安装 gcc 9 版本的命令是
+```bash
+$ sudo yum install devtoolset-9-gcc*
 ```
 注意，多个版本不冲突，可以同时存在 gcc6 gcc 7 gcc8 。   
+
 因为不会覆盖系统默认的gcc，使用这些软件的方法有四种：
 
 1. 使用绝对路径；
@@ -23,14 +33,3 @@ sudo yum install devtoolset-9-gcc*
 4.8.5 系统自带的在 /usr/bin/gcc 
 如果需要使用 4.8.5 版本，可以注释 .bashrc 文件的那行配置，然后输入 bash 重新开一个。
 
-
-
-## **切换 CentOS 软件源**    
-```bash
-1. 备份系统自带 yum 源配置文件 
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-2. 下载阿里云的 yum 源配置文
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-3. 生成缓存
-yum makecache
-```

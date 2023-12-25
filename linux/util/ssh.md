@@ -55,6 +55,23 @@ $ tree ~/.ssh
 ├── id_rsa           # 私钥
 ├── id_rsa.pub       # 公钥
 └──known_hosts       # 存储服务端公钥(防止中间人攻击|变更则有区别)
+
+```
+
+## 2.1 配置文件
+
+SSH 客户端的全局配置文件是 `/etc/ssh/ssh_config`，用户个人的配置文件在 `~/.ssh/config`，优先级高于全局配置文件。
+
+ssh 服务端，sshd 的配置文件在 `/etc/ssh` 目录，主配置文件是 `sshd_config`。[sshd config 解释](https://wangdoc.com/ssh/server.html)。
+```bash
+# 启动
+$ sudo systemctl start sshd.service
+
+# 停止
+$ sudo systemctl stop sshd.service
+
+# 重启
+$ sudo systemctl restart sshd.service
 ```
 
 # 0x03. 端口转发
