@@ -120,6 +120,8 @@ sar -n DEV 1    网卡吞吐量
 sar -n TCP,ETCP 1
 top
 
+dstat -cdngym
+
 strace -p / pstack
 perf 看进程/CPU:
     perf stat -p 123456
