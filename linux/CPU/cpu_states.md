@@ -1,5 +1,8 @@
 # 0x00. 导读
 
+[CPU_frequency_scaling](https://wiki.archlinux.org/title/CPU_frequency_scaling)  
+[中文](https://wiki.archlinuxcn.org/wiki/CPU_%E8%B0%83%E9%A2%91)
+
 # 0x01. 简介
 
 C-State P-State
