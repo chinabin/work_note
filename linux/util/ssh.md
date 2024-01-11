@@ -203,3 +203,11 @@ Host server
     User <user>
     DynamicForward <local host>:<local port>
 ```
+
+```bash
+# 每隔一分钟，客户端就会向远程服务器发一个KeepAlive请求，这样中断就不会因为超时空闲而断开链接。
+Host *
+    ServerAliveInterval 60
+    StrictHostKeyChecking no
+    GSSAPIAuthentication no
+```
