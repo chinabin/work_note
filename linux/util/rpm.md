@@ -23,6 +23,8 @@ rpm （英文全拼：redhat package manager） 原本是 Red Hat Linux 发行�
 # 安装软件
 $ rpm -vhi https://nmap.org/dist/nmap-7.94-1.x86_64.rpm
 
+# 手动安装的时候，如果缺少了库文件，你可以自己拷贝到库目录里面去，例如 /lib64 ，并且执行 ldconfig ，然后安装的时候使用 --nodeps：忽略依赖关系
+
 # 查询包安装位置
 $ rpm -ql ls
 
