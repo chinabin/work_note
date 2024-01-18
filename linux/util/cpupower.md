@@ -26,17 +26,17 @@ cpupower 是一组为辅助 CPU 调频而设计的用户空间工具。linux 内
 
 查看当前策略
 ```bash
-$ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 ```
 
 查看可用
 ```bash
-$ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_available_governors
 ```
 
 查看 CPU 频率
 ```bash
-cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
 ```
 CPU 实时频率查看
 ```bash

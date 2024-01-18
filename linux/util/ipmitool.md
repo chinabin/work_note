@@ -39,3 +39,5 @@ ipmitool 可以本地运行，也可以在远程机器上运行，实现对服�
 -t      桥接IPMI的请求到远程目标地址。
 -U      远程服务用户名，默认为NULL。
 ```
+
+ipmitool -I lan -U ADMIN -P ADMIN -H 10.238.30.89

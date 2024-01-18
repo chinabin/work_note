@@ -32,3 +32,5 @@ C-State P-State
 # 0x03. P-State
 
 P-state 是 performance state ， 当 CPU 处于 C0-state 的时候，可以按照 P-state 来细分。P0 是最高频，越往后频越低。
+
+Linux 中 p-state 有一个别名：Operating Performance Points.
