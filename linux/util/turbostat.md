@@ -4,6 +4,8 @@
 
 turbostat 由 kernel-tools 软件包提供。用来查看目前 CPU 状态，在规定的间隔中给出计时器的结果以协助管理员识别服务器异常，例如过度耗电，无法进入深睡眠状态或是创建了不必要的系统管理中断（SMIs）。支持在 AMD 64 和 Intel® 64 处理器的系统中使用。需要 root 特权来运行，处理器支持时间戳计时器以及 APERF 和 MPERF 型号的特定寄存器。
 
+> turbostat  reports processor topology, frequency, idle power-state statistics, temperature and power on X86 processors.  There are two ways to invoke turbostat.  The first method is to  supply a command (turbostat cat /dev/zero > /dev/null), which is forked and statistics are printed upon its completion.  The second method is to omit the command, and turbostat displays statistics every  5  seconds. The 5-second interval can be changed using the --interval option.
+
 # 0x02. 常用选项
 
 `man turbostat`
@@ -16,16 +18,6 @@ $ turbostat --Summary
 –interval: 预设执行 turbostat 时间为 5 秒, 可以自行设定间隔时间.
 ```
 $ turbostat --interval 1 --Summary
-```
-
-–Package: 依据 CPU 的 Package 来检视
-```
-$ turbostat --Package
-```
-
-–processor: 依据 CPU 的 processor 来检视.
-```
-$ turbostat --processor
 ```
 
 # 0x03. 结果注释
@@ -54,15 +46,15 @@ Core    CPU     Avg_MHz Busy%   Bzy_MHz TSC_MHz IRQ     SMI     CPU%c1  CPU%c6  
 26      16      4601    100.00  4600    3001    5018    0       0.00    0.00    58
 27      17      4600    100.00  4600    3000    5016    0       0.00    0.00    57
 ```
+
+SMI 不需要一定为 0 ，但是不能增加
+
 ```
 Core
 处理器核心编号.
 
 CPU
 CPU 逻辑处理器号码, 0,1 代表 CPU 的逻辑处理器号码, –代表所有处理器的总合. 
-
-Package
-processor package number
 
 Avg_MHz
 CPU 平均工作频率.

@@ -1,4 +1,5 @@
-[最全 ps 命令](https://juejin.cn/post/6844903938144075783)
+[最全 ps 命令](https://juejin.cn/post/6844903938144075783)  
+[shell 监测进程](https://steeed.gitee.io/shell-process-monitor.html)
 
 -----
 
