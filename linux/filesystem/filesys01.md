@@ -2,6 +2,8 @@
 
 了解文件系统。
 
+[Linux文件系统管理概述](https://www.escapelife.site/posts/a29642d2.html)
+
 # 0x01. 简介
 
 没有文件系统，访问磁盘上的数据就需要直接读写磁盘的 sector ，而文件系统存在的意义，就是能更有效的组织、管理和使用磁盘上的 raw data 。

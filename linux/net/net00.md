@@ -16,3 +16,5 @@ ip头部(20字节) + tcp/udp头部(20字节) + 应用层数据 --->
 `net_device`: Each network device is represented in the Linux kernel by this data structure, which contains information about both its hardware and its software configuration. 
 
 `sock`: stores the networking information for sockets
+
+![Alt text](../../pic/linux/net/7protocols.png)

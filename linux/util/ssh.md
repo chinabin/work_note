@@ -161,7 +161,7 @@ $ ssh -D 8080 host
 # [本地主机:]本地主机端口
 ```
 
-# 四、SSH 其它参数
+## 3.4 SSH 其它参数
 
 ```bash
 # -N: 不发送任何命令，只用来建立连接。没有这个参数，会在 SSH 服务器打开一个 Shell。
@@ -210,4 +210,27 @@ Host *
     ServerAliveInterval 60
     StrictHostKeyChecking no
     GSSAPIAuthentication no
+```
+
+# 0x05. parallel-ssh
+
+是为小规模自动化而设计的异步并行的 SSH 库!
+
+```bash
+$ yum install pssh
+
+# 源代码编译安装(2.3.1)
+# 官方地址: https://code.google.com/archive/p/parallel-ssh/source/default/source
+$ tar zxvf pssh-2.3.1.tar.gz
+$ cd pssh-2.3.1
+$ python setup.py install
+```
+
+```
+编号	子命令	对应功能解释
+ 1	    pssh	通过 ssh 协议在多台主机上并行地运行命令
+ 2	    pscp	通过 ssh 协议把文件并行地复制到多台主机上
+ 3	    rsync	通过 rsync 协议把文件高效地并行复制到多台主机上
+ 4	    slurp	通过 ssh 协议把文件并行地从多个远程主机复制到中心主机上
+ 5	    pnuke	通过 ssh 协议并行地在多个远程主机上杀死进程
 ```

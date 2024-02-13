@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+yum install autossh
+
 # 0x01. 简介
 
 AutoSSH 是一种用以对 SSH 登录进行安全地自动化的软件！

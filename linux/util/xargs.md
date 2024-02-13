@@ -31,7 +31,8 @@ xargs 一般是和管道一起使用。
 -i 用 {} 代替 传递的数据
 -I string 用 string 来代替传递的数据
 -n 选项限制单个命令行的参数个数
--t 选项可以打印出 xargs 执行的命令
+-t 打印出要执行的命令并不询问用户是否要执行
+-p 打印出要执行的命令并询问用户是否要执行
 ```
 
 ```bash
@@ -40,31 +41,22 @@ $ ls |grep .php |xargs -i mv {} {}.bak
 ```
 
 ```bash
-$ cat test.txt
-
-a b c d e f g
-h i j k l m n
-o p q
-r s t
-u v w x y z
-
-$ cat test.txt | xargs -n3
-
-a b c
-d e f
-g h i
-j k l
-m n o
-p q r
-s t u
-v w x
-y z
+$ echo {0..9} | xargs -n 2 echo
+0 1
+2 3
+4 5
+6 7
+8 9
 ```
 
 ```bash
 $ echo "nameXnameXnameXname" | xargs -dX
 
 name name name name
+
+# 指定制表符\t作为分隔符
+$ echo -e "a\tb\tc" | xargs -d "\t" echo
+a b c
 ```
 
 ```bash

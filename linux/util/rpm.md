@@ -17,6 +17,7 @@ rpm （英文全拼：redhat package manager） 原本是 Red Hat Linux 发行�
 -vv 　详细显示指令执行过程，便于排错。
 -U<套件档>或--upgrade<套件档> 升级指定的套件档。
 -q 　使用询问模式，当遇到任何问题时，rpm指令会先询问用户。
+-a 查询所有套件
 ```
 
 ```bash

@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+The cpuspeed service from Red Hat Enterprise Linux 5 and Red Hat Enterprise Linux 6 has been replaced in Red Hat Enterprise Linux 7 by the cpupower service. The cpupower service also conflicts with the tuned service in Red Hat Enterprise Linux 7 (because both adjust power management settings). tuned must be disabled in order to use cpuspeed, and vice versa. tuned profiles provide the building blocks necessary to approximate cpuspeed/cpupower functionality.
+
 # 0x01. 简介
 
 Linux 内部共有五种对频率的管理策略 `userspace` ， `conservative` ， `ondemand` ， `powersave`  和  `performance` 。

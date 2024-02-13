@@ -111,7 +111,7 @@ C (cache entry)： 缓存的路由信息
 
 uptime 快速查看平均负载
 dmesg | tail
-vmstat 1    看看虚拟内存相关数据，vmstat 一般都预装的
+vmstat 1    可以动态地了解系统资源的使用情况，以及查看系统中是哪一个环节最占用系统资源。
 mpstat -P ALL 1 用来检查 CPU 分工状态
 pidstat 1
 iostat -xz 1

@@ -26,11 +26,3 @@ C-State P-State
 在 C-states 中， Core C-states 的作用是确定core是处于开启还是关闭状态。在正常执行中，core 通常处于 C0 状态，即活跃状态。当软件（通常是操作系统）指示逻辑处理器进入空闲状态时，它将进入一个 C-state。
 
 各种唤醒事件可能触发 core 重新开始执行代码（常见的例子是中断和定时器）。软件向CPU提供关于应该进入的状态的提示。 MWAIT 指令用于告诉 CPU 进入 C-state，并包含有关所需状态的参数。然而，CPU的电源管理子系统有权执行其认为最佳的状态（这称为 C-state 降级 C-state demotion），也就是说将在外，君命有所不受。操作系统可以建议 CPU 休息，但是CPU表示我还可以继续肝！
-
-![Alt text](../../pic/linux/C_states.png)
-
-# 0x03. P-State
-
-P-state 是 performance state ， 当 CPU 处于 C0-state 的时候，可以按照 P-state 来细分。P0 是最高频，越往后频越低。
-
-Linux 中 p-state 有一个别名：Operating Performance Points.

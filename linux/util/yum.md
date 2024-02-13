@@ -28,6 +28,61 @@ package：安装的包名。
 - provides：查询某个程序所在安装包。
 
 # 0x03. 源
+
+`/etc/yum.conf` ==> 为所有仓库提供公共配置
+
+```bash
+$ cat /etc/yum.conf
+[main]
+cachedir=/var/cache/yum/$basearch/$releasever
+# 是否保存安装缓存
+keepcache=0
+# 调试等级
+debuglevel=2
+# 安装日志
+logfile=/var/log/yum.log
+# 是否进行平台匹配
+exactarch=1
+obsoletes=1
+# 是否检测合法性
+gpgcheck=1
+# 是否支持插件
+plugins=1
+# 可以同时安装几个程序包
+installonly_limit=5
+# 追踪bug时候的url
+bugtracker_url=http://bugs.centos.org/set_project.php?project_id=23&ref=http://bugs.centos.org/bug_report_page.php?category=yum
+# 版本号从哪里获取
+distroverpkg=centos-release
+```
+
+`/etc/yum.repos.d/*.repo` ==> 为仓库的指向提供配置
+
+```bash
+# 随便举个例子
+$ cat /etc/yum.repos.d/CentOS-Base.repo
+# 仓库ID号，要唯一
+[repositoryID]
+# 描述信息
+name=Some name for this repository
+# 仓库地址在哪里，一般为ftp://、http://、nfs://、file:///等
+# baseurl还可以指向多个url，以此查找
+baseurl=url://path/to/repository/
+# 使用镜像站点中使用，不能和baseurl一起使用
+mirrorlist=
+# 仓库是否启用，默认为启用
+enabled={1|0}
+# 对程序包是否校验，来源合法性和完整性
+gpgcheck={1|0}
+# 校验的key在哪里
+gpgkey=URL
+# 是否可以基于组进行管理，默认启用
+enablegroups={1|0}
+# 默认为roundrobin，意为随机挑选；priority，自上而下优先级
+failovermethod={roundrobin|priority}
+# 开销，默认为1000
+cost=
+```
   
 ```bash
 1. 备份系统自带 yum 源配置文件 

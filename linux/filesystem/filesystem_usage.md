@@ -1,0 +1,1 @@
+![Alt text](../../pic/linux/filesystem/filesystem_usage.png)

@@ -9,6 +9,8 @@ sudo systemctl enable --now tuned
 systemctl status tuned
 ```
 
+The cpuspeed service from Red Hat Enterprise Linux 5 and Red Hat Enterprise Linux 6 has been replaced in Red Hat Enterprise Linux 7 by the cpupower service. The cpupower service also conflicts with the tuned service in Red Hat Enterprise Linux 7 (because both adjust power management settings). tuned must be disabled in order to use cpuspeed, and vice versa. tuned profiles provide the building blocks necessary to approximate cpuspeed/cpupower functionality.
+
 # 0x01. 简介
 
 RHEL/CentOS 在 6.3 版本以后引入了一套新的系统调优工具 tuned/tuned-adm，其中 **tuned** 是服务端程序，用来监控和收集系统各个组件的数据，并依据数据提供的信息动态调整系统设置，达到动态优化系统的目的; **tuned-adm** 是客户端程序，用来和 tuned 打交道，用命令行的方式管理和配置 tuned，tuned-adm 提供了一些预先配置的优化方案可供直接使用，比如：笔记本、虚拟机、存储服务器等。当然不同的系统和应用场景有不同的优化方案，tuned-adm 预先配置的优化策略不是总能满足要求，这时候就需要定制，tuned-adm 允许用户自己创建和定制新的调优方案。
@@ -65,6 +67,8 @@ Current active profile: virtual-guest
 
     它继承 throughput-performance 配置集，该配置集将 energy_performance_preference 和 scaling_governor 属性更改为 performance 配置集。
 
+![Alt text](../../pic/linux/tuned_profile_inheritance.png)
+
 ## 1.1 新建策略
 
 了解以下。
@@ -90,3 +94,19 @@ virtual-guest
 $ tuned-adm profile_info virtual-guest
 ```
 
+# 0x02.
+
+[redhat-performance/tuned](https://github.com/redhat-performance/tuned)
+
+```
+# Inheritance of base profiles legend:
+# cpu-partitioning -> network-latency -> latency-performance
+# https://github.com/redhat-performance/tuned/blob/master/profiles/latency-performance/tuned.conf
+# https://github.com/redhat-performance/tuned/blob/master/profiles/network-latency/tuned.conf
+# https://github.com/redhat-performance/tuned/blob/master/profiles/cpu-partitioning/tuned.conf
+
+cpu-partitioning 的 tuned.conf 中有语句 include=network-latency
+network-latency 的 tuned.conf 中有语句 include=latency-performance
+所以能得出继承关系
+cpu-partitioning 继承自 network-latency 继承自 latency-performance
+```

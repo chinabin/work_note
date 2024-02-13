@@ -4,6 +4,16 @@
 
 在指定时间执行一个任务
 
+注意，需要 `atd` 启动
+```bash
+# 激活的方法
+$ /etc/init.d/atd start
+$ /etc/init.d/atd restart
+
+# 
+$ chkconfig atd on
+```
+
 # 0x02. 
 
 ```
