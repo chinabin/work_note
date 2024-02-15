@@ -1,76 +1,97 @@
 # 0x00. 导读
-
-注意，intel_pstate 再怎么复杂和厉害，也是属于前面说的 core governor driver 中的 driver 管辖。
+[Documentation/cpu-freq/intel-pstate.txt](https://www.kernel.org/doc/Documentation/cpu-freq/intel-pstate.txt)
 
 # 0x01. 简介
 
-intel_pstate 是 Intel P-state driver.
+intel_pstate 其实是 governor 和 driver 的合体。或者可以理解为绕过了 governor 的 driver.   
+注意，intel_pstate 再怎么复杂和厉害，也是属于前面说的 core governor driver 中的 driver 管辖。
 
-# 0x02. Sysfs Interface
+## 1.1 特点
 
-Sysfs Interface: /sys/devices/system/cpu/intel_pstate/*
+- 特点二
+
+    > The Intel P-State driver implements the setpolicy() callback. 
+    > This driver decides what P-State to use based on the requested policy(performance or powersave) from the cpufreq core. 
+    > If the processor is capable of selecting its next P-State internally, 
+    > then the driver will offload this responsibility to the processor (aka HWP: Hardware P-States). 
+    > If not, the driver implements algorithms to select the next P-State.
+
+    如果处理器支持 HWP ，那么就没软件的事了。
+
+- 特点三
+
+    Sysfs Interface: /sys/devices/system/cpu/intel_pstate/*  
+    见 [sys_devices_system_cpu.md](./sys_devices_system_cpu.md)
+
+- 特点四
+
+    对于现代 Intel CPU( SandyBridge 和更新的型号 )，将使用 intel_pstate 功率驱动程序，它的优先级高于其他驱动程序，并编入内核（而非编译为模块）。intel_pstate 可能会忽略 BIOS P-State 设置，或者通过 intel_cpufreq 运行于 "被动模式"。如果使用时遇到问题，可以在内核行加入 intel_pstate=disable，这样系统会使用 acpi_cpufreq 驱动。
+
+    acpi_cpufreq 也是驱动程序，可充分利用 ACPI Processor Performance States。
+
+# 0x02. 模式
+
+intel_pstate 可以在三种不同的模式下运行，使用哪个取决于使用的内核命令行选项以及处理器的功能：
+- active mode with hardware-managed P-states support  
+    那就是 HWP 控制频率了，没有 intel_pstate 啥事
+- active mode without hardware-managed P-states support  
+    intel_pstate 的主场
+- passive mode(被动模式)
+
+## 2.1 Active Mode
+
+这是 intel_pstate 的默认操作模式。如果在此模式下工作，则所有 CPUFreq 策略的 scaling_driver 策略属性包含字符串 intel_pstate.
+
 ```bash
-$ ls -hl intel_pstate/
-total 0
--rw-r--r-- 1 root root 4.0K Feb 13 16:58 max_perf_pct
--rw-r--r-- 1 root root 4.0K Feb 13 16:58 min_perf_pct
--rw-r--r-- 1 root root 4.0K Feb 13 16:58 no_turbo
--r--r--r-- 1 root root 4.0K Feb 13 16:58 num_pstates
--rw-r--r-- 1 root root 4.0K Feb 13 16:58 status
--r--r--r-- 1 root root 4.0K Feb 13 16:58 turbo_pct
-
-$ cat intel_pstate/*
-100
-35
-0
-23
-active
-44
+$ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver 
+intel_pstate
 ```
 
-- max_perf_pct
+intel_pstate 在主动模式下提供了两种 P-states 选择算法： `powersave` 和 `performance`  ( 注意，和前面 CPUFreq 中说的 performance、powersave、userspace、ondemand、conservative 只是同名，并无关联)。
 
-    Maximum P-state the driver is allowed to set in percent of the maximum supported performance level (the highest supported turbo P-state).  
-    该值实际是设置最大的性能百分比，max_perf_pct = 50 可以限制其主频最多跑到 max_freq 的 50%。
+- performance: always picks the highest p-state  
+- powersave: attempts to balance performance with energy savings
 
-    如果内核命令行中存在 intel_pstate=per_cpu_perf_limits 参数，则不会公开此属性。
+使用哪种取决于 `CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE` 内核配置选项。即，如果设置了该选项，则默认使用 performance 算法，如果未设置，则默认使用另一种算法。
 
-- min_perf_pct
+### 2.1.1 Active Mode With HWP
 
-    Minimum P-state the driver is allowed to set in percent of the maximum supported performance level (the highest supported turbo P-state).
+如果处理器支持 HWP 功能，intel_pstate 将在处理器初始化期间启用，之后无法禁用。可以通过在命令行中将 `intel_pstate=no_hwp` 参数传递给内核来避免启用 HWP.
 
-    如果内核命令行中存在 intel_pstate=per_cpu_perf_limits 参数，则不会公开此属性。
+如果启用了 HWP 功能， intel_pstate 依赖处理器自行选择 P-states，但仍然给予处理器内部的 P-states 选择逻辑一些 hints.
 
-- num_pstates
+## 2.2 Passive Mode
 
-    Number of P-states supported by the processor (between 0 and 255 inclusive) including both turbo and non-turbo P-states (see Turbo P-states Support).  
-    处理器支持的 P-states 数量（介于 0 和 255 之间），包括 Turbo 和非 Turbo P-states.
+如果 intel_pstate=passive 参数在命令行中传递给内核（它也暗示 intel_pstate=no_hwp 设置），则使用此模式。与 Active Mode Without HWP 一样，在此模式下，如果给定处理器无法识别， intel_pstate 可能会拒绝 work.
 
-- turbo_pct
+如果驱动程序在此模式下工作，则所有 CPUFreq 策略的 sysfs 中的 scaling_driver 策略属性包含字符串 intel_cpufreq. 当需要与硬件通信以更改 CPU 的 P-state 时，它由 generic scaling governors 调用。
 
-    Ratio of the turbo range size to the size of the entire range of supported P-states, in percent.  
-    Turbo range 大小与受支持的 P-states 的整个范围大小的比率（以百分比为单位）。
 
-- no_turbo
 
-    If set (equal to 1), the driver is not allowed to set any turbo P-states (see Turbo P-states Support). If unset (equalt to 0, which is the default), turbo P-states can be set by the driver. [Note that intel_pstate does not support the general boost attribute (supported by some other scaling drivers) which is replaced by this one.]  
-    如果设置（等于 1），则不允许驱动程序设置任何 Turbo P-states 。如果未设置（等于 0，这是默认值），则驱动程序可以设置 Turbo P-states。
 
-- hwp_dynamic_boost
 
-    This attribute is only present if intel_pstate works in the active mode with the HWP feature enabled in the processor. If set (equal to 1), it causes the minimum P-state limit to be increased dynamically for a short time whenever a task previously waiting on I/O is selected to run on a given logical CPU (the purpose of this mechanism is to improve performance).  
-    仅当 intel_pstate 工作在 active 模式且处理器中启用了 HWP 功能时，此属性才存在。如果设置（等于 1），则每当选择先前等待 I/O 的任务在给定逻辑 CPU 上运行时，都会导致最小 P-states 限制在短时间内动态增加（此机制的目的是提高性能）。
 
-- status
 
-    Operation mode of the driver: “active”, “passive” or “off”.
 
-    - active  
-        The driver is functional and in the active mode.  
-        驱动程序正常工作并处于活动模式。
-    - passive  
-        The driver is functional and in the passive mode.  
-        驱动程序正常工作且处于被动模式。
-    - off  
-        The driver is not functional (it is not registered as a scaling driver with the CPUFreq core).  
-        该驱动程序不起作用（它未注册为 CPUFreq 核心的缩放驱动程序）。
+
+
+
+
+
+
+
+
+
+[11](https://wiki.archlinuxcn.org/wiki/CPU_%E8%B0%83%E9%A2%91)
+用于禁止处理器进入 turbo P-States：
+```bash
+$ echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
+```
+对于 intel_pstate 以外的缩放驱动程序，如果驱动程序支持超频，系统中应该可以找到 sysfs 属性/sys/devices/system/cpu/cpufreq/boost，并可用于禁用/启用超频：
+```bash
+$ echo 0 > /sys/devices/system/cpu/cpufreq/boost
+```
+如果需要实时监测 CPU 的频率，运行以下命令：
+```bash
+$ watch cat /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_cur_freq
+```

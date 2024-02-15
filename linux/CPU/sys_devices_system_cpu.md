@@ -147,7 +147,7 @@ total 0
 
 # 0x04. 子目录 cpuX
 
-每个安装的 cpu 都有一个单独的目录 cpux, cpux中存储了编号为 x 的 cpu 的所有信息. 其中其子目录 cpufreq 存储了其 CPU-Freq 变频的信息, 它是一个链接文件, 指向了我们之前提到的 ../cpufreq/policyx
+每个安装的 cpu 都有一个单独的目录 cpux, cpux 中存储了编号为 x 的 cpu 的所有信息. 其中其子目录 cpufreq 存储了其 CPU-Freq 变频的信息, 它是一个链接文件, 指向了我们之前提到的 ../cpufreq/policyx
 
 内核中的 cpufreq 子系统通过 sysfs 文件系统提供了用户接口, 对于系统中的每一个 CPU 而言, 其 cpufreq 的 sysfs 用户接口位于 `/sys/devices/system/cpu/cpuX/cpufreq/` 目录下，其中 X 代表 processor id, 与 /proc/cpuinfo 中的信息(只提供了基本的信息)相对应。
 
@@ -173,55 +173,70 @@ drwxr-xr-x 2 root root    0 Jan 18 23:06 topology
 -rw-r--r-- 1 root root 4.0K Jan 18 23:06 uevent
 ```
 
-
-
-
-
+# 0x05. 子目录 intel_pstate
 
 ```bash
-$ cd /sys/devices/system/cpu/cpufreq/
-$ ls
-policy0  policy10  policy12  policy14  policy16  policy18  policy2   policy21  policy23  policy25  policy27  policy29  policy30  policy32  policy34  policy36  policy38  policy4  policy6  policy8
-policy1  policy11  policy13  policy15  policy17  policy19  policy20  policy22  policy24  policy26  policy28  policy3   policy31  policy33  policy35  policy37  policy39  policy5  policy7  policy9
+$ ls -hl intel_pstate/
+total 0
+-rw-r--r-- 1 root root 4.0K Feb 13 16:58 max_perf_pct
+-rw-r--r-- 1 root root 4.0K Feb 13 16:58 min_perf_pct
+-rw-r--r-- 1 root root 4.0K Feb 13 16:58 no_turbo
+-r--r--r-- 1 root root 4.0K Feb 13 16:58 num_pstates
+-rw-r--r-- 1 root root 4.0K Feb 13 16:58 status
+-r--r--r-- 1 root root 4.0K Feb 13 16:58 turbo_pct
+
+$ cat intel_pstate/*
+100
+35
+0
+23
+active
+44
 ```
 
-/sys/devices/system/cpu/cpuY/ 下的 cpufreq 符号链接指向 /sys/devices/system/cpu/cpufreq/policyX
+- max_perf_pct
 
-```bash
-alfred@bbro-gui:/sys/devices/system/cpu/cpu0$ ls -hlrt
-total 0
-lrwxrwxrwx 1 root root    0 Jan  3 15:03 cpufreq -> ../cpufreq/policy0
-drwxr-xr-x 7 root root    0 Jan  3 15:03 cache
-drwxr-xr-x 2 root root    0 Jan  4 16:48 topology
-drwxr-xr-x 7 root root    0 Jan 18 22:15 cpuidle
--rw-r--r-- 1 root root 4.0K Jan 18 23:06 uevent
-drwxr-xr-x 2 root root    0 Jan 18 23:06 thermal_throttle
-lrwxrwxrwx 1 root root    0 Jan 18 23:06 subsystem -> ../../../../bus/cpu
-drwxr-xr-x 2 root root    0 Jan 18 23:06 power
-lrwxrwxrwx 1 root root    0 Jan 18 23:06 node0 -> ../../node/node0
-drwxr-xr-x 2 root root    0 Jan 18 23:06 microcode
-drwxr-xr-x 2 root root    0 Jan 18 23:06 hotplug
-lrwxrwxrwx 1 root root    0 Jan 18 23:06 firmware_node -> ../../../LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/LNXCPU:00
-lrwxrwxrwx 1 root root    0 Jan 18 23:06 driver -> ../../../../bus/cpu/drivers/processor
--r-------- 1 root root 4.0K Jan 18 23:06 crash_notes_size
--r-------- 1 root root 4.0K Jan 18 23:06 crash_notes
+    Maximum P-state the driver is allowed to set in percent of the maximum supported performance level (the highest supported turbo P-state).  
+    该值实际是设置最大的性能百分比，max_perf_pct = 50 可以限制其主频最多跑到 max_freq 的 50%。
 
-alfred@bbro-gui:/sys/devices/system/cpu/cpu0$ ls -hlrt ../cpufreq/policy0/
-total 0
--rw-r--r-- 1 root root 4.0K Dec  9 22:15 scaling_governor
--rw-r--r-- 1 root root 4.0K Jan 18 22:16 scaling_min_freq
--r--r--r-- 1 root root 4.0K Jan 18 22:16 scaling_available_governors
--r--r--r-- 1 root root 4.0K Jan 18 22:16 cpuinfo_max_freq
--r--r--r-- 1 root root 4.0K Jan 18 22:16 related_cpus
--r--r--r-- 1 root root 4.0K Jan 18 22:16 scaling_cur_freq
--rw-r--r-- 1 root root 4.0K Jan 18 22:16 scaling_setspeed
--r--r--r-- 1 root root 4.0K Jan 18 22:16 affected_cpus
--rw-r--r-- 1 root root 4.0K Jan 18 22:16 scaling_max_freq
--r--r--r-- 1 root root 4.0K Jan 18 22:16 cpuinfo_transition_latency
--r--r--r-- 1 root root 4.0K Jan 18 22:16 scaling_driver
--r--r--r-- 1 root root 4.0K Jan 18 22:16 cpuinfo_min_freq
-```
+    如果内核命令行中存在 intel_pstate=per_cpu_perf_limits 参数，则不会公开此属性。
 
-policyX 目录每个都包含特定于策略的属性（文件），以控制相应策略对象（即与它们关联的所有 CPU）的 CPUFreq 行为。
+- min_perf_pct
 
-其中一些属性是通用的。它们由 CPUFreq core 创建，它们的行为通常不依赖于正在使用的 scaling driver 以及附加到给定策略的 scaling governor。一些 scaling driver 还将驱动程序特定的属性添加到 sysfs 中的策略目录，以控制驱动程序的策略特定行为。
+    Minimum P-state the driver is allowed to set in percent of the maximum supported performance level (the highest supported turbo P-state).
+
+    如果内核命令行中存在 intel_pstate=per_cpu_perf_limits 参数，则不会公开此属性。
+
+- num_pstates
+
+    Number of P-states supported by the processor (between 0 and 255 inclusive) including both turbo and non-turbo P-states (see Turbo P-states Support).  
+    处理器支持的 P-states 数量（介于 0 和 255 之间），包括 Turbo 和非 Turbo P-states.
+
+- turbo_pct
+
+    Ratio of the turbo range size to the size of the entire range of supported P-states, in percent.  
+    Turbo range 大小与受支持的 P-states 的整个范围大小的比率（以百分比为单位）。
+
+- no_turbo
+
+    If set (equal to 1), the driver is not allowed to set any turbo P-states (see Turbo P-states Support). If unset (equalt to 0, which is the default), turbo P-states can be set by the driver. [Note that intel_pstate does not support the general boost attribute (supported by some other scaling drivers) which is replaced by this one.]  
+    如果设置（等于 1），则不允许驱动程序设置任何 Turbo P-states 。如果未设置（等于 0，这是默认值），则驱动程序可以设置 Turbo P-states。
+
+- hwp_dynamic_boost
+
+    This attribute is only present if intel_pstate works in the active mode with the HWP feature enabled in the processor. If set (equal to 1), it causes the minimum P-state limit to be increased dynamically for a short time whenever a task previously waiting on I/O is selected to run on a given logical CPU (the purpose of this mechanism is to improve performance).  
+    仅当 intel_pstate 工作在 active 模式且处理器中启用了 HWP 功能时，此属性才存在。如果设置（等于 1），则每当选择先前等待 I/O 的任务在给定逻辑 CPU 上运行时，都会导致最小 P-states 限制在短时间内动态增加（此机制的目的是提高性能）。
+
+- status
+
+    Operation mode of the driver: “active”, “passive” or “off”.
+
+    - active  
+        The driver is functional and in the active mode.  
+        驱动程序正常工作并处于活动模式。
+    - passive  
+        The driver is functional and in the passive mode.  
+        驱动程序正常工作且处于被动模式。
+    - off  
+        The driver is not functional (it is not registered as a scaling driver with the CPUFreq core).  
+        该驱动程序不起作用（它未注册为 CPUFreq 核心的缩放驱动程序）。

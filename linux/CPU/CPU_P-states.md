@@ -8,7 +8,7 @@
     OS 设定特定的 P-states，即选择工作频率，处理器再根据频率计算电压。 
 - 硬件控制的 P-states  
     OS 只给出负载，由硬件选择对应的 P-states，并设置电压和频率。
-- Intel_pstate驱动  
+- Intel_pstate 驱动  
     此驱动程序通过 **内置调频器**，实现面向 Intel Core（SandyBridge 和更新的型号）处理器的调频驱动。可以通过 cpupower 命令设置最大最小频率。
 
 Turbo: 在个别核非常繁忙同时其他核又因为空闲进入 C-States 时，内置的电源管理模块将其电能输送给忙碌的 core，升高其电压和频率，使其获得比标频更高的频率。
@@ -45,6 +45,11 @@ P-states have an associated frequency that varies between SKUs, organized as fol
 This is sometimes referred to as P1n.
 - P2, P3, and all lower P-states are defined as 100 MHz (referred to as a 'bin') below the previous P-state's frequency.
 - Pn is the lowest P-state supported by the CPU.
+
+p-state划分:
+P0 - P1 是 turbo范围  
+P1 - Pn 是 保证范围（操作系统可见的状态）  
+Pn - LFM 是 温度控制范围
 
 例如：
 ![Alt text](../../pic/CPU/pstates_example.png)
