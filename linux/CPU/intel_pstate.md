@@ -66,31 +66,21 @@ intel_pstate 在主动模式下提供了两种 P-states 选择算法： `powersa
 
 如果驱动程序在此模式下工作，则所有 CPUFreq 策略的 sysfs 中的 scaling_driver 策略属性包含字符串 intel_cpufreq. 当需要与硬件通信以更改 CPU 的 P-state 时，它由 generic scaling governors 调用。
 
+# 0x03. 睿频
 
+从 [术语](./术语.md) 中关于睿频定义和例子（睿频 睿频加速技术）来看，睿频像是一个硬件上的惊喜，我们控制有限。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[11](https://wiki.archlinuxcn.org/wiki/CPU_%E8%B0%83%E9%A2%91)
 用于禁止处理器进入 turbo P-States：
 ```bash
-$ echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
+$ cat /sys/devices/system/cpu/intel_pstate/no_turbo
+# 0表示开启睿频；1表示关闭睿频
 ```
-对于 intel_pstate 以外的缩放驱动程序，如果驱动程序支持超频，系统中应该可以找到 sysfs 属性/sys/devices/system/cpu/cpufreq/boost，并可用于禁用/启用超频：
+
+对于 intel_pstate 以外的缩放驱动程序，如果驱动程序支持超频，系统中应该可以找到 sysfs 属性 /sys/devices/system/cpu/cpufreq/boost ，并可用于禁用/启用超频：
 ```bash
 $ echo 0 > /sys/devices/system/cpu/cpufreq/boost
 ```
+
 如果需要实时监测 CPU 的频率，运行以下命令：
 ```bash
 $ watch cat /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_cur_freq

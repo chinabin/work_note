@@ -2,6 +2,14 @@
 
 The cpuspeed service from Red Hat Enterprise Linux 5 and Red Hat Enterprise Linux 6 has been replaced in Red Hat Enterprise Linux 7 by the cpupower service. The cpupower service also conflicts with the tuned service in Red Hat Enterprise Linux 7 (because both adjust power management settings). tuned must be disabled in order to use cpuspeed, and vice versa. tuned profiles provide the building blocks necessary to approximate cpuspeed/cpupower functionality.
 
+使用 cpupower 而不是 cpufrequtils.   
+[讨论一](https://bbs.archlinux.org/viewtopic.php?id=135820)  
+讨论二：
+> 1.8. cpupowerutils
+> cpupowerutils is a new project derived from cpufrequtils and extended with other features, like a powerful HW monitoring tool. Why a new project? The announcement explains it:
+> 
+> "CPU power consumption vs performance tuning is not about CPU frequency switching anymore for quite some time. Deep sleep states, traditional dynamic frequency scaling and hidden turbo/boost frequencies are tight close together and depend on each other. The first two exist on different architectures like PPC, Itanium and ARM the latter only on x86. On x86 the APU (CPU+GPU) will only run most efficiently if CPU and GPU has proper power management in place. Users and Developers want to have *one* tool to get an overview what their system supports and to monitor and debug CPU power management in detail". cpupowerutils is that tool.
+
 # 0x01. 简介
 
 Linux 内部共有五种对频率的管理策略 `userspace` ， `conservative` ， `ondemand` ， `powersave`  和  `performance` 。

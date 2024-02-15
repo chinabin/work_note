@@ -89,7 +89,7 @@ CPUFreq Governor 的主要功能是根据其相应的控制策略，为 CPU 选�
 
 Intel 借助这个空子，放出了复杂、霸道的 intel_pstate.
 
-## 4.2 
+## 4.2 睿频
 
 有些处理器支持在特定条件下暂时提高 **部分** 内核的运行频率的机制。
 
@@ -98,3 +98,25 @@ Intel 借助这个空子，放出了复杂、霸道的 intel_pstate.
 频率提升机制可以是基于硬件的或基于软件的。如果它是基于硬件的（例如在 x86 上），则触发加速的决定由硬件做出。如果它是基于软件的（例如在 ARM 上），则 scaling driver 决定是否触发提升以及何时触发。
 
 许多系统都可以在平台固件 (BIOS) 设置中禁用频率提升机制。
+
+## 4.3 日常使用
+
+查看当前睿频情况(0:enable 1:disable)
+```bash
+$ cat /sys/devices/system/cpu/intel_pstate/no_turbo
+```
+cpu 工作模式，powersave 代表省电模式，performance 代表性能模式。
+
+查看当前策略
+```bash
+$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver 
+```
+更改为性能模式
+```bash
+$ sudo cpupower -c all frequency-set -g performance
+```
+查看当前频率
+```bash
+$ watch cat /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_cur_freq
+```
