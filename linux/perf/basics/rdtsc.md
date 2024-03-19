@@ -1,6 +1,23 @@
-# 简介
+# 0x00. 导读
 
-TSC是一个64位的寄存器，从Intel Pentium开始，在所有的x86平台上均会提供。它存放的是CPU从启动以来执行的指令周期数。通过rdtsc指令，可以将TSC的数值存放在EDX:EAX中，示例代码如下：
+# 0x01. 简介
+
+系统启动后， Linux 从 RTC（Real Time Clock）获取当前时间时。RTC 是一个由主板纽扣电池供电的硬件时钟，因此即使机器断电，它也能继续运行。在大多数情况下，RTC 不是特别准确，因为它是由廉价的晶体振荡器驱动的，其频率会根据温度和其他环境因素变化。 Linux 系统从RTC 查询得到的启动时间，并存储在内核内存中，稍后将启动时间用作偏移量，合并TSC 保留的滴答计数推导出（当前的）挂钟时间（Wall-clock time）。
+
+系统启动的同时， TSC（Time-Stamp Counter 时间戳计数器）开始运行。TSC 是一个寄存器计数器，它由生成CPU 的时钟脉冲的晶体振荡器驱动，所以它和 CPU 的频率相同，例如 2GHz （CPU的 TSC）时钟每纳秒会滴答两次。
+
+## 1.1 频率稳定
+
+让我们的 CPU 频率稳定：
+```bash
+echo 100 > /sys/devices/system/cpu/intel_pstate/min_perf_pct
+```
+
+## 1.2 TSC 同步
+
+## 1.3 
+
+TSC 是核内一小块独立集成电路构成的计时器，它是独立的。它以基础频率为单位，它跟随频率高、低电平的变化而变化，每次高、低电平的转换，TSC 加 1。通过 rdtsc 指令，可以将 TSC 的数值存放在 EDX:EAX 中，示例代码如下：
 ```c
 // 推荐这种方法
 #include "x86intrin.h"
@@ -30,18 +47,7 @@ static uint64_t get_tscp()
 // 假如差值是 10 (这个 10 是指 CPU 10 个嘀嗒)，CPU 2.5GHz ，则时间是 10 / 2.5 = 4ns
 ```
 
-> 系统启动后， Linux 从 RTC（Real Time Clock）获取当前时间时。RTC 是一个由主板纽扣电池供电的硬件时钟，因此即使机器断电，它也能继续运行。在大多数情况下，RTC 不是特别准确，因为它是由廉价的晶体振荡器驱动的，其频率会根据温度和其他环境因素变化。 Linux 系统从RTC 查询得到的启动时间，并存储在内核内存中，稍后将启动时间用作偏移量，合并TSC 保留的滴答计数推导出（当前的）挂钟时间（Wall-clock time）。
-
-> 系统启动的同时， TSC（Time-Stamp Counter 时间戳计数器）开始运行。TSC 是一个寄存器计数器，它由生成CPU 的时钟脉冲的晶体振荡器驱动，所以它和 CPU 的频率相同，例如 2GHz （CPU的 TSC）时钟每纳秒会滴答两次。
-
-测量时间有三点需要考虑：
-- 代价 - 这可能是一个高频操作，获取时间的代价不能太高。
-- 精度 - 至少是微秒级别。
-- 稳定 - 如果使用的时钟抖动误差很大，那测量结果往往是不可靠的。
-
-
-
-# 条件
+## 1.4 条件
 
 1. Linux 内核 2.6.18 或更高版本
 ```bash
@@ -62,6 +68,8 @@ $ echo tsc > /sys/devices/system/clocksource/clocksource0/current_clocksource
 ```bash
 cat /proc/cpuinfo | grep rdtscp
 ```
+
+## 1.5 优缺点
 
 # 优点
 
@@ -94,3 +102,130 @@ cat /proc/cpuinfo | grep rdtscp
         使用 RDTSCP 命令来代替 RDTSC ，开销略大一丁点。
 
 [ClockTimeAnalysis](https://gitlab.com/chriscox/CppPerformanceBenchmarks/-/wikis/ClockTimeAnalysis)
+
+# 0x02. 程序
+
+![Alt text](../../../pic/linux/perf/tsc_program.png)
+
+程序思路如上图，两个进程，绑在两个核上，假设如图的 CPU 0 和 CPU 1 吧：
+
+1. CPU 0 的程序，一上来就是一个循环。直到读到 mem_TSC0 不为 0，才退出循环。mem_TSC0，从变量名上能看出来，它是一个内存变量（不能被编译器转为寄存器），它的内存就来自于共享内存。它什么时候会不为0呢。要看 CPU 1 上的程序。
+
+2. CPU 1 上的程序一上来要先执行一个没什么意义的循环。目的，就是让 CPU 0 这边，先进入循环。其实就是让CPU 1暂停一下，让CPU 0先走到循环里。
+    暂停，不能用 sleep(), 因为 sleep() 会导致后续少量指令频率下降。如果两个 CPU 工作频率不一样，测量数据会不准确。  
+    这里的暂停程序如下：
+    ```c
+    if (cur_cpu == fg[2])
+        for (i=0; i<=fg[3]; i++)
+            k+=i;
+    ```
+
+3. 在 CPU 0 进入循环之后，CPU 1 使用 rdtscp 指令，得到当前 TSC 计数值。然后，写入共享内存变量 mem_TSC0。
+
+4. 在写入之后，CPU 0还会在很长一段时间内，不断循环load mem_TSC0，并比较它的值是否不为0。若干周期后，CPU 0读到的mem_TSC0终于不为0了，CPU 0上的循环退出。CPU 0循环退出后马上再次调用rdtscp，得到TSC计数，写入mem_TSC1。
+
+5. mem_TSC1 – mem_TSC0 = CPU 1 写共享内存 mem_TSC0 后，CPU 0 多久时间才看到新值。
+mem_TSC2 – mem_TSC1 = CPU 0 写入新值，CPU 1 多久后才能看到新值。
+
+```c
+// 绑核程序
+void setcpu(int cpu)
+{
+    int i, nrcpus, cur_cpu;
+    cpu_set_t mask;
+    unsigned long bitmask = 0;
+    
+    CPU_ZERO(&mask);
+    CPU_SET(cpu, &mask);
+    
+    if (sched_setaffinity(0, sizeof(cpu_set_t), &mask) == -1) 
+    { 
+        perror("sched_setaffinity fail!");
+        exit(EXIT_FAILURE);
+    }
+} 
+
+// 分配内存
+void *smem()
+{ 
+    void *ptr;
+    ptr = mmap(0, (arr_size_X * arr_size_Y + 4 ) * sizeof(TYPE)
+        , PROT_READ | PROT_WRITE
+        , MAP_SHARED|MAP_ANONYMOUS|0x40000, -1, 0); // 大页
+    if (ptr == MAP_FAILED)
+        printf("Failed to allocate shared memory\n");
+    return ptr;
+}
+
+
+// 将 TSC0, TSC1, TSC2 加载到两个Core的L1，最终Line状态为S
+__asm__ __volatile__
+(
+    "lea    %0,     %%r8\n\t"
+    "mov    (%%r8), %%rax\n\t" // TSC0
+    "mov 128(%%r8), %%rax\n\t" // TSC1
+    "mov 256(%%r8), %%rax\n\t" // TSC2
+    :
+    :"m"( *mem )
+    :"rax","r8"
+);
+
+// 暂停：第二个CPU上的进程暂停一下
+if (cur_cpu == fg[2])
+    for (i=0; i<=fg[3]; i++)
+        k+=i;
+
+// 开始测量
+if ( cur_cpu == fg[1] )
+{   // 第一个CPU中运行的测量程序
+    __asm__ __volatile__
+    (
+        "lea    %0,     %%r8\n\t"             // &mem
+        "SYNC_TSC0:\n\t"
+            "mov    (%%r8), %%r9\n\t"         // while load
+            "cmp    $0,     %%r9\n\t"
+            "je SYNC_ TSC0\n\t"
+        "rdtscp \n\t"                          // TSC 2
+        "movq   %%rax,      128(%%r8)\n\t"
+        "movq   %%rdx,      136(%%r8)\n\t"
+        :
+        :"m"( *mem )
+        :"rax","rdx","r8","r9"
+    );
+}
+else
+{   // 第二个CPU中运行的测量程序
+    __asm__ __volatile__
+    (
+          "lea    %0,     %%r8\n\t"       // &mem
+          "rdtscp \n\t"                    // TSC 0
+          "mov    %%rax,  (%%r8)\n\t"
+          "mov    %%rdx,  8(%%r8)\n\t"
+              "SYNC_TSC1:\n\t"
+              "mov    128(%%r8), %%r9\n\t"     // while load
+              "cmp    $0,        %%r9\n\t"
+              "je SYNC_TSC1\n\t"
+          "rdtscp \n\t"                  // TSC 3
+          "movq   %%rax,      256(%%r8)\n\t"
+          "movq   %%rdx,      264(%%r8)\n\t"
+          :
+          :"m"( *mem )
+          :"rax","rdx","r8","r9"
+    );
+}
+```
+
+如果程序将来执行时，大页内存分配失败，可能是没有配置大页，可以如下配置：
+```bash
+cat /proc/sys/vm/nr_hugepages
+# 分配 10 个大页
+echo 10 > /proc/sys/vm/nr_hugepages
+```
+
+```bash
+$ gcc -g mesi2.c -o mesi2
+# 0 号 CPU 上做初始化，分配共享内存、清0等等操作。
+# 1 3，两个进程分别在1号、3号两个CPU上运行。
+# 最后的 10000000，是 CPU 3 上的程序，先执行 10000000 次循环，暂停一段时间。让 CPU 1 先进入循环。
+$ ./mesi2 0 1 3 10000000
+```

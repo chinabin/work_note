@@ -132,7 +132,7 @@ awk '/alfr[abcde]d/{print $0}' /etc/passwd
 
 ```bash
 # 累加
-awk '{sum+=$1} END{print $sum}'
+awk '{sum+=$1} END{print sum}'
 ```
 
 ```bash

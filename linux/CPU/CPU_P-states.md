@@ -155,3 +155,11 @@ Sysfs for intel_pstate (and cpufreq):
 参考二：[TECHNOLOGY GUIDE Power Management - Technology Overview](https://networkbuilders.intel.com/docs/networkbuilders/power-management-technology-overview-technology-guide-1677587938.pdf)
 
 参考三：[64-ia-32-architectures-software-developer-vol-3b-part-2-manual.pdf](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3b-part-2-manual.pdf)
+
+Inetl 手册白皮书  
+[Intel® 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)  
+第 1 卷：说明支持 IA-32 和 Intel® 64 架构的处理器的架构和编程环境。  
+第 2 卷：包括完整的指令集参考 A-Z。描述指令的格式并提供指令的参考页。  
+第 3 卷：包括完整的系统编程指南，第 1、2、3 和 4 部分。描述 Intel® 64 和 IA-32 体系结构的操作系统支持环境，包括：内存管理、保护、任务管理、中断和异常处理、多处理器支持、散热和电源管理功能、调试、性能监视、系统管理模式、虚拟机扩展 （VMX） 指令、Intel® 虛擬化技術 （Intel® VT） 和Intel® Software Guard Extensions （Intel® SGX）。  
+第 4 卷：描述支持 IA-32 和 Intel® 64 架构的处理器特定型号寄存器。
+
