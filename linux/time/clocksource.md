@@ -1,6 +1,11 @@
 # 0x00. 导读
 
+[【时间子系统】二、计时原理－timekeeper与clocksource](https://rootw.github.io/2018/01/%E8%AE%A1%E6%97%B6/)
+
 # 0x01. 简介
+
+时钟源 (clocksource) 只能用来查询时间，就好像一个手表一样，当你想查询时间时看一下，知道现在几点了。但如果你想设定一个闹钟，让它在特定的时间点提醒你，那么就需要时钟事件设备 (clock_event_device)。此类设备可以用来注册事件，让它们在未来的特定时间点被触发事件。
+
 
 查看支持的时间源  
 `/sys/devices/system/clocksource/clocksource0/available_clocksource`
@@ -8,18 +13,15 @@
 查看当前时间源  
 `/sys/devices/system/clocksource/clocksource0/current_clocksource`
 
-# 0x02. 
+# 0x02. 详解
 
-[Linux时间子系统之一：clock source（时钟源）](https://abcdxyzk.github.io/blog/2017/07/23/kernel-clock-1/)
+clock source 用于为 linux 内核提供一个时间基线，如果你用 linux 的 date 命令获取当前时间，内核会读取当前的 clock source ，转换并返回合适的时间单位给用户空间，换句话说系统需要知道现在是xx年xx月xx日xx时xx分xx秒xx纳秒。
 
-
-
-
-clock source 用于为 linux 内核提供一个时间基线，如果你用 linux 的 date 命令获取当前时间，内核会读取当前的 clock source ，转换并返回合适的时间单位给用户空间。
-
-在硬件层，它通常实现为一个由固定时钟频率驱动的计数器，计数器只能单调地增加，直到溢出为止。时钟源是内核计时的基础，系统启动时，内核通过硬件 RTC 获得当前时间，在这以后，在大多数情况下，内核通过选定的时钟源更新实时时间信息（墙上时间），而不再读取 RTC 的时间。
+在硬件层，它通常实现为一个由固定时钟频率驱动的计数器，计数器只能单调地增加，直到溢出为止。时钟源是内核计时的基础，例如，系统启动时，内核通过硬件 RTC 获得当前时间，在这以后，在大多数情况下，内核通过选定的时钟源更新实时时间信息（墙上时间），而不再读取 RTC 的时间。
 
 clocksource 提供了对不同软硬件时钟的抽象。可以理解为时间源，为 kernel 提供当前时间。
+
+## 2.1 clocksource 结构体
 
 ```c
 struct clocksource {
@@ -55,20 +57,20 @@ struct clocksource {
 
 几个重要字段解释：
 
-### 2.1.1 rating
+1. rating
 
-同一个设备下，可以有多个时钟源，每个时钟源的精度由驱动它的时钟频率决定，比如一个由10MHz时钟驱动的时钟源，他的精度就是100ns。clocksource结构中有一个rating字段，代表着该时钟源的精度范围，它的取值范围如下：
-```
-1--99： 不适合于用作实际的时钟源，只用于启动过程或用于测试；
-100--199：基本可用，可用作真实的时钟源，但不推荐；
-200--299：精度较好，可用作真实的时钟源；
-300--399：很好，精确的时钟源；
-400--499：理想的时钟源，如有可能就必须选择它作为时钟源；
-```
+    同一个设备下，可以有多个时钟源，每个时钟源的精度由驱动它的时钟频率决定，比如一个由 10MHz 时钟驱动的时钟源，他的精度就是 100ns。clocksource结构中有一个 rating 字段，代表着该时钟源的精度范围，它的取值范围如下：
+    ```
+    1--99： 不适合于用作实际的时钟源，只用于启动过程或用于测试；
+    100--199：基本可用，可用作真实的时钟源，但不推荐；
+    200--299：精度较好，可用作真实的时钟源；
+    300--399：很好，精确的时钟源；
+    400--499：理想的时钟源，如有可能就必须选择它作为时钟源；
+    ```
 
-### 2.1.2 read
+2. read
 
-时钟源本身不会产生中断，要获得时钟源的当前计数，只能通过**主动调用**它的 read 回调函数来获得当前的计数值，注意这里只能获得计数值（意思就是一个数字，不同硬件可能带有不同的单位），要转换成我们熟悉的单位，例如纳秒，必须要借助 clocksource 的 mult 和 shift 字段辅助进行转换计算。
+    时钟源本身不会产生中断，要获得时钟源的当前计数，只能通过**主动调用**它的 read 回调函数来获得当前的计数值，注意这里只能获得计数值（意思就是一个数字，不同硬件可能带有不同的单位），要转换成我们熟悉的单位，例如纳秒，必须要借助 clocksource 的 `mult` 和 `shift` 字段辅助进行转换计算。
 
 # 0x03. 常见 clocksource
 
@@ -82,7 +84,7 @@ timekeeping 系统使用的 clocksource 中，除了 cur_clocksource ，还会�
 
 英语中 jiffy 表示 a moment，即一瞬间。在 Linux 中作为软件维护的时钟。表示一小段短暂而不确定的时间。
 
-属于低精度时间源，因为没有 `CLOCK_SOURCE_VALID_FOR_HRES`` 的 flag，所以不会出现在 available_clocksource 中。
+属于低精度时间源，因为没有 `CLOCK_SOURCE_VALID_FOR_HRES` 的 flag，所以不会出现在 available_clocksource 中。
 
 ```c
 static struct clocksource clocksource_jiffies = {
@@ -167,9 +169,3 @@ static struct clocksource clocksource_tsc = {
     .archdata               = { .vclock_mode = VCLOCK_TSC },
 };
 ```
-
-
-
-时钟源 (clocksource) 只能用来查询时间，就好像一个手表一样，当你想查询时间时看一下，知道现在几点了。但如果你想设定一个闹钟，让它在特定的时间点提醒你，那么就需要时钟事件设备 (clock_event_device)。此类设备可以用来注册事件，让它们在未来的特定时间点被触发事件。
-
-和 clocksource 一样，可能会存在多种 clock_event_device，OS 会根据它们的精度和能力，选择合适的 clock_event_device 来提供时钟事件服务。

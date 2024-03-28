@@ -14,6 +14,7 @@ sort 将文件/文本的每一行作为一个单位相互比较，比较原则�
 -i, --ignore-nonprinting       排除不可打印字符。
 -n, --numeric-sort             根据数字排序。
 -r, --reverse                  将结果倒序排列。
+-t, --field-separator=SEP      use SEP instead of non-blank to blank transition
 ```
 
 ```bash

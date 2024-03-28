@@ -11,6 +11,56 @@
 -flto (enables inter-procedural optimizations)
 # LTO=Link-Time Optimization
 # 由于编译器一次只编译优化一个编译单元，所以只是在做局部优化，而利用 LTO，利用链接时的全局视角进行操作，从而得到能够进行更加极致的优化。
+
+-shared 
+# 该选项指定生成动态连接库（让连接器生成T类型的导出符号表，有时候也生成弱连接W类型的导出符号），不用该标志外部程序无法连接。相当于一个可执行文件。
+
+-fPIC
+# 表示编译为位置独立的代码，不用此选项的话编译后的代码是位置相关的所以动态载入时是通过代码拷贝的方式来满足不同进程的需要，而不能达到真正代码段共享的目的。
+
+-fpic
+# Generate position-independent code if possible (small mode)
+# 关于 Large mode 和 Small mode, 简单理解为 large 对地址空间没有限制，small 限制地址空间在 2GB 以内
+
+
+-fPIE
+# Generate position-independent code for executables if possible (large mode)
+
+-fpie
+# Generate position-independent code for executables if possible (small mode)
+
+-pie
+# Create a position independent executable。
+
+-L
+# 表示要连接的库在当前目录中。
+
+-I
+# 指定头文件include查找目录。
+
+-l
+# 指定要使用的库名称，在静态库和动态库同名条件下，优先使用动态库。
+
+-soname
+# 指定soname。
+
+-Wl
+# 在GCC编译程序时，由于GCC命令不仅能够编译，也能够链接程序，GCC链接程序是通过ld命令实现的，如何将GCC的命令行参数传递给ld命令呢，这就是通过-Wl,来实现的。
+# 格式如下：
+# gcc -Wl,param1,param2,param3,...
+# 在调用ld命令时，会等效于如下：
+# ld param1 param2 param3 
+# 注意：-Wl, 后的逗号（，）必不可少，如果要传递多个参数，参数间用，分隔，不能有空格
+# 例如：-Wl,-Bstatic -la -lb -lc -Wl,-Bdynamic -ld -l e
+# 会被解释成 ：ld liba.a libb.a libc.a libd.so libe.so
+# -Wl,-rpath -Wl,/data/workroom/libs/lib
+# 会被解释成：ld -rpath /data/workroom/libs/lib
+
+-Wl,-Bstatic
+# 指定后续ld在处理 -l 参数来链接库文件的链接方式首选静态库
+
+-Wl,-Bdynamic
+# 指定后续ld在处理 -l 参数来链接库文件的链接方式首选动态库
 ```
 
 ```bash

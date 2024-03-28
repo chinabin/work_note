@@ -11,7 +11,7 @@ hrtimer有三种时钟基准，这三种时钟基准对应不同的时间获取�
 # 0x02. 
 
 ```
-/proc/timer_list displays most everything about every kind
++       /proc/timer_list displays most everything about every kind
 +       of timer, and some things about time too.
 +
 +

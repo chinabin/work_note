@@ -2,13 +2,12 @@
 
 # 0x01. 简介
 
-timekeeping 模块是一个提供时间服务的基础模块。Linux 内核提供各种 time line: real time clock，monotonic clock、monotonic raw clock等，timekeeping 模块就是负责跟踪、维护这些 timeline 的，并且向其他模块（timer相关模块、用户空间的时间服务等）提供服务，而 timekeeping 模块维护 timeline 的基础是基于 clocksource 模块和 tick 模块。通过 tick 模块的 tick 事件，可以周期性的更新 time line，通过 clocksource 模块可以获取 tick 之间更精准的时间信息。
+timekeeper 是内核中负责计时功能的核心对象，它通过使用当前系统中最优的 clocksource 来提供时间服务。
+
+timekeeper 的初始化是在内核启动过程 start_kernel 中调用 timekeeping_init 进行：
 
 # 0x02. timekepper
 
-[Linux时间子系统之三：时间的维护者：timekeeper](https://abcdxyzk.github.io/blog/2017/07/23/kernel-clock-3/)
-
-内核用 `timekeeper` 结构来组织与时间相关的数据
 ```c
 struct timekeeper {  
 	struct clocksource *clock;    /* Current clocksource used for timekeeping. */  
@@ -65,3 +64,78 @@ void do_gettimeofday(struct timeval *tv);    获取当前时间，返回timeval�
 ```
 
 ![Alt text](../../pic/linux/time/timekeeper_times.png)
+
+# 0x03. 例子
+
+用户态 gettimeofday 接口在内核中是通过 do_gettimeofday 实现的，从调用层次上看，它可以分为 timekeeper 和 clocksource 两层。
+
+```c
+linux/kernel/time/timekeeping.c:
+
+/**
+ * do_gettimeofday - Returns the time of day in a timeval
+ * @tv:		pointer to the timeval to be set
+ *
+ * NOTE: Users should be converted to using getnstimeofday()
+ */
+void do_gettimeofday(struct timeval *tv)
+{
+    struct timespec now;
+
+    getnstimeofday(&now); /*获取纳秒精度的当前时间*/
+    tv->tv_sec = now.tv_sec;
+    tv->tv_usec = now.tv_nsec/1000;
+}
+
+/**
+ * __getnstimeofday - Returns the time of day in a timespec.
+ * @ts:		pointer to the timespec to be set
+ *
+ * Updates the time of day in the timespec.
+ * Returns 0 on success, or -ve when suspended (timespec will be undefined).
+ */
+int __getnstimeofday(struct timespec *ts)
+{
+    struct timekeeper *tk = &timekeeper; /*系统全局对象timekeeper*/
+    unsigned long seq;
+    s64 nsecs = 0;
+
+    do {
+        seq = read_seqcount_begin(&timekeeper_seq); /*以顺序锁来同步各个任务对timekeeper的读写操作*/
+
+        ts->tv_sec = tk->xtime_sec; /*获取最近更新的墙上时间的秒数(墙上时间会周期性地被更新，将在定时原理部分讨论)*/
+        nsecs = timekeeping_get_ns(tk); /*获取当前墙上时间相对(tk->xtime_sec, 0)的纳秒时间间隔*/
+
+    } while (read_seqcount_retry(&timekeeper_seq, seq));
+
+    ts->tv_nsec = 0;
+    timespec_add_ns(ts, nsecs);/*累加前面获取的纳秒时间间隔以得到正确的当前墙上时间；有可能导致秒数进位*/
+
+    ...
+    return 0;
+}
+
+static inline s64 timekeeping_get_ns(struct timekeeper *tk)
+{
+    cycle_t cycle_now, cycle_delta;
+    struct clocksource *clock;
+    s64 nsec;
+
+    /*通过当前最优clocksource获取当前时间计数cycle；不同的clocksource可以提供不同的read实现*/
+    /* read clocksource: */
+    clock = tk->clock;
+    cycle_now = clock->read(clock);
+    
+    /*通过clocksource中的当前计数值与最近一次更新墙上时间时获取的值的差值来计算时间间隔*/
+
+    /* calculate the delta since the last update_wall_time: */    
+    cycle_delta = (cycle_now - clock->cycle_last) & clock->mask;
+
+    /*tk->mult和tk->shift是用来进行将cycle数值转成纳秒的转换参数，参见clocksource中的说明*/
+    nsec = cycle_delta * tk->mult + tk->xtime_nsec; /*tk->xtime_nsec是最近更新的墙上时间的秒纳数左移tk->shift后的值*/
+    nsec >>= tk->shift;
+
+    /* If arch requires, add in get_arch_timeoffset() */
+    return nsec + get_arch_timeoffset();
+}
+```
