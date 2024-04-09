@@ -116,3 +116,53 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 - 在使用 mmap 映射文件到内存地址，向映射地址写入数据时如果没有缺页，就不会进入内核层，也无法设置写入页的状态为 dirty ，但cpu会自动把 **页表** 的 dirty bit 置位，但是如果不设置 **页** 为 dirty ，其他的同步程序，如 fsync 以及内核的同步线程都无法同步这部分数据。  
 msync 的主要作用就是检查一个内存区域的页表，把 dirty bit 置位的页表项对应的页的状态设置为 dirty ，如果 msync 指定了 M_SYNC 参数， msync 还会和 fsync 一样同步数据，如果指定为 M_ASYNC ，则用内核同步线程或其他调用同步数据。   
 在 munmap 时，系统会对映射的区域执行类似 msync 的操作，（进程在退出时对映射区域也会自动调用 munmap ），写大量数据不调用 msync 会有丢失数据的风险。
+
+## 0x0
+
+mmap 是系统调用，产生软中断进入内核后调用 sys_mmap，最终会调用到 mmap_mem
+
+```c
+// https://github.com/torvalds/linux/blob/39cd87c4eb2b893354f3b850f916353f2658ae6f/drivers/char/mem.c#L343
+static int mmap_mem(struct file *file, struct vm_area_struct *vma)
+{
+	size_t size = vma->vm_end - vma->vm_start;
+	phys_addr_t offset = (phys_addr_t)vma->vm_pgoff << PAGE_SHIFT;
+
+	/* Does it even fit in phys_addr_t? */
+	if (offset >> PAGE_SHIFT != vma->vm_pgoff)
+		return -EINVAL;
+
+	/* It's illegal to wrap around the end of the physical address space. */
+	if (offset + (phys_addr_t)size - 1 < offset)
+		return -EINVAL;
+
+	if (!valid_mmap_phys_addr_range(vma->vm_pgoff, size))
+		return -EINVAL;
+
+	if (!private_mapping_ok(vma))
+		return -ENOSYS;
+
+	if (!range_is_allowed(vma->vm_pgoff, size))
+		return -EPERM;
+
+	if (!phys_mem_access_prot_allowed(file, vma->vm_pgoff, size,
+						&vma->vm_page_prot))
+		return -EINVAL;
+
+	vma->vm_page_prot = phys_mem_access_prot(file, vma->vm_pgoff,
+						 size,
+						 vma->vm_page_prot);
+
+	vma->vm_ops = &mmap_mem_ops;
+
+	/* Remap-pfn-range will mark the range VM_IO */
+	if (remap_pfn_range(vma,
+			    vma->vm_start,
+			    vma->vm_pgoff,
+			    size,
+			    vma->vm_page_prot)) {
+		return -EAGAIN;
+	}
+	return 0;
+}
+```

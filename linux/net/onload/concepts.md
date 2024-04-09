@@ -154,33 +154,33 @@ An ef_vi application can set multiple types of filters on the same virtual inter
 2. open the driver
 3. allocate a protection domain, `ef_pd_alloc()` or `ef_pd_alloc_by_name()` or `ef_pd_alloc_with_vport()`.
 4. allocate a virtual interface from the protection domain.
-```c
-int ef_pd_alloc(ef_pd *pd,
-        ef_driver_handle pd_dh,
-        int ifindex,
-        enum ef_pd_flags flags);
+    ```c
+    int ef_pd_alloc(ef_pd *pd,
+            ef_driver_handle pd_dh,
+            int ifindex,
+            enum ef_pd_flags flags);
 
-int ef_pd_alloc_by_name(ef_pd *pd,
-        ef_driver_handle pd_dh,
-        const char* cluster_or_intf_name,
-        enum ef_pd_flags flags);
+    int ef_pd_alloc_by_name(ef_pd *pd,
+            ef_driver_handle pd_dh,
+            const char* cluster_or_intf_name,
+            enum ef_pd_flags flags);
 
-int ef_vi_alloc_from_pd(ef_vi *vi, ef_driver_handle vi_dh,
-        ef_pd *pd, ef_driver_handle pd_dh,
-        int eventq_cap, int rxq_cap, int txq_cap,
-        ef_vi *opt_evq, ef_driver_handle opt_evq_dh,
-        enum ef_vi_flags flags);
+    int ef_vi_alloc_from_pd(ef_vi *vi, ef_driver_handle vi_dh,
+            ef_pd *pd, ef_driver_handle pd_dh,
+            int eventq_cap, int rxq_cap, int txq_cap,
+            ef_vi *opt_evq, ef_driver_handle opt_evq_dh,
+            enum ef_vi_flags flags);
 
-```
-```c
-ef_driver_handle driver_handle;
-ef_vi vi;
-ef_pd pd;
+    ```
+    ```c
+    ef_driver_handle driver_handle;
+    ef_vi vi;
+    ef_pd pd;
 
-ef_driver_open(&driver_handle);
-ef_pd_alloc(&pd, driver_handle, ifindex, EF_PD_DEFAULT );
-ef_vi_alloc_from_pd(&vi, driver_handle, &pd, driver_handle,-1, -1, -1, NULL, -1, 0);
-```
+    ef_driver_open(&driver_handle);
+    ef_pd_alloc(&pd, driver_handle, ifindex, EF_PD_DEFAULT );
+    ef_vi_alloc_from_pd(&vi, driver_handle, &pd, driver_handle,-1, -1, -1, NULL, -1, 0);
+    ```
 
 ## 3. 2. Creating Packet buffers
 The next step is to allocate a memory region and register it for packet buffers.

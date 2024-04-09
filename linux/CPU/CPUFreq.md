@@ -91,7 +91,7 @@ Intel 借助这个空子，放出了复杂、霸道的 intel_pstate.
 
 ## 4.2 睿频
 
-有些处理器支持在特定条件下暂时提高 **部分** 内核的运行频率的机制。
+有些处理器支持在特定条件下暂时提高 **部分** 内核的运行频率的机制。Turo Boost 是在操作系统请求处理器的最高性能状态（highest performance state, pstate）时候激活。在Turbo Boost背后的设计概念也被称为 **动态超频** 。
 
 不同的供应商使用不同的名称来指代此功能。对于 Intel 处理器，它被称为 Turbo Boost ， AMD 称之为 Turbo-Core 或（在技术文档中） Core Performance Boost 等等。一般来说，不同的供应商也有不同的实现方式。
 
