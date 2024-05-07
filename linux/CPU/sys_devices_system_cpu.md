@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+[sysdevicessystemcpucpun-目录](https://arthurchiao.art/blog/linux-cpu-4-zh/#11-sysdevicessystemcpucpun-%E7%9B%AE%E5%BD%95)
+
 /sys/devices/system/cpu/cpufreq 里面都是 policyx 目录
 
 # 0x01. 简介

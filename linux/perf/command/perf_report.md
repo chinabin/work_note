@@ -23,13 +23,34 @@ perf report [options]
 --percent-limit：仅显示超过指定百分比的项。  
 -P 或 --pretty：指定输出格式，如raw、normal等。  
 --stdio：以文本模式显示报告（而非 TUI 模式）。  
---tui：以 TUI 模式显示报告（默认方式）。  
+--tui：以 TUI 模式显示报告（**默认方式**）。  
 --gtk：以 GTK 模式显示报告。  
--g 或 --call-graph：显示调用图数据。  
+-g：指定 call graph 的参数，通常会指定三个（逗号分割）：  
+
+    1. 第一个参数是各个节点百分比的计算方法。
+        如果指定 graph 则会直接显示该节点占总体样本数的比例。
+        如果指定 fractal 会显示一个节点和其他平级节点相比所占的比例。  
+    2. 第二个参数是绘制 Call Graph 的门槛值。
+        如果一个 Stack Trace 的数量与总体样本数相比低于门槛值，则忽略该 Stack Trace。此数值以百分比表示。如果指定的数值为 0.5，则占比低于 0.5% 的 Stack Trace 会被忽略。  
+    3. 第三个参数是 Stack Trace 的走访顺序。
+        如果指定 caller 就会显示 Caller-based Call Graph。反之，如果指定 callee 则会显示 Callee-based Call Graph。  
+
+--children: 被调用者的样本数量会加到调用者的统计数字，默认选项。
 --no-children：仅显示独立样本，不显示调用子函数的样本。  
 --no-demangle：禁用 C++ 符号解析。  
 --demangle：指定 C++ 符号解析方式，如：no, normal, smart 等。  
 --filter：指定过滤器，如：--filter 'dso(/lib*)'。  
 --max-stack：指定栈帧的最大数量。  
 
+-g 选项的预设值会受 --[no-]children 选项影响：
+```
+--children      graph,0.5,caller
+--no-children	graph,0.5,callee
+```
+
 ## 2.1 
+
+```
+a: 汇编，左侧数字为 percent
+t: a 的输出结果的左侧，切换 percent period samples 三种输出
+```

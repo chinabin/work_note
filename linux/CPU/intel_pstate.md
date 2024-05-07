@@ -1,7 +1,19 @@
 # 0x00. 导读
 [Documentation/cpu-freq/intel-pstate.txt](https://www.kernel.org/doc/Documentation/cpu-freq/intel-pstate.txt)
 
+1. intel_pstate 驱动程序会自动用于现代 Intel CPU, 用来控制 P-states.
+2. `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver` 查看 intel_pstate 是否启动
+3. 设置 performance 模式就能获得稳定频率。
+4. 看看睿频开了没。
+    ```bash
+    # 0表示开启睿频；1表示关闭睿频
+    $ cat /sys/devices/system/cpu/intel_pstate/no_turbo
+    ```
+
+
 # 0x01. 简介
+
+intel_pstate 驱动程序会自动用于现代 Intel CPU。该驱动程序优先于其他驱动程序，并且是内置的。该驱动程序当前自动用于 Sandy Bridge 和较新的 CPU。对于比较老旧的 CPU,  intel_pstate 可以通过 intel_cpufreq 驱动程序以 passive mode 运行。如果您在使用此驱动程序时遇到问题，请将 intel_pstate=disable 添加到内核行，以便恢复使用 acpi_cpufreq 驱动程序。
 
 intel_pstate 其实是 governor 和 driver 的合体。或者可以理解为绕过了 governor 的 driver.   
 注意，intel_pstate 再怎么复杂和厉害，也是属于前面说的 core governor driver 中的 driver 管辖。

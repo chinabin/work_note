@@ -63,7 +63,7 @@ receive descriptor ring 是用来从 adapter 传递 `packet` 到 application. ap
 
 当 adapter 传递一个 packet 给 ef_vi 实例的时候，会将 packet data 拷贝到空闲的 buffer ，并且通过 event queue 通知 application. 大的 packet 会被分解放入多个 buffer 。
 
-# 2.2. Protection Domain
+## 2.2. Protection Domain
 
 A protection domain identifies a separate address space for the DMA addresses passed to the adapter. It is used to protect multiple ef_vi applications from one another, or to allow them to share resources:
 - Each Virtual Interface is associated with one protection domain.
@@ -96,7 +96,7 @@ protection domain 用来标识一个独立的地址空间，用来将 DMA 地址
 通过这个简单的比喻, Protection Domain 提供隔离, Memory Region 在域内进行访问控制。两者结合实现了对内存的安全管控。
 ```
 
-# 2.3. Memory Region
+## 2.3. Memory Region
 
 Any memory region used for transmit or receive buffers must be registered using the ef_memreg interface. This ensures the memory region meets the requirements of ef_vi:
 - The memory is pinned, so that it can't be swapped out to disk.
@@ -111,7 +111,7 @@ Any memory region used for transmit or receive buffers must be registered using 
 - 页对齐
 - 大小是 packet buffer size 的整数倍，这样就不会浪费内存
 
-# 2.4. Packet Buffer
+## 2.4. Packet Buffer
 
 A packet buffer is a memory allocations on the host which the card will read from when sending packets, or write to when receiving packets. They are usually 2KB in size.
 
@@ -126,7 +126,7 @@ Each packet buffer is referred to by a descriptor, which contains:
 - an offset
 - a length.
 
-# 2.5.  Filters
+## 2.5.  Filters
 Filters select which packets are delivered to a virtual interface. Packets that are not selected are ignored and allowed to pass on to the kernel.  
 Each filter specifies the characteristics of packets for selection. These characteristics are typically packet header fields, including Ethernet MAC address, VLAN tags, IP addresses and port numbers.  
 
@@ -144,6 +144,12 @@ A selected packet can be:
 - 嗅探：这些 packet 既传递给 virtual interface, 也传递给 kernel stack
 
 An ef_vi application can set multiple types of filters on the same virtual interface. Setting an invalid filter or combination of filters causes an error.
+
+## 2.6 Onload Stacks
+
+An Onload 'stack' is an instance of a TCP/IP stack. The stack includes transmit and receive buffers, open connections and the associated port numbers and stack options. Each stack has associated with it one or more Virtual NICs (typically one per physical port that stack is using).
+
+In normal usage, each accelerated process will have its own Onload stack shared by all connections created by the process. It is also possible for multiple processes to share a single Onload stack instance (refer to Stack Sharing), and for a single application to have more than one Onload stack.
 
 # 0x03. 步骤
 
@@ -313,3 +319,5 @@ Packets delivered to an application via the accelerated path are not visible to 
 8. `onload_stackdump lots`
 9. `onload_stackdump tcp_stats`
 10. `onload_stackdump udp_stats`
+11. `onload_stackdump env` 查看环境变量
+12. `onload_stackdump doc` 显示 EF_* 环境变量文档

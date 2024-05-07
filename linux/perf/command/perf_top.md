@@ -4,7 +4,7 @@
 
 # 0x02. 命令
 
-perf top 命令实时显示系统中最耗费CPU资源的函数。这有助于用户快速定位导致性能问题的代码部分。
+perf top 命令实时显示系统中最耗费CPU资源的函数。这有助于用户快速定位导致性能问题的代码部分。默认的性能事件为cpu cycles。
 
 $ perf top [options]
 
@@ -15,6 +15,16 @@ $ perf top [options]
 -a 或 --all-cpus：监视所有CPU，而不仅仅是当前CPU。  
 -C 或 --cpu：指定要监视的CPU列表。  
 --call-graph：设置调用图记录方法，例如：dwarf 或 fp（帧指针）。  
+
+```
+$ perf top // 默认配置
+$ perf top -G // 得到调用关系图
+$ perf top -e cycles // 指定性能事件
+$ perf top -p 23015,32476 // 查看这两个进程的cpu cycles使用情况
+$ perf top -s comm,pid,symbol // 显示调用symbol的进程名和进程号
+$ perf top --comms nginx,top // 仅显示属于指定进程的符号
+$ perf top --symbols kfree // 仅显示指定的符号
+```
 
 ## 2.1 --call-graph
 

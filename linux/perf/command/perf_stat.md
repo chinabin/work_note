@@ -31,7 +31,7 @@ Performance counter stats for 'ls':
 该值越高代表程序是 CPU bound 而非 IO bound 类型。
 
 2. instructions: 执行的指令条数。  
-insns per cycle: 即 IPC ，每个 cpu 周期执行的指令条数，1.11 = 6100570(instructions) / 5506056(cycles)。  
+insns per cycle: 即 IPC ，每个 cpu 周期执行的指令条数，1.11 = 6100570(instructions) / 5506056(cycles)。现代 CPU 一个 cycle 通常能完成多个指令，如果低于 1 肯定不正常。  
 **IPC 比上面的 CPU 使用率更能说明 CPU 的使用情况**，关于 IPC 有一篇 [brendangregg的文章](https://www.brendangregg.com/blog/2017-05-09/cpu-utilization-is-wrong.html)，很好的说明 CPU 使用率不是一个很好的性能分析指标。
 
 3. cpu-migrations: 程序在运行过程中发生的CPU迁移次数，即被调度器从一个 CPU 转移到另外一个 CPU 上运行。

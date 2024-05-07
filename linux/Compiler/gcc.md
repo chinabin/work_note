@@ -98,3 +98,6 @@ ld.so和ld-linux.so*查找并且装载其他程序所依赖的动态链接对象
 
 rpath: 链接器找不到这个东西，因为它不在系统的搜索路径里。一个办法是使用 LD_LIBRARY_PATH : `$ LD_LIBRARY_PATH=. ldd ./main`  
 好一点的做法是在编译链接时把搜索路径写入目标文件里，运行时链接器就知道到哪去找了，这就是 rpath 
+
+`__attribute__((noinline))`: 确保编译器不会将函数 inline  
+`__attribute__((always_inline))`: 确保编译器一定将函数 inline

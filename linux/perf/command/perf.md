@@ -1,130 +1,97 @@
 # 0x00. 导读
 
-[根据perf分析结果如何写分析报告？](https://www.zhihu.com/question/280148873/answer/3337208522)
+系统级性能优化通常包括两个阶段：性能剖析和代码优化：
 
-perf 是 Linux 官方提供的一个功能强大的性能分析工具，集成了剖析、跟踪和脚本功能。它特别适用于 CPU 分析，可以剖析 CPU 栈踪迹、跟踪 CPU 调度器行为，并通过检查性能监控计数器 （PMC） 来了解微观架构级别的 CPU 性能。
+1. 性能剖析的目标是寻找性能瓶颈，查找引发性能问题的原因及热点代码;
+2. 代码优化的目标是针对具体性能问题而优化代码或调整编译选项，以改善软件性能。
 
-perf 的原理是这样的：每隔一个固定的时间，就在 CPU 上（每个核上都有）产生一个中断，在中断上看看，当前是哪个 pid ，哪个函数，然后给对应的 pid 和函数加一个统计值，这样，我们就知道 CPU 有百分几的时间在某个 pid ，或者某个函数上了。
+在步骤一性能剖析阶段，最常用的工具就是 perf。
 
-同时，也引入了一些负荷。
+perf_events 是 Linux 核心內建的系統效能分析工具。perf_events 一開始的主要功能是存取硬件性能计数器，所以最早的名字是 Performance Counters for Linux (PCL)。隨著功能不斷擴充，perf_events 能處理的事件來源已經不限於硬件性能计数器，所以改名為 perf_events。
 
-perf stat 看看整体情况，心里有个大概。
-perf top
-更细就是 perf record和perf report
-Perf script ，火焰图
+有時候 perf_events 也被簡稱為 Perf。然而因為 Perf 作為一個單字是難以搜尋的常見字𢑥，所以 Vince Weaver 與 Brendan Gregg 前輩通常使用 perf_events 稱呼這套工具。
 
-每个长方块代表了函数调用栈中的一个函数，即为一层堆栈的内容；
-Y轴显示堆栈深度，顶层方块表示CPU上正在运行的函数，下面的函数即为主调；
-X轴的宽度代表被采集的sample数量，越宽表示采集到的越多；
+perf_events 這套工具分為三個部分：
 
-Off-CPU和Wakeup火焰图
-Chain火焰图
+- 在 User Space 的 perf 指令
+- 在 Kernel Space 負責處理和儲存事件記錄的機制
+- 在 Kernel Space 的事件來源：硬件性能计数器、中斷、Page Fault、系統呼叫、KProbe、UProbe、FTrace、Trace Point 等等。
+
+如果負載大多數時間都在執行狀態（CPU-bound 負載），最常使用的事件來源是硬件性能计数器。如果負載要花不少時間從硬盘或网络读写数据（IO-bound 負載）或者是要和其他負載共用特定資源（例如：Mutex、Semaphore 等），則建議改用 FTrace、Trace Point、KProbe 與 UProbe 等事件來源。
+
+------
+
+perf 的原理是取样测量：每隔一个固定的时间，就在 CPU 上（每个核上都有）产生一个中断，在中断上看看，当前是哪个 pid ，哪个函数，然后给对应的 pid 和函数加一个统计值，这样，我们就知道 CPU 有百分几的时间在某个 pid ，或者某个函数上了。
+
+取样测量的基本概念就是通过记录下来的样本回推程序的执行状况，其最大的有点就是测量过程的额外负担可以通过取样频率调整。常用的頻率是 97、997、9973 等质数。perf_events 的取樣頻率的上限大約是 10,000 Hz。這個數值可以透過 `/proc/sys/kernel/perf_event_max_sample_rate` 修改。
+
+取样测量也有它的缺点。其中一个是取样测量通常以执行时间作为母体。所以比较不容易观察到输入输出或同步造成的效能问题。其二是取样测量的基本理论是以统计样本次数回推真实的行为，我们难以从样本回推真实各种事件的顺序。如果效能问题和事件发生的顺序有关，取样测量比较没有办法告诉我们问题的来源。虽然有上述问题，取样测量还是很好的效能测量方法。它的低额外负担和可以指定取样频率还是让它成为效能测量的首选。
+
+许多 CPU 会内建效能监控单元（Performance Monitoring Unit）有时候简记为 PMU 。它能提供 Cycles、Instructions Retired、Cache Misses、L1 I-Cache Load Misses、L1 D-Cache Load Misses、Last Level Cache Misses 等重要资讯。
+
+-----------
+
+perf_events 中的 周期和频率 与物理中的含义不一样，物理中，周期是指需要多少秒，频率是指每秒多少次。   
+perf_events 中，周期指的是一段时间内，事件发生的次数；目标频率指的是 perf_events 一段时间内需要取得的样本数。
+
+![Alt text](../../../pic/linux/perf/perf_period_freq.png)
+
+灰色为所有发生过的事件。黑色为记录到的事件样本（共 4 个）。因为目标周期为 4 Hz，所以 perf_events 每 0.25 秒可以设定不同的周期。下图的周期依序为 4 个、3 个、1 个、2 个事件。
+
+另外，效能计数器的统计次数有时候会落在「触发事件的指令」的后方。这个现象在 Intel 技术文件中被称为 `Skid`（滑行）。以开车类比，就像是踩下煞车后，车子还会滑行一小段距离。这是因为高速 CPU 通常都有比较多层的 Pipeline、一个指令通常会再拆分为多个 Micro-Ops（微指令）、再加上 Out-of-Order Execution （乱序执行）会先执行准备就绪的 Micro-Ops，CPU 要准确地追蹤「触发事件的指令」要花费不少成本，因此部分事件会被记录在稍后的指令。使用者在解读事件数量的时候，务必要考虑 Skid 现象。
+
+-----
+
+以下列出幾個重點檔案與資料夾：
+
+- [tools/perf](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf) 包含 perf 代码和说明。
+- [tools/perf/design.txt](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/design.txt) 包含 perf 与 Linux 核心之間的介绍。
+- [kernel/events](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/events) 包含 perf_events 的框架。可以在這裡找到 Linux 核心怎麼取樣事件、怎麼處理記錄。
+- [kernel/trace](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace) 包含 Linux 追蹤框架的實作。
+- [include/trace](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/trace) 包含 Linux 追蹤框架的標頭檔案。
+- [include/uapi/linux/perf_event.h](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h) 包含許多 perf_events 常數。
+- [arch/x86/events/intel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/events/intel) 包含 Intel CPU 的效能計數器實作。另外，也能在這個目錄找到「事件名稱」和「硬體事件編號」的對應表，以便查尋 Intel 的處埋器架構手冊。
+
+效能計數器大多和 CPU 的設計緊密結合，每個產品線或微架構常會有細微的差異。因此手邊有一份處理器架構手冊便是很重要的事。以下僅列出一些常見 CPU 的處理器架構手冊：
+
+- Intel x86
+    - [Intel 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) 第三部第 18 章 Performance Monitoring 與第 19 章 Performance Monitoring Events
+    - [Intel Processor Event Reference](https://github.com/intel/perfmon)
+
 # 0x01. 简介
 
-Perf工具支持一系列的可测量事件。利用 PMU(Performance Monitor Unit) 、 tracepoint 和内核中的计数器来进行性能统计。可以用 perf list 查看完整的。
+重点 list stat record report.
 
 DSO(Dynamic Shared Object)
 
-## 1.1 符号表
+栈回溯和符号解析是使用 perf 的两大阻力，[stack trace and call graph](../basics/symbol_record.md)，前者影响观测准确性，后者影响观测可读性。
 
-应用程序的符号表，用来将逻辑地址翻译成对应的函数和变量名，这样才能被程序员阅读和分析，没有符号表，profile的结果都是一些16进制的逻辑地址：  
-如下是perf report分析sshd进程的堆栈调用情况
+![Alt text](../../../pic/linux/perf/perf_events_workflow.png)
 
-![Alt text](../../../pic/linux/perf/perf1.png)
-
-符号可以位于目标文件中，也可以存放在单独的文件。Symbols 与 gcc -g 产生的 debug info 并不是一个东西。function tracing 只需要 symbols，不需要 debug symbols（gcc -g）。 
-
-Symbols 有两种，都是 readelf -s 输出中的 FUNC 类型，
-
-- .dynsym：动态符号，保存了引用来自外部文件符号的全局符号，如 printf 库函数。其保存的符号只能在运行时被解析。
-- .symtab：局部符号，保存的内容是 .dynsym 的超集，保存了可执行文件的本地符号，如全局变量，代码中定义的本地函数等。其保存的符号只是用来进行调试和链接的。
-
-通常情况下，生成可执行文件时，“局部”符号会被去掉，（以减小 binary size）， 然后通过单独的 xx-dbg/xx-dbgsym 包来提供这些符号 （也就是放到独立的文件，按需下载和使用）。
-
-```
-$ readelf -s LTTBif | grep "Symbol table" 
-Symbol table '.dynsym' contains 23366 entries:
-Symbol table '.symtab' contains 24430 entries:
-
-$ readelf -s `which top` | grep 'Symbol table'
-Symbol table '.dynsym' contains 136 entries:
-```
-
-可以用命令 strip 来手动去掉局部符号表：
-```bash
-$ strip -s ./hello-world # 原地 strip，直接修改可执行文件
-```
-
-既然对于跟踪来说 symbols 就够用了，那 debug symbols 有什么用呢？  
-Debug symbol 是 dwarf 格式信息 。[ How debuggers work: Part 3 - Debugging information](https://eli.thegreenplace.net/2011/02/07/how-debuggers-work-part-3-debugging-information/)
-
-Debug symbols 的用途或功能
-- 将内存地址映射到具体某行源代码
-- 调用栈展开（stack unwinding）。例如设置 perf 跟踪函数的执行
-
-DWARF 格式存在的一些问题：
-- 占用空间通常很大；
-- 基于 BPF 的工具（例如 bpftrace）与它兼容性不好，无法展开 DWARF 类型的调用栈；  
-BPF 工具一般使用另一种 stack unwinding 技术：frame pointer（帧指针）。 这是 perf 使用的默认 stack walking 方式，也是 bcc/bpftrace 目前支持的唯一方式。
-
-## 1.2 栈回溯
-
-我们经常在编译的时候会开启 `frame pointers` 优化选项，即优化掉函数栈帧 rbp，省略掉 frame pointer 是编译器一个很烂的优化，它会破坏 debug , 更烂的是省略 frame pointer 一般是编译器默认的优化选项。
-没有 frame pointer 会使 perf 无法获取完整的调用栈，如下示例：
-
-![Alt text](../../../pic/linux/perf/perf2.png)
-
-不开启优化的编译，进行profile是可以看到call graph的，如下：
-
-![Alt text](../../../pic/linux/perf/perf3.png)
-
-如果编译时开启 `-fomit-frame-pointer` (这里因为测试代码简单，直接开优化的话就优化没了)，就无法获取到call graph
-
-![Alt text](../../../pic/linux/perf/perf4.png)
-
-有三种方法可以修复这个问题，这里不做展开，这些称为 stack walking techniques ：
-
-- using dwarf data to unwind the stack。需要在编译时添加-g参数。
-- using last branch record (LBR) if available (a processor feature)。Intel的最后分支记录（LBR）调用图深度不如前两种方法。
-- returning the frame pointers 。帧指针（fp）需要消耗一个寄存器，成本较高，但可实现开销较低的栈展开，适用于性能剖析。
-
-
-
-frame pointer 原理
-- 每个 stack trace (或称 activation records 或 call stacks) 包含很多 frames，这 些 frames 以 LIFO（后进先出）方式存储。这与栈的工作原理一样，stack frames 由此得名；
-- 每个 frame 包含了一个函数执行时的状态信息（参数所在的内存区域、局部变量、返回值等等）；
-- Frame pointer 是指向 frame 内存地址的指针。fp 就是 x86 中的 EBP 寄存器，fp 指向当前栈帧栈底地址，此地址保存着上一栈帧的 EBP 值，具体可参考[此文章](https://people.cs.rutgers.edu/~pxk/419/notes/frames.html)的介绍，根据 fp 就可以逐级回溯调用栈。然而这一特性是会被优化掉的，而且这还是 GCC 的默认行为，在不手动指定 -fno-omit-frame-pointer 时默认都会进行此优化，此时 EBP 被当作一般的通用寄存器使用，以此为依据进行栈回溯显然是错误的。不过尝试指定 -fno-omit-frame-pointer 后依然没法获取到正确的调用栈，根据 GCC 手册的说明，指定了此选项后也并不保证所有函数调用都会使用 fp…… 看来只有放弃使用 fp 进行回溯了。
-
-dwarf 是一种调试文件格式，GCC 编译时附加的 -g 参数生成的就是 dwarf 格式的调试信息，其中包括了栈回溯所需的全部信息，使用 libunwind 即可展开这些信息。dwarf 的进一步介绍可参考 [“关于DWARF”](https://cwndmiao.github.io/programming%20tools/2013/11/26/Dwarf/)，值得一提的是，GDB 进行栈回溯时使用的正是 dwarf 调试信息。实际测试表明使用 dwarf 可以很好的获取到准确的调用栈。
-
-编译的时候，有没有 -g 参数都行， frame pointer 不会使用 dwarf 信息。
-perf 的时候 指定 --call-graph fp
-
-存在的问题：默认编译参数 -fomit-frame-pointer
-
-[参考](http://arthurchiao.art/blog/linux-tracing-basis-zh/)
 ## 1.3 使用方式
 
 perf的使用大体可以有三种方式：
 
 - Counting：统计的方式，统计事件发生的次数，这种方式不生成perf.data文件，例如perf stat, perf top
-- Sampling:采样的方式，采样事件，并写入到内核buffer中，并异步写入perf.data文件中，perf.data文件可以被perf report或者perf script 命令读取。
-- bpf programs on events(https://www.ibm.com/developerworks/cn/linux/l-lo-eBPF-history/index.html)
+- Sampling: 采样的方式，采样事件，并写入到内核buffer中，并异步写入perf.data文件中，perf.data文件可以被perf report或者perf script 命令读取。
+- bpf programs on events (https://www.ibm.com/developerworks/cn/linux/l-lo-eBPF-history/index.html), Kernel 4.4+新增功能 别管。
 
+```
 --list-cmds
 List the most commonly used perf commands.
  
 --list-opts
 List available perf options.
+```
 
 # 0x02. 事件
 
 事件可以分为如下三种：
 - `Hardware Event`  
-    由 PMU 部件产生，在特定的条件下探测性能事件是否发生以及发生的次数。比如 cache 命中
+    由 PMU 部件产生，在特定的条件下探测性能事件是否发生以及发生的次数。比如 cache 命中。`sudo perf list hardware`
 
 - `Software Event`  
-    由内核产生的事件，分布在各个功能模块中，统计与操作系统相关的性能事件。比如进程切换、tick数等
+    由内核产生的事件，分布在各个功能模块中，统计与操作系统相关的性能事件。比如进程切换、tick数等。`sudo perf list sw`
 
 - `Tracepoint Event`  
     由内核中静态 tracepoint 所触发的事件，这些 tracepoint 用来判断程序运行期间内核的行为细节，比如slab分配器的分配次数等。  
@@ -134,6 +101,15 @@ List available perf options.
 ![Alt text](../../../pic/linux/perf/perf.png)
 
 一个事件可以有子事件(或掩码)。 在某些处理器上的某些事件，可以组合掩码，并在其中一个子事件发生时进行测量。最后，一个事件还可以有修饰符，也就是说，通过过滤器可以改变事件被计数的时间或方式。
+
+指定性能事件
+```
+-e <event>:u          //userspace
+-e <event>:k          //kernel
+-e <event>:h          //hypervisor
+-e <event>:G          //guest counting(in KVM guests)
+-e <event>:H          //host counting(not in KVM guests)
+```
 
 事件可以通过冒号添加一个或多个修饰符。 修饰符允许用户对事件计数进行限制。   
 `perf stat -e cycles:u dd if=/dev/zero of=/dev/null count=100000`
@@ -221,6 +197,7 @@ perf trace 命令用于跟踪和分析系统调用，帮助用户了解程序在
 
 $ perf trace [options] [command]
 
+```
 以下是 perf trace 的一些常用参数：  
 -a 或 --all-cpus：在所有CPU上监视事件，而不仅仅是在当前CPU上。
 -C 或 --cpu：指定要监视的CPU列表。
@@ -246,3 +223,4 @@ $ perf trace [options] [command]
 --stats：显示统计数据。
 --runtime：设置最长运行时间（以秒为单位）。
 --timestamp：显示时间戳。
+```

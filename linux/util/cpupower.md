@@ -81,11 +81,81 @@ Supported commands are:
         set
         info
         monitor
+
+Use 'cpupower help <command>' for getting help for above commands.
 ```
 
 查看所有 CPU 的信息：  
-`[root@lmlphp.com ~]# cpupower frequency-info`  
+```bash
+$ cpupower frequency-info
+analyzing CPU 0:
+  driver: intel_pstate                                                # 驱动，源码在内核树
+  CPUs which run at the same hardware frequency: 0
+  CPUs which need to have their frequency coordinated by software: 0
+  maximum transition latency:  Cannot determine or is not supported.
+  hardware limits: 800 MHz - 3.40 GHz                                 # 硬件支持的频率范围
+  available cpufreq governors: performance powersave
+  current policy: frequency should be within 800 MHz and 3.40 GHz.
+                  The governor "performance" may decide which speed to use within this range.
+  current CPU frequency: Unable to call hardware
+  current CPU frequency: 2.60 GHz (asserted by call to kernel)
+  boost state support:
+    Supported: yes
+    Active: yes
+
+
+- driver：intel_pstate，这个 driver 比较特殊，它绕过了 governor layer，直接在驱动里实现了频率调整算法。
+- CPU 频率范围硬限制：800MHz - 3.4GHz
+- 可用 cpufreq governors：performance powersave
+- 正在使用的 cpufreq governor: performance
+当前策略：
+    - 频率范围运行在 800MHz - 3.4GHz 之间；
+    - 具体频率由 performance governor 决定。
+当前 CPU 的频率：
+    - 从硬件未获取到；
+    - 从内核获取到的是 2.6GHz
+是否支持 boost，即 turbo frequency
+    - 支持
+    - 当前已经开启
+```
+
 `[root@lmlphp.com ~]# cpupower -c all frequency-info`
+
+```bash
+# cpupower monitor -l 可以列出所有可以监控的模块，也就是 cpupower monitor 输出的所有列可以按照模块来过滤选择
+$ sudo cpupower monitor -l
+Monitor "Nehalem" (4 states) - Might overflow after 922000000 s
+C3      [C] -> Processor Core C3
+C6      [C] -> Processor Core C6
+PC3     [P] -> Processor Package C3
+PC6     [P] -> Processor Package C6
+Monitor "Mperf" (3 states) - Might overflow after 922000000 s
+C0      [T] -> Processor Core not idle
+Cx      [T] -> Processor Core in an idle state
+Freq    [T] -> Average Frequency (including boost) in MHz
+
+# 例如，我要监控 Idle_Stats 
+# cpupower monitor -m Idle_Stats
+
+# 通过 cpupower monitor 指令来获取 CPU 主频，该指令是直接读取 MSR 198H(Target performance State Value) 来直接获取 CPU 主频信息
+# 所以即使禁用了 intel_pstate 驱动也可以获得准确的数据。
+$ cpupower monitor
+              | Nehalem                   || Mperf              || Idle_Stats
+ PKG|CORE| CPU| C3   | C6   | PC3  | PC6   || C0   | Cx   | Freq  || POLL | C1   | C1E  | C6
+   0|   0|   0|  0.00|  0.00|  0.00|  0.00||  3.10| 96.90|  2692||  0.00| 96.96|  0.00|  0.00
+   0|   0|  20|  0.00|  0.00|  0.00|  0.00||  2.05| 97.95|  2692||  0.00| 98.04|  0.00|  0.00
+   0|   1|   4|  0.00|  0.00|  0.00|  0.00||  0.80| 99.20|  2692||  0.00| 99.23|  0.00|  0.00
+
+Idle_Stats: 空闲统计
+    显示 cpuidle 内核子系统的统计信息。
+    从 /sys/devices/system/cpu/cpu*/cpuidle/state*/ 检索值。每次进入或离开空闲状态时，内核都会更新这些值。因此，当测量开始或结束时核心处于空闲状态一段时间时，可能会出现一些不准确的情况。在最坏的情况下，可能会发生一个内核在整个测量时间内保持空闲状态并且内核导出的空闲状态使用时间没有更新的情况。
+
+Mperf: 平均性能
+    该名称来自所使用的 aperf/mperf（平均和最大）MSR 寄存器，这些寄存器在最新的 X86 处理器上可用。它显示平均频率（包括增强(boost)频率）。事实上，在所有最新的硬件上，mperf 计时器在任何空闲状态下都会停止计时，它也用于显示 C0（处理器处于活动状态）和 Cx（处理器处于任何睡眠状态）时间。
+
+Nehalem:
+    Intel Core 和 Package 睡眠状态计数器。
+```
 
 设置所有 CPU 为性能模式：  
 `[root@lmlphp.com ~]# cpupower -c all frequency-set -g performance`
@@ -96,3 +166,18 @@ Supported commands are:
 cpupower 设置 performance：  
 `[root@lmlphp.com ~]# cpupower frequency-set -g performance`
 
+查看频率
+`grep -E '^model name|^cpu MHz' /proc/cpuinfo`
+
+# 0x0. 意外
+
+[Linux性能调优之用电调优(Power Usage Tuning)](https://zhuanlan.zhihu.com/p/556462556)
+
+如果 `/sys/devices/system/cpu/cpu*/` 下面没有 `cpufreq` 目录，则通过下面的命令查一下可以用的 CPUfreq 模块，然后手动加载
+
+```
+$ ls /usr/lib/modules/$(uname -r)/kernel/drivers/cpufreq/
+acpi-cpufreq.ko  amd_freq_sensitivity.ko  cpufreq_stats.ko  p4-clockmod.ko  pcc-cpufreq.ko  powernow-k8.ko  speedstep-lib.ko
+
+$ modprobe acpi-cpufreq
+```

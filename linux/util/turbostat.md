@@ -10,14 +10,16 @@ turbostat 由 kernel-tools 软件包提供。用来查看目前 CPU 状态，在
 
 `man turbostat`
 
-–Summary: 透过这个参数可以直接看所有处理器的总合资讯.
+--Summary: 透过这个参数可以直接看所有处理器的总合资讯.
 ```
 $ turbostat --Summary
 ```
 
-–interval: 预设执行 turbostat 时间为 5 秒, 可以自行设定间隔时间.
+-i, --interval: 预设执行 turbostat 时间为 5 秒, 可以自行设定间隔时间.
 ```
 $ turbostat --interval 1 --Summary
+
+$ turbostat --quiet --hide sysfs,IRQ,SMI,CoreTmp,PkgTmp,GFX%rc6,GFXMHz,PkgWatt,CorWatt,GFXWatt
 ```
 
 # 0x03. 结果注释
@@ -134,9 +136,9 @@ CPU family:            6
 Model:                 85
 Model name:            Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz
 Stepping:              7
-CPU MHz:               4599.975
-CPU max MHz:           4600.0000
-CPU min MHz:           1200.0000
+CPU MHz:               4599.975   -------------------- > 实际运行频率，但不准，因为每个 CORE 可能都运行不同频率
+CPU max MHz:           4600.0000  -------------------- > max turbo freq
+CPU min MHz:           1200.0000  -------------------- > p-state low-freq
 BogoMIPS:              6000.00
 Virtualization:        VT-x
 L1d cache:             32K

@@ -35,3 +35,15 @@ $ sudo perf list
 ```
 perf stat -e alignment-faults,context-switches,cpu-migrations,page-faults,major-faults,minor-faults
 ```
+
+```bash
+# hw/hardware 显示支持的相关硬件事件
+$ sudo perf list hardware
+
+# sw/software 显示支持的软件事件列表
+$ sudo perf list sw
+
+# cache/hwcache 显示硬件 cache 相关事件列表
+# pmu 显示支持的 PMU 事件列表
+# tracepoint 显示支持的所有 tracepoint 列表
+```

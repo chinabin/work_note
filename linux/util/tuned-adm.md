@@ -94,6 +94,21 @@ virtual-guest
 $ tuned-adm profile_info virtual-guest
 ```
 
+```bash
+# 安装
+$ sudo yum install tuned tuned-profiles-cpu-partitioning
+$ tuned-adm list
+# 配置在这里，不是 /usr/lib/tuned/cpu-partitioning/tuned.conf
+$ vim /etc/tuned/cpu-partitioning-variables.conf
+# 激活
+$ sudo tuned-adm profile cpu-partitioning
+#重启
+$ sudo systemctl reboot
+
+# 开机默认
+# /etc/rc.local 中 tuned-adm profile cpu-partitioning
+```
+
 # 0x02.
 
 [redhat-performance/tuned](https://github.com/redhat-performance/tuned)

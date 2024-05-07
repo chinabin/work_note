@@ -39,8 +39,8 @@ Linux 中 p-state 有一个别名：**Operating Performance Points(性能操作�
 SKU (Stock Keeping Unit) 的意思是库存量单元，其实就是用来进行库存管理的标识数，区分不同的产品，有点类似于图书的 ISBN 号，或者超市里商品的扫描条码，有了这个才能方便的计数，统计不同的产品的库存量是多少，方便管理大量库存呀。
 
 P-states have an associated frequency that varies between SKUs, organized as follows:
-- P01 is the Max 1 Core Turbo Frequency, the maximum frequency that can be reached with one core active.
-- P0n is the All Core Turbo Boost Frequency range. The level of Turbo Frequency depends on the workload(工作负荷) and the operating environment. Turbo is opportunistic(伺机，投机取巧) as(由于，因为) the frequency achieved may fall short of(达不到) the maximum frequency. 
+- **P01** is the Max 1 Core Turbo Frequency, the maximum frequency that can be reached with **one** core active.
+- **P0n** is the All Core Turbo Boost Frequency range. The level of Turbo Frequency depends on the workload(工作负荷) and the operating environment. Turbo is opportunistic(伺机，投机取巧) as(由于，因为) the frequency achieved may fall short of(达不到) the maximum frequency. 
 - P1 is the Guaranteed Base Frequency of a SKU. All cores can run at this speed while within standard operating conditions.
 This is sometimes referred to as P1n.
 - P2, P3, and all lower P-states are defined as 100 MHz (referred to as a 'bin') below the previous P-state's frequency.

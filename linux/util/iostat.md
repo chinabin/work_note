@@ -1,6 +1,8 @@
 # 0x00. 导读
 
-yum install sysstat 
+yum install sysstat  
+
+[理解iostats](https://hustcat.github.io/iostats/)
 
 # 0x01. 简介
 

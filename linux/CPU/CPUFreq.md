@@ -15,6 +15,9 @@ driver 负责实现 governor 的梦想。
 
 在 Linux 中，这种根据需求来调整 CPU 性能的技术称为 **CPU 性能伸缩 (CPU performance scaling)** 或 **CPU 频率伸缩(CPU frequency scaling)**。
 
+- 内核调度器会在一些重要事件发生时（例如新建或销毁进程）， 或者定期（every iteration of the scheduler tick）回调 cpufreq update 方法，更新 cpufreq 状态。
+- cpufreq 根据状态状态信息，可以动态调整 p-state 级别。
+
 ## 1.1 Linux CPU 性能伸缩(CPU performance scaling)
 
 也叫 **DVFS(Dynamic Voltage Frequency Scaling)**.

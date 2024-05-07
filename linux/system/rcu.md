@@ -55,3 +55,24 @@ Quiescent Status，用于描述处理器的执行状态。当某个CPU正在访�
 不管是同步还是异步接口，最终都是调到 `__call_rcu` 接口，通过 __call_rcu 注册的这些回调函数在哪里调用呢？答案是在 `RCU_SOFTIRQ` 软中断中。
 
 线程: rcu_sched rcu_preempt rcu_bh, [The new visibility of RCU processing](https://lwn.net/Articles/518953/)
+
+# 0x03. 内核线程
+
+1. **rcuob（RCU Offload Batch）**：这个线程负责执行 RCU 的延迟回收。在某些情况下，当需要释放某些数据结构时，为了避免阻塞当前线程，Linux 内核会将回收操作延迟到 rcuob 线程中执行，以提高系统的性能和响应性。
+
+2. **rcuos（RCU Operating System）**：这个线程是 RCU 的一个子系统，负责管理 RCU 的全局状态、调度 RCU 的回收操作以及处理 RCU 相关的系统事件。rcuos 线程的主要作用是协调整个系统中的 RCU 操作，确保其正常运行。
+
+总的来说，rcuob 和 rcuos 线程分别负责延迟回收和管理 RCU 的全局状态，以提高系统的性能和并发访问能力。
+
+
+1. **`rcu_bh`（RCU Bottom-Half）**：
+   - 这个线程负责处理一些低优先级的中断处理程序（bottom-half），这些处理程序通常与 RCU 相关的工作有关。
+   - RCU 提供了一种延迟回收机制，因此，当需要释放某些资源时，释放操作可能被延迟到 `rcu_bh` 线程中执行，以避免阻塞高优先级的中断处理程序。
+   - 典型的情况是，当某个内核模块或者子系统需要释放一些与 RCU 相关的资源时，它们可以安排回调函数在 `rcu_bh` 上运行以执行释放操作。
+
+2. **`rcu_sched`（RCU Scheduler）**：
+   - 这个线程负责管理基于 RCU 的延迟调度功能。
+   - 在 Linux 内核中，RCU 还用于实现一种延迟调度机制，这种机制允许内核延迟对一些任务的调度，以提高系统的性能和吞吐量。
+   - `rcu_sched` 线程负责调度和执行这些延迟调度任务，以确保它们在适当的时候得到执行。
+
+综上所述，`rcu_bh` 和 `rcu_sched` 线程都是为了支持 RCU 在 Linux 内核中的延迟回收和调度功能而存在的，它们分别负责处理底半部（bottom-half）的相关工作和管理基于 RCU 的延迟调度任务。
