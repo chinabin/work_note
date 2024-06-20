@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+[Linux 操作系统原理-文件系统(1)](https://icefrozen.github.io/article/openerating-learning-vfs-1/)
+
 # 0x01. 简介
 
 ![Alt text](../../pic/linux/filesystem/LinuxStorageStackDiagram.png)

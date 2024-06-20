@@ -1,14 +1,42 @@
 # 0x00. 导读
 
+TODO: 
+mlc 原理
+mlc 选项
+
 # 0x01. 简介
 
 [下载地址](https://www.intel.com/content/www/us/en/download/736633/736634/intel-memory-latency-checker-intel-mlc.html)
 
 [文档](https://www.intel.com/content/www/us/en/developer/articles/tool/intelr-memory-latency-checker.html)
 
+影响程序性能的两个重要因素：
+
+- 应用程序从处理器缓存和从内存子系统获取数据所消耗的时间，其中存在各种延迟；
+- 带宽 b/w, bandwidth. 带宽反映了单位时间的传输速率，马路越宽，越不会堵车。
+
 Intel Memory Latency Checker(Intel MLC) 是一个测试内存延迟和带宽的工具，并且可以测试延迟和带宽随着系统负载增加的变化。这个工具也提供了一些选项用于更好细粒度调查从特定处理器核心到缓存或内存的一系列选项的测试。
 
-在 Linux 环境中，使用 MLC 需要 root 权限，因为这个工具修改 H/W prefetch control MSR （硬件预取控制寄存器）来 激活/禁用 预取器 用于延迟和带宽测试。因为在新型的 Intel 处理器上精确测试内存延迟是非常困难的，因为它有复杂的硬件预取器。Intel MLC 在测试延迟时会自动禁用这些预取器，并且在测试完成后自动恢复预期器原状态。预期器控制是通过修改 MSR 实现。
+## 1.1 原理和前提
+
+- prefetch
+
+    在 Linux 环境中，使用 MLC 需要 root 权限，因为这个工具修改 H/W prefetch control MSR （硬件预取控制寄存器）来 激活/禁用 预取器 用于延迟和带宽测试。因为在新型的 Intel 处理器上精确测试内存延迟是非常困难的，因为它有复杂的硬件预取器。Intel MLC 在测试延迟时会自动禁用这些预取器，并且在测试完成后自动恢复预期器原状态。预期器控制是通过修改 MSR 实现。
+
+- MSR
+
+    系统需要加载 MSR(model-specific registers) 驱动（不在安装包中），通常可以使用 modprobe msr 命令完成。在 RHEL/CentOS 7 系统中，无需使用 modprobe msr ，因为内核编译时已经 built-in 了MSR支持。通过以下命令可以检查使用内核是否支持 MSR
+    ```
+    grep -i msr /boot/config-`uname -r`
+    ```
+
+- 负载生成线程与延迟线程
+
+    Intel MLC 的一个主要功能是测量带宽需求增加时的延迟。为了加快实现，MLC创建了多个线程，线程数等于主机逻辑处理器数量减 1。这些线程用户生成负载（以下，这些线程被引用为负载生成线程或者带宽生成线程）。这个负载生成线程的主要功能是尽可能生成更多的内存引用。此时系统负载类似，剩下的一个CPU（也就是没有用于产生负载的CPU）运行了一个用于测量延迟的线程。这个线程通常运行在cpu#0，被称为延迟线程（latency thread）和分发依赖的读。
+
+    默认情况下，每个负载生成线程会pin在一个逻辑cpu上。例如，在激活了超线程的10核系统上，MLC创建18个负载生成线程并保留物理核0来运行延迟线程。每个负载生成线程可以配置成生成对缓存层级（cache hierarchy）生成不同程度的读和写。每个线程分配一个buffer用于读并且一个独立的buffer用于写（任何线程之间没有共享数据）。通过相应的不同大小缓存，可以确保引用满足任何缓存级别或者由内存提供服务。
+
+    有一些选项可以控制负载生成线程数量，每个线程使用的缓存大小，在哪里分配它们的内存，读写的比例以及顺序存取或随机存取。
 
 # 0x02. 命令
 
@@ -32,7 +60,7 @@ Numa node            0       1
        0          69.6   141.4
        1         139.4    70.7
 
-# 2. 不同读写比下的内存带宽
+# 2. 不同的读写比对应的内存带宽的值
 # 一般来说，内存的写速度是略慢于读速度的。随着写比例的上升，如果带宽急剧下降，那么有可能出现了问题。
 # mlc --peak_injection_bandwidth
 Measuring Peak Injection Memory Bandwidths for the system
@@ -42,10 +70,13 @@ Using traffic with the following read-write ratios
 ALL Reads        :      163473.8
 3:1 Reads-Writes :      152508.1
 2:1 Reads-Writes :      149002.1
-1:1 Reads-Writes :      139576.5                                                                                     
+1:1 Reads-Writes :      139576.5           
 Stream-triad like:      141400.2        
 
 # 3. 内存访问带宽矩阵。和延迟矩阵类似
+# 表示从一个 NUMA 节点访问另一个 NUMA 节点时的内存带宽（以 MB/sec 为单位）
+# 问题分析：如果副对角线数值相差过大，表明两个 node 相互访问的带宽差距较大
+# 解决方法：出现不平衡的时候一般从内存插法、内存是否故障以及 numa 平衡等角度进行排查
 # ./mlc --bandwidth_matrix
 Measuring Memory Bandwidths between nodes within system 
 Bandwidths are in MB/sec (1 MB/sec = 1,000,000 Bytes/sec)
@@ -57,7 +88,13 @@ Numa node            0       1
        1        33543.9 80647.3
 
 # 4. 不同带宽情况下的延迟
-# mlc --loaded_latency                                                      
+# mlc --loaded_latency            
+# Inject Delay (ns)：注入延迟，以纳秒（ns）为单位。这代表了人为引入的延迟，以模拟不同负载条件下的系统性能。
+# Latency (ns)：测量的延迟，以纳秒（ns）为单位。
+# Bandwidth (MB/sec)：测量的内存带宽，以 MB/秒为单位。
+
+# 第一行是 无注入延迟 (Inject Delay 00000)                                
+
 Measuring Loaded Latencies for the system
 Using all the threads from each core if Hyper-threading is enabled
 Using Read-only traffic type    
@@ -82,35 +119,58 @@ Delay   (ns)    MB/sec
  03500  123.86     8661.7                                
  05000  116.23     6246.3
  09000  109.07     3758.0     
- 20000   80.18     2201.6     
+ 20000   80.18     2201.6    
+
+# 随着负载增加，延迟逐渐降低。这可能是因为高负载下，内存访问变得更频繁，缓存和其他优化机制开始生效，减少了访问内存的平均延迟。
+# 带宽随着负载增加而显著下降，表明系统在高负载下无法维持高效的内存带宽。
+ 
 
 # 5. 处理器缓存间的延迟
 # mlc --c2c_latency
+# HITM 意为 Hit In The Modified ，代表 CPU 在 load 操作命中了一条标记为 Modified 状态的 Cache Line。伪共享发生的关键就在于此。一个处理器修改了某个 cache line 中的数据，另一个处理器访问该 cache line 数据时需要 refresh 该 cache line.
+# Modified; 表明 cache line 对应的 memory 仅在一个 Cache 中被缓存了,而且其在 Cache 中 的缓存与在内存中的值也是不一致的
+# 而 Remote HITM ，意思是跨 NUMA 节点的 HITM，这个是所有 load 操作里代价最高的情况，尤其在读者和写者非常多的情况下，这个代价会变得非常的高。
+# Local HITM ，则是本地 NUMA 节点内的 HITM
 Measuring cache-to-cache transfer latency (in ns)...      
+# 测量 Hit （命中干净的行）的延迟。
 Local Socket L2->L2 HIT  latency        58.3             
-Local Socket L2->L2 HITM latency        52.6             
+# 测量 HitM （命中修改状态的行）的延迟。
+Local Socket L2->L2 HITM latency        52.6     
+# 当数据地址驻留在写入者 Socket 时
+# 当写入者和读取者都在 NUMA 节点 0 或者 1 时，不测量该延迟（用 "-" 表示）。
+# 当写入者在 NUMA 节点 0，读取者在 NUMA 节点 1 时，延迟为 116.0 ns。
+# 当写入者在 NUMA 节点 1，读取者在 NUMA 节点 0 时，延迟为 116.1 ns。        
 Remote Socket L2->L2 HITM latency (data address homed in writer socket)
                         Reader Numa Node          
 Writer Numa Node     0       1  
             0        -   116.0  
             1    116.1       -  
+# 数据地址驻留在读取者 Socket
 Remote Socket L2->L2 HITM latency (data address homed in reader socket)
                         Reader Numa Node                  
 Writer Numa Node     0       1                           
             0        -   116.0                           
             1    116.1       -                                                                                       
-Remote Socket L2->L2 HITM latency (data address homed in reader socket)
-                        Reader Numa Node
-Writer Numa Node     0       1  
-            0        -   177.8  
-            1    175.5       -  
 ```
 
 ## 2.2
 
+`./mlc --help`
+
 ```
--a 测试所有可用CPU的idle延迟
--b 设置每个CPU的分配缓存大小（KB），默认是200MB延迟测试，100MB带宽测试
--c 将延迟测试的线程pin到指定CPU。所有内存访问都将从这个特定的CPU发出
--d 设置特定的负载注入延迟
+通用选项：
+-r 随机访问，以获得延迟数据。这个选项主要是当 prefetcher 不能被禁用的时候用。
+-e MLC在所有测量中都不会修改硬件预取器。这个参数适合在虚拟机内部测试（无法修改MSR）
+-X 每个 core 只用一个线程
+```
+
+```
+非通用选项，需要搭配前缀使用，例如：
+./mlc --latency_matrix [-a] [-bn] [-Dn] [-e] [-ln] [-L|-h] [-tn] [-r] [-tn] [-xn] [-X]
+
+-a 测试所有可用 CPU 的 idle 延迟
+-b 设置每个 CPU 的分配缓存大小（KB），default=100000
+-c 将 **延迟测试的线程** pin 到指定 CPU 。所有内存访问都将从这个特定的CPU发出
+-d delay cycles injected between requests to memory (default-0), higher value lowers bandwidth
+-i initialize memory from core #n (determines where requested memory resides)
 ```

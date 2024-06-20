@@ -138,7 +138,18 @@ $ find . -path "*tool/gcc*" -name '*.md'
 ./tool/gcc/1.md
 ./tool/gcc/2.md
 
-$ find . -maxdepth 3 -path "*linux*" -name '*.png'
+# depth 举例，注意看结果的目录层数
+$ find -maxdepth 2 -name passwd
+./etc/passwd
+$ find / -maxdepth 3 -name passwd
+./usr/bin/passwd
+./etc/pam.d/passwd
+./etc/passwd
+./etc/passwd
+# 在第二层子目录和第四层子目录之间查找 passwd 文件。
+$ find -mindepth 3 -maxdepth 5 -name passwd
+./usr/bin/passwd
+./etc/pam.d/passwd
 ```
 
 ## 2.6 处理动作

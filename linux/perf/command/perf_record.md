@@ -24,7 +24,6 @@ perf record [options] [command]
 -g: 让 perf record 在记录各个样本的时候，同时记录取样点的 Stack Trace, 其次，使用者可以透过 --call-graph 选项指定走访 Stack Trace 的方法  
 --call-graph [fp,dwarf,lbr]：指定调用图记录方法，例如 dwarf 或 fp （帧指针），默认 fp。  
 --switch-events：记录上下文切换事件。  
---user-callchains: 指定了 perf 采样时只采集用户栈，排除掉内核栈
 
 ## 2.1 --switch-events
 

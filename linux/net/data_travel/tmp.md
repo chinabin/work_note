@@ -6,3 +6,5 @@ sudo perf record -g -a -e skb:kfree_skb
 sudo perf script  
 script：读取perf.data(由perf record生成)，生成trace记录，供其他分析工具使用
 ```
+
+[ethtool原理介绍和解决网卡丢包排查思路](https://zhuanlan.zhihu.com/p/150086151)

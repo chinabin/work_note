@@ -359,4 +359,5 @@ $ sudo perf record -g --call-graph lbr -o callgraph.lbr.perf.data ./callgraph
 #       -i perf.data
 $ sudo perf report --stdio -i [filename]
 $ sudo perf report -i perf.data --stdio --children -g graph,0.5,caller
+$ perf script |./stackcollapse-perf.pl|./flamegraph.pl > fg_output.svg
 ```

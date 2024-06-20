@@ -3,6 +3,8 @@
 1. cache 简介
 2. cache placement: 直接映射、组相连、全相连
 
+[CPU缓存一致性协议](https://icefrozen.github.io/article/why-memory-barriers-1/)
+
 # 0x01 简介
 
 当 CPU 试图从某地址 load 数据时，首先从 L1 cache 中查询是否命中，如果命中则把数据返回给 CPU 。如果 L1 cache 缺失，则继续从 L2 cache 中查找。当 L2 cache 命中时，数据会返回给 L1 cache 以及 CPU 。如果 L2 cache 也缺失，则需要从主存中 load 数据，将数据返回给 L2 cache 、 L1 cache 及 CPU 。
@@ -143,3 +145,23 @@ cache 被分成 2 路，每路包含 4 行 cache line 。我们将所有索引�
 记得 `index` 和 `offset` 位数的计算方法，后续的 `VIPT` 什么时候不出现别名情况用得上。
 
 ![1](../../pic/linux/memory/内存管理-Cache.png)
+
+```bash
+# 查看 cache line 的大小
+$ getconf -a | grep CACHE
+LEVEL1_ICACHE_SIZE                 32768
+LEVEL1_ICACHE_ASSOC                8
+LEVEL1_ICACHE_LINESIZE             64
+LEVEL1_DCACHE_SIZE                 32768
+LEVEL1_DCACHE_ASSOC                8
+LEVEL1_DCACHE_LINESIZE             64
+LEVEL2_CACHE_SIZE                  1048576
+LEVEL2_CACHE_ASSOC                 16
+LEVEL2_CACHE_LINESIZE              64
+LEVEL3_CACHE_SIZE                  37486592
+LEVEL3_CACHE_ASSOC                 11
+LEVEL3_CACHE_LINESIZE              64
+LEVEL4_CACHE_SIZE                  0
+LEVEL4_CACHE_ASSOC                 0
+LEVEL4_CACHE_LINESIZE              0
+```

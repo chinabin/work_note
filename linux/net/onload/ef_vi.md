@@ -1,13 +1,17 @@
 # 0x00. 导读
 
-[ef_vi_User_Guide](https://www.xilinx.com/content/dam/xilinx/publications/solarflare/onload/openonload/packages/SF-114063-CD-10_ef_vi_User_Guide.pdf), 官方文档
+[ef_vi_User_Guide](https://docs.amd.com/v/u/en-US/SF-114063-CD-ef_vi_User_Guide), 官方文档
 
 [Github 仓库](https://github.com/majek/openonload.git), 官方代码保护示例的仓库。
 
 [早期youtube视频](https://www.youtube.com/watch?v=1Y8hoznuuuM&ab_channel=GoogleTechTalks)  
 [早期的设计思想](http://www.moderntech.com.hk/sites/default/files/whitepaper/V10_Solarflare_OpenOnload_IntroPaper.pdf)
 
+
 # 0x01. 简介
+
+Each ef_vi instance can be thought of as a virtual port on the network adapter's switch. Ef_vi can be used to handle all packets associated with a physical port, or just a subset. This means that ef_vi can be used in parallel with the standard Linux kernel network stack and other acceleration technologies such as AMD's OpenOnload sockets acceleration.  
+For example, a trading application might use ef_vi to receive UDP market data, but use Onload sockets to make TCP trades.
 
 Solarflare's ef_vi API is a flexible interface for passing Ethernet frames between applications and the network. It is the internal API used by Onload for sending and receiving packets.
 
@@ -59,11 +63,11 @@ Each entry in the ring is a descriptor which references a 'free' buffer that the
 When the adapter delivers a packet to an ef_vi instance, it copies the packet data into the next available receive buffer and notifies the application via the event queue. Large packets can be scattered over multiple receive buffers.
 
 receive descriptor ring 是用来从 adapter 传递 `packet` 到 application. application 必须提前分配好 buffer 并传给 receive descriptor ring. 
-上面的每个 entry 都是一个 descriptor, 其代表了一个 空闲 的 buffer, adapter 可以随时将 packet 放入。
+**上面的每个 entry 都是一个 descriptor, 其代表了一个 空闲 的 buffer, adapter 可以随时将 packet 放入**。
 
-当 adapter 传递一个 packet 给 ef_vi 实例的时候，会将 packet data 拷贝到空闲的 buffer ，并且通过 event queue 通知 application. 大的 packet 会被分解放入多个 buffer 。
+**当 adapter 传递一个 packet 给 ef_vi 实例的时候，会将 packet data 拷贝到空闲的 buffer ，并且通过 event queue 通知 application. 大的 packet 会被分解放入多个 buffer 。**
 
-## 2.2. Protection Domain
+## 2.2. Protection Domain, ef_pd
 
 A protection domain identifies a separate address space for the DMA addresses passed to the adapter. It is used to protect multiple ef_vi applications from one another, or to allow them to share resources:
 - Each Virtual Interface is associated with one protection domain.
@@ -96,9 +100,9 @@ protection domain 用来标识一个独立的地址空间，用来将 DMA 地址
 通过这个简单的比喻, Protection Domain 提供隔离, Memory Region 在域内进行访问控制。两者结合实现了对内存的安全管控。
 ```
 
-## 2.3. Memory Region
+## 2.3. Memory Region, ef_memreg
 
-Any memory region used for transmit or receive buffers must be registered using the ef_memreg interface. This ensures the memory region meets the requirements of ef_vi:
+Any memory region used for transmit or receive buffers must be registered using the `ef_memreg` interface. This ensures the memory region meets the requirements of ef_vi:
 - The memory is pinned, so that it can't be swapped out to disk.
 - The memory is mapped for DMA, so that the network adapter can access it. The adapter translates the DMA addresses provided by the application to I/O addresses used on the PCIe bus.
 - The memory region is page-aligned, for performance.
@@ -127,6 +131,7 @@ Each packet buffer is referred to by a descriptor, which contains:
 - a length.
 
 ## 2.5.  Filters
+
 Filters select which packets are delivered to a virtual interface. Packets that are not selected are ignored and allowed to pass on to the kernel.  
 Each filter specifies the characteristics of packets for selection. These characteristics are typically packet header fields, including Ethernet MAC address, VLAN tags, IP addresses and port numbers.  
 
@@ -139,9 +144,9 @@ A selected packet can be:
 - Sniffed: the packet is delivered to the virtual interface, and to the kernel stack.
 
 被选中的 packet 可以用来：
-- 偷走：这些 packet 只会传递给 virtual interface, 不会传递给 kernel stack
-- 复制：这些 packet 传递给 virtual interface, 也可以拷贝传递给其它 consumer. 主要用来广播数据。
-- 嗅探：这些 packet 既传递给 virtual interface, 也传递给 kernel stack
+- Stolen: 这些 packet 只会传递给 virtual interface, 不会传递给 kernel stack
+- Replicated: 这些 packet 传递给 virtual interface, 也可以拷贝传递给其它 consumer. 主要用来广播数据。
+- Sniffed: 这些 packet 既传递给 virtual interface, 也传递给 kernel stack
 
 An ef_vi application can set multiple types of filters on the same virtual interface. Setting an invalid filter or combination of filters causes an error.
 
@@ -151,33 +156,18 @@ An Onload 'stack' is an instance of a TCP/IP stack. The stack includes transmit 
 
 In normal usage, each accelerated process will have its own Onload stack shared by all connections created by the process. It is also possible for multiple processes to share a single Onload stack instance (refer to Stack Sharing), and for a single application to have more than one Onload stack.
 
+`onload_tcpdump`
+
 # 0x03. 步骤
 
-更详细的可以参考 [6 Using ef_vi](https://www.xilinx.com/content/dam/xilinx/publications/solarflare/onload/openonload/packages/SF-114063-CD-10_ef_vi_User_Guide.pdf)
+更详细的可以参考 [6 Using ef_vi](https://docs.amd.com/v/u/en-US/SF-114063-CD-ef_vi_User_Guide)
 
-## 3.1. Setup
-1. include the various headers we need (etherfabric/pd.h, vi.h, memreg.h)
-2. open the driver
-3. allocate a protection domain, `ef_pd_alloc()` or `ef_pd_alloc_by_name()` or `ef_pd_alloc_with_vport()`.
-4. allocate a virtual interface from the protection domain.
-    ```c
-    int ef_pd_alloc(ef_pd *pd,
-            ef_driver_handle pd_dh,
-            int ifindex,
-            enum ef_pd_flags flags);
+## 3.1. 初始化
 
-    int ef_pd_alloc_by_name(ef_pd *pd,
-            ef_driver_handle pd_dh,
-            const char* cluster_or_intf_name,
-            enum ef_pd_flags flags);
-
-    int ef_vi_alloc_from_pd(ef_vi *vi, ef_driver_handle vi_dh,
-            ef_pd *pd, ef_driver_handle pd_dh,
-            int eventq_cap, int rxq_cap, int txq_cap,
-            ef_vi *opt_evq, ef_driver_handle opt_evq_dh,
-            enum ef_vi_flags flags);
-
-    ```
+1. 头文件 (etherfabric/pd.h, vi.h, memreg.h)
+2. 获得句柄, ef_driver_open()
+3. 分配 protection domain, `ef_pd_alloc()` or `ef_pd_alloc_by_name()` or `ef_pd_alloc_with_vport()`.
+4. 从 protection domain 分配 virtual interface, `ef_vi_alloc_from_pd`.
     ```c
     ef_driver_handle driver_handle;
     ef_vi vi;
@@ -188,8 +178,13 @@ In normal usage, each accelerated process will have its own Onload stack shared 
     ef_vi_alloc_from_pd(&vi, driver_handle, &pd, driver_handle,-1, -1, -1, NULL, -1, 0);
     ```
 
-## 3. 2. Creating Packet buffers
-The next step is to allocate a memory region and register it for packet buffers.
+## 3.2. 创建 Packet buffers
+
+下一步就是分配内存以及注册，给 packet buffers 做准备：  
+- packet buffers must be **pinned** so that they cannot be paged
+- and they must be registered for DMA with the network adapter. 
+
+函数 ef_memreg_alloc() 一步到位。  
 ```c
 const int BUF_SIZE = 2048; /* Hardware always wants 2k buffers */
 int bytes = N_BUFS * BUF_SIZE;
@@ -198,7 +193,19 @@ posix_memalign(&p, 4096, bytes) /* allocate aligned memory */
 ef_memreg_alloc(&memreg, driver_handle, &pd, driver_handle,p, bytes); /* Make it available to ef_vi */
 ```
 
-## 3. 3.  Adding Filters
+To improve performance, registered memory regions for packet buffers should be aligned on (minimum) 4KB boundaries for regular pages or 2MB boundaries when using huge pages, and should be contiguous.
+
+### 3.2.1 Buffer Table
+
+The memory for packet buffers is mapped using a buffer table. Implementation of this can differ, but typically:
+- The buffer table is allocated from memory that is also used for other things, so can vary in size
+- Entries in this table are split into sets of 32 entries
+- In the default configuration there are typically 1904 sets available, giving a maximum of 60928 entries
+- Each entry maps a chunk of naturally-aligned contiguous memory of size 4KB, 64KB, 1MB or 4MB.
+- Each packet buffer consumes 2KB.
+
+## 3.3.  Adding Filters
+
 Next, a filter is specified and added, so that the virtual interface receives traffic. Assuming there is a sockaddr to work from:
 ```c
 struct sockaddr_in sa_local; /* TODO: Fill this out somehow */
@@ -209,7 +216,10 @@ TRY(ef_filter_spec_set_ip4_local(&filter_spec, IPPROTO_UDP
 TRY(ef_vi_filter_add(&vi, driver_handle, &filter_spec, NULL));
 ```
 
+**If two applications insert the same multicast filter, a copy of the packets is delivered to each application and applications remain unaware of each other.**
+
 ## 3. 4. Receiving packets
+
 At this point, packets will start arriving at the interface, be diverted to the application, and immediately be dropped.
 So the next step is to push some packet buffers to the RX descriptor ring, to receive the incoming packets.
 For efficiency, the code pushes packet buffers eight at a time.
@@ -227,8 +237,20 @@ void rx_post( int n ) {
 ```
 So now, there are packet buffers on the descriptor ring. But once they are filled, the application will start dropping again.
 
+![Alt text](../../../pic/linux/net/onload_3.png)
+
+- Use ef_vi_receive_prefix_len() to find the offset for the packet data
+- EF_EVENT_RX_BYTES() gives the number of bytes received.
+- The EF_EVENT_RX_CONT() macro can be used to check if this is not the last part of the packet, and that the next receive (on this RX descriptor ring) should also be examined as being part of this jumbo()巨大的 frame
+
 ## 3. 5. Handling Events
+
 The next step is to handle these incoming packets, by polling the event queue.
+
+The event queue is a channel from the adapter to software which notifies software when packets arrive from the network, and when transmits complete (so that the buffers can be freed or reused). Application threads retrieve these events in one of the following ways:
+- A thread can busy-wait for an event notification by calling ef_eventq_poll() repeatedly in a tight loop. This gives the lowest latency.
+- A thread can block until event notifications arrive (or a timeout expires) by calling ef_eventq_wait(). This frees the CPU for other usage
+
 ```c
 void rx_wait(void) {
     /* Again, for efficiency, poll multiple events at once. */

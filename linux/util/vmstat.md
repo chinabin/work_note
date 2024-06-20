@@ -6,6 +6,11 @@ vmstat(Virtual Memory Statistics 虚拟内存统计) 命令用来显示 Linux �
 
 vmstat 命令报告关于内核线程、虚拟内存、磁盘、陷阱和 CPU 活动的统计信息。由 vmstat 命令生成的报告可以用于平衡系统负载活动。系统范围内的这些统计信息（所有的处理器中）都计算出以百分比表示的平均值，或者计算其总和。
 
+
+Q: vmstat输出的第一行数据为什么和其他行差别巨大？
+
+A: The first report produced gives averages since the last reboot. Additional reports give information on a sampling period of length delay. The process and memory reports are instantaneous in either case. (man vmstat)
+
 # 0x02. 命令
 
 vmstat 的常规用法是 `vmstat interval times`，即每隔 interval 秒采样一次，共采样 times 次，如果省略times，则一直采集数据到用户手动停止。
