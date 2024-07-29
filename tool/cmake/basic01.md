@@ -80,3 +80,5 @@ const char *SR_VERSION = R"SR(
 ## 2.3 打印编译参数
 
 在 CMakeLists.txt 文件中添加 `SET( CMAKE_VERBOSE_MAKEFILE on )` 然后，make 的时候就能看到打印
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) or make VERBOSE=1

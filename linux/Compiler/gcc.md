@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+[GCC 优化](https://wiki.gentoo.org/wiki/GCC_optimization/zh-cn)
+
 # 0x01. 简介
 
 # 0x02. 
@@ -17,11 +19,6 @@
 
 -fPIC
 # 表示编译为位置独立的代码，不用此选项的话编译后的代码是位置相关的所以动态载入时是通过代码拷贝的方式来满足不同进程的需要，而不能达到真正代码段共享的目的。
-
--fpic
-# Generate position-independent code if possible (small mode)
-# 关于 Large mode 和 Small mode, 简单理解为 large 对地址空间没有限制，small 限制地址空间在 2GB 以内
-
 
 -fPIE
 # Generate position-independent code for executables if possible (large mode)
@@ -67,8 +64,9 @@
 # 会列出可选项
 g++ -march=native -m32 ... -Q --help=target 
 
+# https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
 # 显示 O3 用到了哪些优化
-gcc -Q -O3 --help=optimizers` 
+gcc -Q -O3 --help=optimizers
 ```
 
 ```bash

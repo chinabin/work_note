@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+[package_manager](../system/package_manager.md)
+
 # 0x01. 简介
 
 基于 RPM 包管理，能够从指定的服务器自动下载 RPM 包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软件包，无须繁琐地一次次下载、安装。
@@ -26,6 +28,17 @@ package：安装的包名。
 - resolvedep：显示rpm软件包的依赖关系；
 - deplist：显示rpm软件包的所有依赖关系；
 - provides：查询某个程序所在安装包。
+
+```bash
+$ yum provides ifconfig
+$ yum search all ifconfig
+
+# 查看 yum 源信息
+$ yum repolist
+
+#显示所有yum仓库中的所有的软件，未来用于根据软件包名字查找
+$ yum list | grep tree
+```
 
 # 0x03. 源
 
@@ -102,11 +115,11 @@ yum makecache
 
 ## 3.1 扩展 yum 源
 
+EPEL(Extra Packages for Enterprise Linux) 包含一个叫做 'epel-release' 的包，其中包含了用于软件包签名的 gpg 密钥和软件源的信息。安装这个包到你的 Linux 上之后，你将可以通过使用类似于 yum 的工具来安装软件包和它们的依赖。在默认情况下，EPEL 仓库的稳定版本是开启的。
+
 ```
 # 扩展 yum 源
 yum install -y epel-release
-# 启用 epel 库
-yum-config-manager --enable epel
 # 刷新仓库缓存
 yum clean all && yum makecache
 # 查看启用的仓库
