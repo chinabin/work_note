@@ -3,6 +3,7 @@
 [一个程序的前世今生（三）——动态链接库和静态链接库](https://www.cnblogs.com/edver/p/13769577.html)
 [一个程序的前世今生（四）——延迟绑定和GOT与PLT](https://www.cnblogs.com/edver/p/13769582.html)
 
+[从静态到动态：调用栈帧视角下的程序内存结构](https://liujiacai.net/blog/2024/08/04/program-memory-layout/)
 
 
 
