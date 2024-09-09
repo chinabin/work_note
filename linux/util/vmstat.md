@@ -13,6 +13,8 @@ A: The first report produced gives averages since the last reboot. Additional re
 
 # 0x02. 命令
 
+![brendangregg](../../pic/linux/vmstat1.png)
+
 vmstat 的常规用法是 `vmstat interval times`，即每隔 interval 秒采样一次，共采样 times 次，如果省略times，则一直采集数据到用户手动停止。
 
 `-Sm` 对齐输出（修改输出的单位为 m）.

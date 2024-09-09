@@ -34,6 +34,8 @@ count 采样的次数，count只能和delay一起使用
 当没有参数时， mpstat 则显示系统启动以后所有信息的平均值。
 ```
 
+mpstat -P ALL 1
+
 # 0x03. 解释
 
 `%user`: 在 internal 时间段里，用户态的CPU时间  

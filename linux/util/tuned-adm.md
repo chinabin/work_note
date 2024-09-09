@@ -92,6 +92,11 @@ virtual-guest
 
 # 查看策略
 $ tuned-adm profile_info virtual-guest
+
+# 检查
+$ sudo tuned-adm verify
+Verfication succeeded, current system settings match the preset profile.
+See tuned log file ('/var/log/tuned/tuned.log') for details.
 ```
 
 ```bash

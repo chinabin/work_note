@@ -19,6 +19,8 @@ kill pid // 发送信号 15 安全停止进程
 
 当 pkill 命令行语法中不包含任何信号时，使用的缺省信号为 –15 (SIGKILL)。
 
+pkill 其实是用 pgrep 去找到进程 kill 的。pgrep 找到目标进程是通过 /proc/[pid]/stat 文件。这个文件中的进程名字其实是只有 **15** 个字符长度的。
+
 ```bash
 $ pkill -u mark,danny //结束mark,danny用户的所有进程
 $ w  //#使用w命令查询本机已经登录的用户

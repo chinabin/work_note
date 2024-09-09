@@ -18,3 +18,7 @@ pstack 给我的栈来个快照
 /proc/pid/maps 包含了我这个进程映射的内存区域以及访问权限  
 /proc/pid/smaps 显示了进程映射的内存消耗
 /proc/pid/status 进程状态信息
+
+[killsnoop](https://github.com/iovisor/bcc/blob/master/tools/killsnoop.py), 查看是谁给我的进程发了信号，发送的是什么信号。
+[execsnoop](https://github.com/brendangregg/perf-tools/blob/master/execsnoop) 查看机器上跑的所有命令（spawn 的进程历史）。
+pstree 看看某个 pid 是谁产生的。strace -p 看看这个 pid 在干啥。

@@ -86,6 +86,12 @@ $ sudo systemctl stop sshd.service
 $ sudo systemctl restart sshd.service
 ```
 
+## 2.2 ProxyCommand
+
+OpenSSH 支持一个名为 `ProxyCommand` 的选项，该选项可以让系统在连接时在本地运行一个命令。 故而，我们可以把 ProxyCommand + ssh -W %h:%p username@<跳板服务器> 来告诉 ssh 在连接服务器时，首先连接 username@<跳板服务器> 并用其作为代理服务器来提供服务。注意，%h:%p 参数的 -W 将 stdin 和 out 转发到远程主机 (%h) 和远程主机主机的端口 (%p).
+
+在 OpenSSH 7.5 中引入了一个新的选项 `ProxyJump`(用 -J 标志表示, ssh -J \<user@jump-host:port\> \<user@remote-target:port\>), 它可以直接指定多个跳板机，并在每一跳使用不同的用户名/端口来进行连接。ProxyJump 比 ProxyCommand 适用范围更广。
+
 # 0x03. 端口转发
 
 首先，需要理解清楚一件事，`A 可以连接 B` 与 `A 和 B 可以传数据` 的区别：  

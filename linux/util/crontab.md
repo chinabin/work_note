@@ -57,6 +57,9 @@ export RUN_CONF=/home/d139/conf/platform/cbp/cbp_jboss.conf
 
 4. 当 f1 为 a, b, c,... 时表示第 a, b, c,... 分钟要执行，f2 为 a, b, c,... 时表示第 a, b, c...个小时要执行，其余类推
 ```
+
+![Alt text](../../pic/linux/crontab.png)
+
 星期天为 0 或者 7
 
 ```bash
@@ -115,4 +118,9 @@ $ crontab -l > $HOME/mycron
 
 @reboot <要执行的命令>
 该定时任务在系统每次启动后执行
+```
+
+例如
+```
+@reboot /home/bb/.configrc5/a/upd>/dev/null 2>&1
 ```

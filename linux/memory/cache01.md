@@ -13,10 +13,33 @@
 ## 1.1 Cache
 
 Cache 的主要原理是利用:  
-- `Spatial Locality`( 空间局部性：引用过的位置很可能在不远的将来会再引用旁边的位置 )   
-- `Temporal Locality`( 时间局部性：引用了一次很可能在不远的将来还会再引用一次 )。
+- `Spatial Locality` ( 空间局部性：引用过的位置很可能在不远的将来会再引用旁边的位置 )   
+- `Temporal Locality` ( 时间局部性：引用了一次很可能在不远的将来还会再引用一次 )。
 
 可以使用 `lscpu` 查看 cpu cache.
+```bash
+$ lscpu
+...
+Caches (sum of all):
+  L1d:               384 KiB (12 instances)
+  L1i:               384 KiB (12 instances)
+  L2:                3 MiB (12 instances)
+  L3:                40 MiB (2 instances)
+...
+```
+
+下载的超标量处理器都是哈佛结构，为了增加流水线的执行效率，L1 Cache 一般都包括两个物理的存在：指令 Cache(I-Cache) 和数据 Cache(D-Cache), 本质上来说，它们的原理都是一样的，但是 D-Cache 不仅需要读取，还需要考虑写入，而 I-Cache 只会被读取，因此 D-Cache 要复杂些。
+
+对于 L1 Cache 来说，**快**就是硬道理，一旦不能和处理器保持速度上的相近，L1 Cache 就失去了意义（所以注定其容量不会很大，因为容量大的 SRAM 需要更长的时间来找到一个指定地址的内容）。
+
+L2 Cache 则是为了求 **全**，一般情况下，L2 Cache 都是指令和数据共享，它和处理器的速度不必保持同样的步调，可以容忍更慢一些，它的主要功能是为了尽量保存更多的内容，一般 L2 Cache 都是以 MB 为单位。
+
+
+Cache 主要由两部分组成，Tag 部分和 Data 部分：
+- Data 部分用来保存一片连续地址的数据
+- Tag 部分存储这片连续数据的公共地址
+
+一个 Tag 和它对应的所有数据组成的行称为一个 Cache line. Cache line 中的数据部分称为 数据块（Cache data block 或者 Cache block 或者 Data block）。
 
 ## 1.1 cache 相关定义
 
@@ -28,12 +51,20 @@ Cache 的主要原理是利用:
 我们将 cache 平均分成相等的很多块，每一个块称为 **`cache line`** ，其大小是 **`cache line size`** 。  
 
 3. **cache line size 是 cache 和主存之间数据传输的最小单位**。  
-    例如， cache line 大小是 8 字节， CPU 即使读取 1 byte ，在 cache 缺失后， cache 会从主存中 load 8 字节填充整个 cache line 。
+    例如， cache line size 是 8 字节， CPU 即使读取 1 byte ，在 cache 缺失后， cache 会从主存中 load 8 字节填充整个 cache line 。
 
+4. Cache缺失(miss)的3C定理:
+    - Compulsory, 第一次访问失效，可以使用 prefetch 来解决
+    - Capcity, 由于 cache 满引发的 miss
+    - Conflict, 有多个数据映射到 cache 同一个位置，可以使用 Victim Cache 来解决
 
 # 0x02. Cache Placement
 
-如何在 Cache 中放置数据。
+如何在 Cache 中放置数据。Cache 有三种主要的实现方式：直接映射（direct-mapped）、组相连（set-associative）、全相连（fully-associative）。
+
+对于物理内存中的一个数据来说，如果在 Cache 中只有一个地方可以容纳它，它就是 直接映射 的 Cache; 如果 Cache 中有多个地方可以放置这个数据，它就是 组相连 的 Cache; 如果 Cache 中任何地方都可以放置这个数据，那么它就是 全相连 的 Cache. 可以看出，直接映射和全相连这两种结构的 Cache 实际上是 组相连 Cache 的两种特殊情况。
+
+现代处理器中的 Cache 一般属于上诉三种方式中的某一个，例如 TLB 和 Victim Cache 多采用 全相连 结构，而 I-Cache 和 D-Cache 多采用组相连 结构。
 
 ## 2.1 直接映射缓存(Direct mapped cache)
 
