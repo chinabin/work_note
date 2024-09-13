@@ -52,7 +52,7 @@ echo "/corefile/core-%e-%p-%t" > core_pattern，可以将core文件统一生成�
 
 ## 2.2 core 产生原因
 
-`kill -l` 可以查看信号
+`kill -l` 可以查看信号，使用 man 7 signal 命令查看系统对每个信号作用的描述
 ```
 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL
  5) SIGTRAP      6) SIGABRT      7) SIGBUS       8) SIGFPE

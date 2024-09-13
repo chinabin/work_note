@@ -2,6 +2,8 @@
 
 # 0x01. 简介
 
+[进程ID及进程间的关系](https://mazhen.tech/p/%E8%BF%9B%E7%A8%8Bid%E5%8F%8A%E8%BF%9B%E7%A8%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)
+
 # 0x02. session
 
 session 就是一组进程的集合，session id 就是这个 session 中 leader 的进程 ID。

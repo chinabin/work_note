@@ -28,7 +28,29 @@ Caches (sum of all):
 ...
 ```
 
-下载的超标量处理器都是哈佛结构，为了增加流水线的执行效率，L1 Cache 一般都包括两个物理的存在：指令 Cache(I-Cache) 和数据 Cache(D-Cache), 本质上来说，它们的原理都是一样的，但是 D-Cache 不仅需要读取，还需要考虑写入，而 I-Cache 只会被读取，因此 D-Cache 要复杂些。
+或者
+
+```bash
+# 查看 cache line 的大小
+$ getconf -a | grep CACHE
+LEVEL1_ICACHE_SIZE                 32768
+LEVEL1_ICACHE_ASSOC                8
+LEVEL1_ICACHE_LINESIZE             64
+LEVEL1_DCACHE_SIZE                 32768
+LEVEL1_DCACHE_ASSOC                8
+LEVEL1_DCACHE_LINESIZE             64
+LEVEL2_CACHE_SIZE                  1048576
+LEVEL2_CACHE_ASSOC                 16
+LEVEL2_CACHE_LINESIZE              64
+LEVEL3_CACHE_SIZE                  37486592
+LEVEL3_CACHE_ASSOC                 11
+LEVEL3_CACHE_LINESIZE              64
+LEVEL4_CACHE_SIZE                  0
+LEVEL4_CACHE_ASSOC                 0
+LEVEL4_CACHE_LINESIZE              0
+```
+
+现代的超标量处理器都是哈佛结构，为了增加流水线的执行效率，L1 Cache 一般都包括两个物理的存在：指令 Cache(I-Cache) 和数据 Cache(D-Cache), 本质上来说，它们的原理都是一样的，但是 D-Cache 不仅需要读取，还需要考虑写入，而 I-Cache 只会被读取，因此 D-Cache 要复杂些。
 
 对于 L1 Cache 来说，**快**就是硬道理，一旦不能和处理器保持速度上的相近，L1 Cache 就失去了意义（所以注定其容量不会很大，因为容量大的 SRAM 需要更长的时间来找到一个指定地址的内容）。
 
@@ -62,52 +84,41 @@ Cache 主要由两部分组成，Tag 部分和 Data 部分：
 
 如何在 Cache 中放置数据。Cache 有三种主要的实现方式：直接映射（direct-mapped）、组相连（set-associative）、全相连（fully-associative）。
 
-对于物理内存中的一个数据来说，如果在 Cache 中只有一个地方可以容纳它，它就是 直接映射 的 Cache; 如果 Cache 中有多个地方可以放置这个数据，它就是 组相连 的 Cache; 如果 Cache 中任何地方都可以放置这个数据，那么它就是 全相连 的 Cache. 可以看出，直接映射和全相连这两种结构的 Cache 实际上是 组相连 Cache 的两种特殊情况。
+直接映射和全相连这两种结构的 Cache 实际上是 组相连 Cache 的两种特殊情况。
 
-现代处理器中的 Cache 一般属于上诉三种方式中的某一个，例如 TLB 和 Victim Cache 多采用 全相连 结构，而 I-Cache 和 D-Cache 多采用组相连 结构。
+现代处理器中的 Cache 一般属于上述三种方式中的某一个，例如 TLB 和 Victim Cache 多采用 全相连 结构，而 I-Cache 和 D-Cache 多采用组相连 结构。
 
 ## 2.1 直接映射缓存(Direct mapped cache)
 
 64 Bytes 大小的 cache ， cache line 大小是 8 字节。  
 我们可以类似把这块 cache 想象成一个数组，数组总共 8 个元素，每个元素大小是 8 字节。
 
-假如 CPU 从 0x0654 地址读取一个字节，如何判断数据是否在 cache 中命中呢？
+假如 CPU 从 0x0654(0110 0101 0100) 地址读取一个字节，如何判断数据是否在 cache 中命中呢？
 
-1. 利用地址 3 bits（下图，地址黄色部分）查找某一行，这部分 bit 称之为 **index**。  
+1. 第一步，利用地址 3 bits（下图，地址黄色部分）查找某一行，这部分 bit 称之为 **index**。  
     其大小和 cache line 的数量有关，是其对数。假设有 16 行 cache line ，则 index 应该是 4 位。
-
-2. 利用地址 3 bits（下图，地址蓝色部分）用来寻找这一行中 8 个字节的某一字节，我们称这部分 bit 组合为 **offset**。   
+2. 第二步，查看 valid bit ，这个 bit 用来表示 cache line 中数据是否有效（例如：1代表有效；0代表无效），如果有效，则比较 tag 是否相等
+3. 第三步，如果相等，利用地址 3 bits（下图，地址蓝色部分）用来寻找这一行中 8 个字节的某一字节，我们称这部分 bit 组合为 **offset**。   
     其大小和 cache line 的大小有关，是其对数。假设有 cache line size 等于 64 ，则 offset 应该是 6 位。
 
     ![3](../../pic/cache3.png)
 
 这样我们就找到了第 3 行数据的第 5 个字节。
 
-### 2.1.2 tag array
-
-`tag array` 和 `data array` 一一对应。**每一个 cache line 都对应唯一一个 tag** ， tag 中保存的是整个地址位宽去除 index 和 offset 使用的 bit 剩余部分（如上图地址绿色部分）。
-
-`tag` 、 `index` 和 `offset` 三者组合就可以唯一确定一个地址了。
-
-当我们根据地址中 index 位找到 cache line 后，取出当前 cache line 对应的 tag ，然后和地址中的 tag 进行比较，如果相等，这说明 cache 命中。如果不相等，说明当前 cache line 存储的是其他地址的数据，这就是 cache 缺失。  
-
-在上述图中，我们看到 tag 的值是 0x19 ，和地址中的 tag 部分相等，因此在本次访问会命中。
-
-我们可以从图中看到 tag 旁边还有一个 valid bit ，这个 bit 用来表示 cache line 中数据是否有效（例如：1代表有效；0代表无效）。所以，上述比较 tag 确认 cache line 是否命中之前还会检查 valid bit 是否有效。只有在有效的情况下，比较 tag 才有意义。如果无效，直接判定 cache 缺失。
-
------
-
-再看一个例子：512 Bytes cache size，64 Bytes cache line size。根据之前的地址划分方法， offset、index 和 tag 分别使用 6 bits、3 bits 和 39 bits(假设地址宽度是 48 bits)。
+再看一个例子：512 Bytes cache size, 64 Bytes cache line size。根据之前的地址划分方法， offset、index 和 tag 分别使用 6 bits、3 bits 和 39 bits(假设地址宽度是 48 bits)。
 
 ![4](../../pic/cache4.png)
 
-### 2.2.2 注意
-
-`tag array` 存储在硬件 cache 里，占用真实 cache 内存。但是我们提到 cache size 的时候，并没有考虑 tag 的占用。所以计算时，请忽略 tag 占用。
+512 / 64 = 8, 8 个 cacheline, 所以 index 只需要 3 位，cache line size 等于 64, 所以 offset 只需要 6 位。
 
 ### 2.2.3 cache thrashing
 
-我们现在思考一个问题，对于地址 0x00 、 0x40 、 0x80 地址中 index 部分是一样的。因此，这 3 个地址对应的 cache line 是同一个。所以，当我们访问 0x00 地址时， cache 会缺失，然后数据会从主存中加载到 cache 中第 0 行 cache line 。当我们访问 0x40 地址时，依然索引到 cache 中第 0 行 cache line ，由于此时 cache line 中存储的是地址 0x00 地址对应的数据，所以此时依然会 cache 缺失。然后从主存中加载 0x40 地址数据到第一行 cache line 中。同理，继续访问 0x80 地址，依然会 cache 缺失。这就相当于每次访问数据都要从主存中读取，所以 cache 的存在并没有对性能有什么提升。访问 0x40 地址时，就会把 0x00 地址缓存的数据替换。这种现象叫做 `cache 颠簸`（`cache thrashing`）。针对这个问题，我们引入 **`多路组相连缓存`**。
+我们现在思考一个问题，对于地址 0x00 、 0x40 、 0x80 地址中 index 部分是一样的。因此，这 3 个地址对应的 cache line 是同一个。所以:
+- 当我们访问 0x00 地址时， cache 会缺失，然后数据会从主存中加载到 cache 。
+- 当我们访问 0x40 地址时，此时 cache line 中存储的是地址 0x00 地址对应的数据，所以此时依然会 cache 缺失。然后从主存中加载 0x40 地址数据到 cache 中。
+- 同理，继续访问 0x80 地址，依然会 cache 缺失。
+  
+这就相当于每次访问数据都要从主存中读取， cache 的存在并没有对性能有什么提升。访问 0x40 地址时，就会把 0x00 地址缓存的数据替换。这种现象叫做 `cache 颠簸`（`cache thrashing`）。针对这个问题，我们引入 **`多路组相连缓存`**。
 
 
 ## 2.2 两路组相连缓存(Two-way set associative cache)
@@ -120,18 +131,26 @@ Cache 主要由两部分组成，Tag 部分和 Data 部分：
 cache 被分成 2 路，每路包含 4 行 cache line 。我们将所有索引一样的 cache line 组合在一起称之为 `组`（图中的 set）。
 
 
-例如，上图中一个组有两个 cache line ，总共 4 个组。我们依然假设从地址 0x0654 地址读取一个字节数据。由于 cache line size 是 8 Bytes，因此 offset 需要 3 bits，这和之前直接映射缓存一样。不一样的地方是 index ，在两路组相连缓存中， index 只需要 2 bits ，因为一路只有 4 行 cache line 。上面的例子根据 index 找到第 4 行 cache line ，第 4 行对应 2 个 cache line ，分别对应 way 0 和 way 1 。因此 index 也可以称作 `set index` （组索引）。先根据 index 找到 set ，然后将组内的所有 cache line 对应的 tag 取出来和地址中的 tag 部分对比，如果其中一个相等就意味着命中。
+例如，上图中一个组有两个 cache line ，总共 4 个组。我们依然假设从地址 0x0654 (0110 0101 0100) 地址读取一个字节数据。由于 cache line size 是 8 Bytes，因此 offset 需要 3 bits。在两路组相连缓存中， index 只需要 2 bits ，因为一路只有 4 行 cache line 。
+- 第一步，根据 index 找到第 3 行 cache line ，对应 2 个 cache line ，分别对应 way 0 和 way 1 。因此 index 也可以称作 `set index` （组索引）。
+- 第二步，查看 valid bit ，如果有效，将组内的所有 cache line 对应的 tag 取出来和地址中的 tag 部分对比，如果其中一个相等就意味着命中。
+- 第三部，取数据
 
 **组(set) 是横着的，等于 cache line 的条数。**  
 **路(way) 是竖着的，等于 data array 的个数。**
 
 对于上一个例子，假如 0x00 被加载到 way0 ，0x40 被加载到 way1 ，这样就降低了颠簸。
 
+### 2.2.1
+
+在现实的处理器中应用最广泛，其中的 tag 和 data 通常分成两个 SRAM, 称为 tag sram 和 data sram, 可以同时访问这两个部分，这种方式称为 并行访问，如果先访问 tag sram 部分，根据 tag 比较结果再去访问 data sram 部分，这种方式就称为 串行访问，两种方式各有优缺点。
 
 ## 2.3 全相连缓存(Full associative cache)
 
 既然组相连缓存那么好，如果所有的 cache line 都在一个组内。岂不是性能更好。是的，这种缓存就是全相连缓存。  
 也就是 `set = 1 ，way = cache size / cache line size`
+
+这种方式相当于直接使用存储器的内容来寻址，从存储器中找到匹配想项，这其实就是内容寻址的存储器（Content Address Memory, CAM），实际当中，都是使用 CAM 存储 tag 的值，用普通 SRAM 存储数据。TLB 就是使用全相连的方式实现。
 
 我们依然以 64 Byts 大小 cache 为例说明。
 
@@ -177,22 +196,3 @@ cache 被分成 2 路，每路包含 4 行 cache line 。我们将所有索引�
 
 ![1](../../pic/linux/memory/内存管理-Cache.png)
 
-```bash
-# 查看 cache line 的大小
-$ getconf -a | grep CACHE
-LEVEL1_ICACHE_SIZE                 32768
-LEVEL1_ICACHE_ASSOC                8
-LEVEL1_ICACHE_LINESIZE             64
-LEVEL1_DCACHE_SIZE                 32768
-LEVEL1_DCACHE_ASSOC                8
-LEVEL1_DCACHE_LINESIZE             64
-LEVEL2_CACHE_SIZE                  1048576
-LEVEL2_CACHE_ASSOC                 16
-LEVEL2_CACHE_LINESIZE              64
-LEVEL3_CACHE_SIZE                  37486592
-LEVEL3_CACHE_ASSOC                 11
-LEVEL3_CACHE_LINESIZE              64
-LEVEL4_CACHE_SIZE                  0
-LEVEL4_CACHE_ASSOC                 0
-LEVEL4_CACHE_LINESIZE              0
-```

@@ -19,6 +19,7 @@ $ timeout 5m ping www.baidu.com
 ```bash
 # -s : --signal=信号
 # 可以用 kill -l 查看信号列表
+# 使用 man 7 signal 命令查看系统对每个信号作用的描述：
 $ timeout -s SIGKILL 5s ping www.baidu.com
 ```
 

@@ -15,7 +15,8 @@
 # 0x01. 简介
 
 [cache01](./cache01.md): cache 简介 + cache placement: 直接映射、组相连、全相连  
-[cache02](./cache01.md): cache 的更新策略  
+[cache02](./cache01.md): cache 的更新和替换策略（cache hit 和 cache miss 的 store 指令如何执行，cache 满了该如何腾出位置）  
+[cache07](./cache07.md): 源自 超标量处理器设计 2.2 章节，讲的是如何提高 Cache 性能。  
 [cache03](./cache03.md): Cache 的组织方式  
 [cache04](./cache04.md): 多核之间的 Cache 如何保持一致性  
 [cache05](./cache05.md): 编程时候因为 cache 导致的性能问题   
@@ -63,3 +64,9 @@
     一般缓存的搭配是这样的：
     - 写穿 & 写不分配 (Write Through & No-Write Allocate) 
     - 写回 & 写分配  (Write Back & Write Allocate) 
+
+# 0x03. perf 检测
+
+```
+perf stat -e cache-misses,major-faults,minor-faults,L1-dcache-load-misses,L1-dcache-loads,L1-dcache-stores,L1-icache-load-misses,cycles,instructions ./app
+```

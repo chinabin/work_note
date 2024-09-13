@@ -2,6 +2,8 @@
 
 [Sudo命令的使用技巧](https://www.escapelife.site/posts/d3407f3a.html)
 
+[如何让用户拥有sudo权限](https://mazhen.tech/p/%E5%A6%82%E4%BD%95%E8%AE%A9%E7%94%A8%E6%88%B7%E6%8B%A5%E6%9C%89sudo%E6%9D%83%E9%99%90/)
+
 # 0x01. 简介
 
 # 0x02. 

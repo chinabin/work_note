@@ -1,23 +1,8 @@
 # 0x00. 导读
 
-系统级性能优化通常包括两个阶段：性能剖析和代码优化：
 
-1. 性能剖析的目标是寻找性能瓶颈，查找引发性能问题的原因及热点代码;
-2. 代码优化的目标是针对具体性能问题而优化代码或调整编译选项，以改善软件性能。
 
-在步骤一性能剖析阶段，最常用的工具就是 perf。
 
-perf_events 是 Linux 核心內建的系統效能分析工具。perf_events 一開始的主要功能是存取硬件性能计数器，所以最早的名字是 Performance Counters for Linux (PCL)。隨著功能不斷擴充，perf_events 能處理的事件來源已經不限於硬件性能计数器，所以改名為 perf_events。
-
-有時候 perf_events 也被簡稱為 Perf。然而因為 Perf 作為一個單字是難以搜尋的常見字𢑥，所以 Vince Weaver 與 Brendan Gregg 前輩通常使用 perf_events 稱呼這套工具。
-
-perf_events 這套工具分為三個部分：
-
-- 在 User Space 的 perf 指令
-- 在 Kernel Space 負責處理和儲存事件記錄的機制
-- 在 Kernel Space 的事件來源：硬件性能计数器、中斷、Page Fault、系統呼叫、KProbe、UProbe、FTrace、Trace Point 等等。
-
-如果負載大多數時間都在執行狀態（CPU-bound 負載），最常使用的事件來源是硬件性能计数器。如果負載要花不少時間從硬盘或网络读写数据（IO-bound 負載）或者是要和其他負載共用特定資源（例如：Mutex、Semaphore 等），則建議改用 FTrace、Trace Point、KProbe 與 UProbe 等事件來源。
 
 ------
 
@@ -25,9 +10,6 @@ perf 的原理是取样测量：每隔一个固定的时间，就在 CPU 上（�
 
 取样测量的基本概念就是通过记录下来的样本回推程序的执行状况，其最大的有点就是测量过程的额外负担可以通过取样频率调整。常用的頻率是 97、997、9973 等质数。perf_events 的取樣頻率的上限大約是 10,000 Hz。這個數值可以透過 `/proc/sys/kernel/perf_event_max_sample_rate` 修改。
 
-取样测量也有它的缺点。其中一个是取样测量通常以执行时间作为母体。所以比较不容易观察到输入输出或同步造成的效能问题。其二是取样测量的基本理论是以统计样本次数回推真实的行为，我们难以从样本回推真实各种事件的顺序。如果效能问题和事件发生的顺序有关，取样测量比较没有办法告诉我们问题的来源。虽然有上述问题，取样测量还是很好的效能测量方法。它的低额外负担和可以指定取样频率还是让它成为效能测量的首选。
-
-许多 CPU 会内建效能监控单元（Performance Monitoring Unit）有时候简记为 PMU 。它能提供 Cycles、Instructions Retired、Cache Misses、L1 I-Cache Load Misses、L1 D-Cache Load Misses、Last Level Cache Misses 等重要资讯。
 
 -----------
 
@@ -68,37 +50,9 @@ DSO(Dynamic Shared Object)
 
 ![Alt text](../../../pic/linux/perf/perf_events_workflow.png)
 
-## 1.3 使用方式
-
-perf的使用大体可以有三种方式：
-
-- Counting：统计的方式，统计事件发生的次数，这种方式不生成perf.data文件，例如perf stat, perf top
-- Sampling: 采样的方式，采样事件，并写入到内核buffer中，并异步写入perf.data文件中，perf.data文件可以被perf report或者perf script 命令读取。
-- bpf programs on events (https://www.ibm.com/developerworks/cn/linux/l-lo-eBPF-history/index.html), Kernel 4.4+新增功能 别管。
-
-```
---list-cmds
-List the most commonly used perf commands.
- 
---list-opts
-List available perf options.
-```
 
 # 0x02. 事件
 
-事件可以分为如下三种：
-- `Hardware Event`  
-    由 PMU 部件产生，在特定的条件下探测性能事件是否发生以及发生的次数。比如 cache 命中。`sudo perf list hardware`
-
-- `Software Event`  
-    由内核产生的事件，分布在各个功能模块中，统计与操作系统相关的性能事件。比如进程切换、tick数等。`sudo perf list sw`
-
-- `Tracepoint Event`  
-    由内核中静态 tracepoint 所触发的事件，这些 tracepoint 用来判断程序运行期间内核的行为细节，比如slab分配器的分配次数等。  
-    tracepoints 是散落在内核源代码中的一些 hook ，它们可以在特定的代码被执行到时触发。  
-    `sudo ls /sys/kernel/debug/tracing/events`
-
-![Alt text](../../../pic/linux/perf/perf.png)
 
 一个事件可以有子事件(或掩码)。 在某些处理器上的某些事件，可以组合掩码，并在其中一个子事件发生时进行测量。最后，一个事件还可以有修饰符，也就是说，通过过滤器可以改变事件被计数的时间或方式。
 

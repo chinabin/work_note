@@ -10,12 +10,16 @@ cache 策略: Cache update policy and Cache allocation policy
 
 ## 2.1 Cache 更新策略( Cache update policy )
 
-指当发生 `cache hit` 时，数据已经写入 cache 了，何时更新内存数据。 
+当执行一条 store 指令时，例如写入 D-Cache 了，这时候会造成 D-Cache 和下级存储器对于同一个地址有着不同的数据，这就是 不一致（non-consistent）。
 
 - `write through` (写直通)  
-    write is done synchronously both to the cache and to the backing store. 
+    数据写到 Cache 的时候也写到下级存储器。
+    下级存储器的访问时间相对是较长的，每次执行 store 指令都向这样的慢速存储器写入数据，处理器的执行效率肯定不会很高了。
 - `write back` (写回)  
-    initially, writing is done only to the cache. The write to the backing store is postponed until the modified content is about to be replaced by another cache block. 
+    数据只写到 Cache 。下级存储器的更新时间推迟，例如直到这个 Cache 要被替换新的内容进来的时候。
+    这样做能获得比较好的性能，但是会造成 Cache, 例如 D-Cache 和下级存储器中有很多地址中的数据不一致，给存储器的一致性管理带来一定的负担。
+
+当然，这是假设在执行 store 指令的时候，要写入的地址总是在 Cache 中存在，而实际上，有可能地址是不在 Cache 中的，这就发生了 写缺失（write miss）。这个时候该如何做？这就涉及 Cache 分配策略了。
 
 ## 2.2 Cache 分配策略( Cache allocation policy )
 
@@ -60,3 +64,9 @@ cache 策略: Cache update policy and Cache allocation policy
 ![10](../../pic/cache10.png)
 
 当写回操作完成，我们将主存中 0x28 地址开始的 8 个字节加载到该 cache line 中( 更新 entry )，并清除 dirty bit 。然后按照 cache hit  流程将找到 0x52 返回给 CPU 。
+
+# 0x03. Cache 的替换策略
+
+简单来说，不管是读取还是写入 Cache 时发生了缺失，都需要从对应的 Cache 中找出一个 line 来存放从下级存储器中读出的数据，如果此时 Cache 中所有的 line 都被占用了呢，那么就需要替换掉一个，如何从这些有效的 Cache line 中找到一个并替换，这就是 Cache replacement 策略。
+
+常用的有 近期最少使用法（LRU）、随机替换（Random Replacement）等。

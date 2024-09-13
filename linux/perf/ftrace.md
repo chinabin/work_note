@@ -3,6 +3,8 @@
 [Ftrace的配置和使用](https://www.cnblogs.com/hpyu/p/14348151.html)  
 [Ftrace使用及实现机制](https://www.cnblogs.com/wsg1100/p/17020703.html)
 
+[从Ftrace开始内核探索之旅](https://mazhen.tech/p/%E4%BB%8Eftrace%E5%BC%80%E5%A7%8B%E5%86%85%E6%A0%B8%E6%8E%A2%E7%B4%A2%E4%B9%8B%E6%97%85/)
+
 # 0x01. 简介
 
 ftrace 是基于 Linux 中 tracefs 实现的一种可以用来追踪内核函数执行时间、调用关系、调用堆栈等信息的文件系统。
