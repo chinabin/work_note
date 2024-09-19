@@ -6,7 +6,7 @@
 
 调试信息是由编译器在编译机器代码时一起生成的，**它是可执行文件和源代码之间关系的一种描述。调试信息根据预定义的格式被编码到机器代码中。**
 
-在过去的年代，对应于各种架构，有很多格式被发明了出来。最经典和广泛使用的格式（stabs，COFF，PE-COFF，OMF，IEEE-695）就是 `DWARF` ，在 Linux 平台和类 Unix(Unix-y) 平台上，`DWARF` 被用来描述 `ELF` 格式可执行文件的调试信息，可以说，它无处不在。
+在过去的年代，对应于各种架构，有很多格式被发明了出来。最经典和广泛使用的格式（stabs(symbol table strings)，COFF，PE-COFF，OMF，IEEE-695）就是 `DWARF` ，在 Linux 平台和类 Unix(Unix-y) 平台上，`DWARF` 被用来描述 `ELF` 格式可执行文件的调试信息，可以说，它无处不在。
 
 # 0x01. 简介
 
@@ -16,11 +16,15 @@ DWARF 必然是复杂的，因为它需要解决一个很难办的问题--向调
 
 # 0x02. 查看 dwarf
 
-查看的前提是 程序编译的时候需要指定 `-gdwarf-4` 。
+查看的前提是 程序编译的时候需要指定 `-gdwarf-4`, 编译过程会产生很多 .dSYM 文件 。
+
+生成时机：
+![Alt text](../../pic/linux/ELF/dwarf_generate.png)
+dSYM 文件和 DWARF 文件在编译时生成是根据链接动作中链接脚本下的符号解析与重定位构建。
 
 Q: DWARF 信息在 ELF 文件内部何处？  
 
-.debug_ 开头的 section 就是 DWARF 调试 sections:  
+DWARF 调试信息根据描述对象的不同，在最终存储到不同的 section, section 名称均以前缀 .debug_ 开头。:  
 
 ```bash
 $ objdump -h a.out      # or readelf -S a.out
@@ -37,7 +41,24 @@ $ objdump -h a.out      # or readelf -S a.out
                   CONTENTS, READONLY, DEBUGGING
 ```
 
+![Alt text](../../pic/linux/ELF/dwarf_info.png)
+
 如果想查看各个调试 section 的内容，可以用 `readelf -w* a.out` ，* 是调试 section 的第一个字母，例如 -wi 是查看 .debug_info 的内容，-wl 是查看 .debug_line 的内容。
+
+常见的ELF sections及其存储的内容如下:
+
+- .debug_abbrev, 存储.debug_info中使用的缩写信息；
+- .debug_arranges, 存储一个加速访问的查询表，通过内存地址查询对应编译单元信息；
+- .debug_frame, 存储调用栈帧信息；
+- .debug_info, 存储核心DWARF数据，包含了描述变量、代码等的DIEs；
+- .debug_line, 存储行号表程序 (程序指令由行号表状态机执行，执行后构建出完整的行号表)
+- .debug_loc, 存储location描述信息；
+- .debug_macinfo, 存储宏相关描述信息；
+- .debug_pubnames, 存储一个加速访问的查询表，通过名称查询全局对象和函数；
+- .debug_pubtypes, 存储一个加速访问的查询表，通过名称查询全局类型；
+- .debug_ranges, 存储DIEs中引用的address ranges；
+- .debug_str, 存储.debug_info中引用的字符串表，也是通过偏移量来引用；
+- .debug_types, 存储描述数据类型相关的DIEs；
 
 # 0x04.总结
 

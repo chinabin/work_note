@@ -2,6 +2,8 @@
 
 非常好的一篇文章，本文大部分来源于此：[深入探索 perf CPU Profiling 实现原理](https://mazhen.tech/p/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%B4%A2-perf-cpu-profiling-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/)
 
+多看看 [神文](https://www.brendangregg.com/perf.html)
+
 # 0x01. 简介
 
 系统级性能优化通常包括两个阶段：性能剖析和代码优化：
@@ -47,6 +49,15 @@ perf 支持来自硬件和软件方面的各种事件。硬件事件来自芯片
 
 ![Alt text](../../../pic/linux/perf/perf.png)
 
+指定性能事件的时候可以通过冒号添加修饰符
+```
+-e <event>:u          //userspace
+-e <event>:k          //kernel
+-e <event>:h          //hypervisor
+-e <event>:G          //guest counting(in KVM guests)
+-e <event>:H          //host counting(not in KVM guests)
+```
+
 # 0x04. 背景知识
 
 ```bash
@@ -76,7 +87,7 @@ CPU cycles （周期）是 CPU 执行指令的时间单位，而时钟频率表�
 
 在使用 perf record 记录 PMC 事件时，会使用一个默认的采样频率，不是每个事件都会被记录。例如记录 cycles 事件：
 ```bash
-$ perf record -vve cycles -a sleep 1
+$ perf record -vve cycles -a -g -- sleep 10
 Using CPUID GenuineIntel-6-45-1
 DEBUGINFOD_URLS=
 nr_cblocks: 0
@@ -146,6 +157,8 @@ perf 正是利用 Frame Pointer，还原采样时的代码执行路径。
 - –call-graph lbr： 使用 Intel 的 last branch record (LBR)
 - –call-graph fp：使用 Frame Pointer ，缺省方法
 
+函数调用栈和符号解析是使用 perf 的两大阻力，前者影响观测准确性，后者影响观测可读性。[symbol_record](./symbol_record.md)
+
 # 0x05. 总结
 
 ```bash
@@ -165,3 +178,16 @@ perf 是事件驱动的方式工作，这个命令没有指定 -e 参数，会�
 操作系统为了安全会限制用户进程对关键资源的访问，将系统分为了用户态和内核态，用户态的代码必须通过**系统调用（system call ）**访问核心资源。所以在执行系统调用时，进程具有两个栈：用户栈（User Stack）和内核栈（Kernel Stack）。为了还原包含了用户栈和内核栈在内完整的调用栈，我们探索了进程虚拟地址空间的布局，以及系统调用的实现：原来在系统调用时，会将进程用户态的执行状态（rsp、rip等寄存器）保存在内核数据结构 [struct pt_regs](https://elixir.bootlin.com/linux/v6.6.1/source/arch/x86/include/asm/ptrace.h#L59) 内，这样就能通过 Frame Pointer 和 pt_regs 分别还原内核栈和用户栈。
 
 怎么获取采样发生时刻 CPU 寄存器的内容呢？在特定的时间间隔到达时，也就是该采样的时刻，APIC 会触发 PMI 中断，CPU 在将控制权转给中断处理程序之前，将当前的寄存器状态保存到 pt_regs，然后作为参数传递给 perf_event_nmi_handler。这样 perf 就拿到了采样发生时刻，CPU 寄存器的内容。
+
+# 0x06. 其它
+
+在 perf 的某些命令中，用户可以使用 -- 来指示后面跟随的选项将被直接传递给 perf xxx 命令，而不再是当前命令的选项。例如
+```bash
+$ sudo perf c2c record -- -g -a
+
+# 1. perf c2c record 是 perf c2c 模式下的记录命令。
+# 2. -- 后面的选项 -g -a 是直接传递给 perf record 的。
+```
+在这个例子中，-- 分隔了 perf c2c record 的自身选项和传递给 perf record 的选项。这允许用户灵活地传递与 perf record 相关的任何参数，而无需在不同的命令模式下进行冗余设置。
+
+-- 分隔符：在很多命令行工具中，-- 表示命令的选项结束，后面的内容直接传递给底层工具（如 perf record），而不会被解释为当前命令的选项。

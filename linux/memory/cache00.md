@@ -67,6 +67,8 @@
 
 # 0x03. perf 检测
 
+perf c2c
+
 ```
 perf stat -e cache-misses,major-faults,minor-faults,L1-dcache-load-misses,L1-dcache-loads,L1-dcache-stores,L1-icache-load-misses,cycles,instructions ./app
 ```

@@ -1,0 +1,1806 @@
+=================================================
+            Trace Event Information              
+=================================================
+  Total records                     :     330198
+  Locked Load/Store Operations      :      28067
+  Load Operations                   :      54397
+  Loads - uncacheable               :          0
+  Loads - IO                        :          0
+  Loads - Miss                      :          0
+  Loads - no mapping                :         13
+  Load Fill Buffer Hit              :        537
+  Load L1D hit                      :      51066
+  Load L2D hit                      :       1363
+  Load LLC hit                      :       1269
+  Load Local HITM                   :       1133
+  Load Remote HITM                  :          0
+  Load Remote HIT                   :          0
+  Load Local DRAM                   :        149
+  Load Remote DRAM                  :          0
+  Load MESI State Exclusive         :          0
+  Load MESI State Shared            :        149
+  Load LLC Misses                   :        149
+  LLC Misses to Local DRAM          :      100.0%
+  LLC Misses to Remote DRAM         :        0.0%
+  LLC Misses to Remote cache (HIT)  :        0.0%
+  LLC Misses to Remote cache (HITM) :        0.0%
+  Store Operations                  :     275801
+  Store - uncacheable               :          0
+  Store - no mapping                :          0
+  Store L1D Hit                     :     275712
+  Store L1D Miss                    :         89
+  No Page Map Rejects               :        412
+  Unable to parse data source       :          0
+
+=================================================
+    Global Shared Cache Line Event Information   
+=================================================
+  Total Shared Cache Lines          :         51
+  Load HITs on shared lines         :      12787
+  Fill Buffer Hits on shared lines  :        249
+  L1D hits on shared lines          :      11307
+  L2D hits on shared lines          :         56
+  LLC hits on shared lines          :       1175
+  Locked Access on shared lines     :      10235
+  Store HITs on shared lines        :      13293
+  Store L1D hits on shared lines    :      13290
+  Total Merged records              :      14426
+
+=================================================
+                 c2c details                     
+=================================================
+  Events                            : cpu/mem-loads,ldlat=50/P
+                                    : cpu/mem-stores/P
+  Cachelines sort on                : Total HITMs
+  Cacheline data grouping           : offset,pid,iaddr
+
+=================================================
+           Shared Data Cache Line Table          
+=================================================
+#
+#        ----------- Cacheline ----------    Total      Tot  ----- LLC Load Hitm -----  ---- Store Reference ----  --- Load Dram ----      LLC    Total  ----- Core Load Hit -----  -- LLC Load Hit --
+# Index             Address  Node  PA cnt  records     Hitm    Total      Lcl      Rmt    Total    L1Hit   L1Miss       Lcl       Rmt  Ld Miss    Loads       FB       L1       L2       Llc       Rmt
+# .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  ........  ........  .......  .......  .......  .......  .......  ........  ........
+#
+      0          0x7e443c80     0      15      819   70.87%      803      803        0        0        0        0         0         0        0      819       13        0        0         3         0
+      1          0x7e443500     0       1       38    3.35%       38       38        0        0        0        0         0         0        0       38        0        0        0         0         0
+      2          0x7e4439c0     0       1       32    2.82%       32       32        0        0        0        0         0         0        0       32        0        0        0         0         0
+      3          0x7e443800     0       3       31    2.65%       30       30        0        0        0        0         0         0        0       31        1        0        0         0         0
+      4          0x7e443680     0      13       31    2.56%       29       29        0        0        0        0         0         0        0       31        2        0        0         0         0
+      5          0x7e4435c0     0      37       80    2.47%       28       28        0        0        0        0         0         0        0       80       52        0        0         0         0
+      6          0x7e443a80     0       1       28    2.47%       28       28        0        0        0        0         0         0        0       28        0        0        0         0         0
+      7          0x7e4434c0     0       1       24    2.12%       24       24        0        0        0        0         0         0        0       24        0        0        0         0         0
+      8          0x7e443480     0       1       16    1.41%       16       16        0        0        0        0         0         0        0       16        0        0        0         0         0
+      9          0x7e443c40     0     147     2760    1.32%       15       15        0     2686     2685        1         0         0        0       74       57        0        0         2         0
+     10          0x7e443b80     0      16       32    1.15%       13       13        0        0        0        0         0         0        0       32       19        0        0         0         0
+     11      0x7f39d15d3000     0       1       65    1.15%       13       13        0        0        0        0         0         0        0       65        0        0       41        11         0
+     12          0x7e4436c0     0      14       29    1.06%       12       12        0        7        7        0         0         0        0       22       10        0        0         0         0
+     13      0x7f7867333400     0     333      410    0.88%       10       10        0      383      381        2         0         0        0       27        0        0       15         2         0
+     14  0xffffffffff5ff080   N/A       0       63    0.35%        4        4        0        0        0        0         0         0        0       63       39        0        0        20         0
+     15          0x7e443cc0     0      81      102    0.26%        3        3        0       12       12        0         0         0        0       90       56       28        0         3         0
+     16          0x7e443600     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     17      0x7f39cfeeccc0     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     18      0x7f3621e474c0     0       2        4    0.09%        1        1        0        2        2        0         0         0        0        2        0        1        0         0         0
+     19      0x7f3621e4fbc0     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     20      0x7f3621eb2980     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     21      0x7f7f6581a080     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     22      0x7f7f41c78d00     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     23      0x7f7f41d00500     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     24      0x7f392c7e98c0     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     25      0x7f392c82b200     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     26      0x7f7eb7418100     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     27      0x7f36f70ffe00     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     28      0x7f392c8b5e00     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     29      0x7f392c8fc400     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     30      0x7f36f7168200     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     31      0x7f392c929a00     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     32      0x7f36f718d240     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     33      0x7f392c946200     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     34      0x7f392c9640c0     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     35      0x7f7eb7529040     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     36      0x7f392c97a600     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     37      0x7f392c98f000     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     38      0x7f36f71fb000     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     39      0x7f392c9d5800     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     40      0x7f392c9e2800     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     41      0x7f392c9f2400     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     42      0x7f36f7272800     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     43      0x7f3622a77f00     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     44      0x7f39cfee6dc0     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     45      0x7f39cfee7740     0   13936    21483    0.09%        1        1        0    10203    10203        0         0         0        0    11280        0    11278        0         1         0
+     46      0x7f39d0912280     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     47            0x915f80     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     48      0x7f39d11a1e00     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     49      0x7f38bcac8500     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+     50      0x7f38bcad0300     0       1        1    0.09%        1        1        0        0        0        0         0         0        0        1        0        0        0         0         0
+
+=================================================
+      Shared Cache Line Distribution Pareto      
+=================================================
+#
+#        ----- HITM -----  -- Store Refs --  --------- Data address ---------                               ---------- cycles ----------    Total       cpu                                                                                                                                                                                                                                                                                                                                                                                                                      Shared                                                                                                                                                                                                                                                                                                                                                                                                     
+#   Num      Rmt      Lcl   L1 Hit  L1 Miss              Offset  Node  PA cnt      Pid        Code address  rmt hitm  lcl hitm      load  records       cnt                                                                                                                                                                                                                                                                                                                                                                                          Symbol                      Object                                                                                                                                                                                                                                                                                                                                                                                    Source:Line  Node
+# .....  .......  .......  .......  .......  ..................  ....  ......  .......  ..................  ........  ........  ........  .......  ........  ..............................................................................................................................................................................................................................................................................................................................................................................................  ..........................  .............................................................................................................................................................................................................................................................................................................................................................................................  ....
+#
+  -------------------------------------------------------------
+      0        0      803        0        0          0x7e443c80
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x8     0       1   404003            0x5f3e46         0       226       214      812         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle                                                                                                                                                                                                                                                                                                                                             AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+1510                                                                                                                                                                                                                                                                                                                                            0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      1        0       38        0        0          0x7e443500
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x28     0       1   404003            0x5f3878         0       182         0       38         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+24   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      2        0       32        0        0          0x7e4439c0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0       1   404003            0x56eb40         0       198         0       32         1  [.] RollingMean<double>::mean  AegisV.2024-09-18_09.42.48  RollingMean<double>::mean+0   0
+            |
+            ---RollingMean<double>::mean
+               AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      3        0       30        0        0          0x7e443800
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x8     0       1   404003            0x50cced         0       217         0       30         1  [.] aegis::AegisMissileReactor::one_loop  AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::one_loop+5293   0
+            |
+            ---aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      4        0       29        0        0          0x7e443680
+  -------------------------------------------------------------
+           0.00%   31.03%    0.00%    0.00%                0x18     0       1   404003            0x50b15f         0       199       246       11         1  [.] aegis::AegisMissileReactor::Run       AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::Run+735        0
+            |
+            ---aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%   48.28%    0.00%    0.00%                0x38     0       1   404003            0x50b87c         0       230         0       14         1  [.] aegis::AegisMissileReactor::one_loop  AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::one_loop+60    0
+            |
+            ---aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%   20.69%    0.00%    0.00%                0x38     0       1   404003            0x50b8c6         0       242         0        6         1  [.] aegis::AegisMissileReactor::one_loop  AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::one_loop+134   0
+            |
+            ---aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      5        0       28        0        0          0x7e4435c0
+  -------------------------------------------------------------
+           0.00%   50.00%    0.00%    0.00%                0x10     0       1   404003            0x5f3886         0       239       234       24         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+38    0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%   10.71%    0.00%    0.00%                0x10     0       1   404003            0x5f3980         0       313       214       29         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+288   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%   39.29%    0.00%    0.00%                0x38     0       1   404003            0x5f389b         0       229       226       27         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+59    0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      6        0       28        0        0          0x7e443a80
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x30     0       1   404003            0x56eb40         0       204         0       28         1  [.] RollingMean<double>::mean  AegisV.2024-09-18_09.42.48  RollingMean<double>::mean+0   0
+            |
+            ---RollingMean<double>::mean
+               AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      7        0       24        0        0          0x7e4434c0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x20     0       1   404003            0x5f3960         0       240         0       24         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+256   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      8        0       16        0        0          0x7e443480
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x20     0       1   404003            0x50c1a2         0       195         0       16         1  [.] aegis::AegisMissileReactor::one_loop  AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::one_loop+2402   0
+            |
+            ---aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+      9        0       15     2685        1          0x7e443c40
+  -------------------------------------------------------------
+           0.00%   60.00%    0.00%    0.00%                0x18     0       1   404003            0x5f3933         0       181       211       37         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+211   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%    0.00%    0.04%    0.00%                0x20     0       1   404003            0x5f3890         0         0         0        1         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+48    0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%    0.00%   99.93%  100.00%                0x20     0       1   404003            0x5f3973         0         0         0     2684         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+275   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%   40.00%    0.00%    0.00%                0x24     0       1   404003            0x5f3953         0       195       192       37         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+243   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%    0.00%    0.04%    0.00%                0x28     0       1   404003            0x5f399f         0         0         0        1         1  [.] AegisSmartAggAppendOrderMissile<0>::handle_idle  AegisV.2024-09-18_09.42.48  AegisSmartAggAppendOrderMissile<0>::handle_idle+319   0
+            |
+            ---AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     10        0       13        0        0          0x7e443b80
+  -------------------------------------------------------------
+           0.00%    7.69%    0.00%    0.00%                0x20     0       1   404003            0x56eb40         0       199       188       19         1  [.] RollingMean<double>::mean                                AegisV.2024-09-18_09.42.48  RollingMean<double>::mean+0                                  0
+            |
+            ---RollingMean<double>::mean
+               AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%   92.31%    0.00%    0.00%                0x30     0       1   404003            0x5f42cb         0       172       210       13         1  [.] takumi::royal_flush::update_ob_data<AegisMarketDataExt>  AegisV.2024-09-18_09.42.48  takumi::royal_flush::update_ob_data<AegisMarketDataExt>+43   0
+            |
+            ---takumi::royal_flush::update_ob_data<AegisMarketDataExt>
+               AegisSmartAggAppendOrderMissile<0>::handle_idle
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     11        0       13        0        0      0x7f39d15d3000
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0       1   404003      0x7f39d16d8084         0       247       200       21         2  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so   AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+436   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     12        0       12        7        0          0x7e4436c0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x8     0       1   404003            0x50c146         0       212         0       12         1  [.] aegis::AegisMissileReactor::one_loop  AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::one_loop+2310   0
+            |
+            ---aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%    0.00%  100.00%    0.00%                0x10     0       1   404003            0x50c19a         0         0         0        7         1  [.] aegis::AegisMissileReactor::one_loop  AegisV.2024-09-18_09.42.48  aegis::AegisMissileReactor::one_loop+2394   0
+            |
+            ---aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     13        0       10      381        2      0x7f7867333400
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0      25   436093            0x4c4a99         0       314       119       27         2  [.] perf_mmap__push  perf  perf_mmap__push+41    0
+            |
+            ---perf_mmap__push
+               0x43e637
+               cmd_record
+
+           0.00%    0.00%  100.00%  100.00%                 0x8     0     298   436093            0x4c4b85         0         0         0      383         2  [.] perf_mmap__push  perf  perf_mmap__push+277   0
+            |
+            ---perf_mmap__push
+               0x43e637
+               cmd_record
+
+
+  -------------------------------------------------------------
+     14        0        4        0        0  0xffffffffff5ff080
+  -------------------------------------------------------------
+           0.00%   75.00%    0.00%    0.00%                 0x0   N/A       0   404003      0x7ffdc017c6dc         0       266       378       11         1  [.] __vdso_clock_gettime  [vdso]  __vdso_clock_gettime+220   0
+           0.00%   25.00%    0.00%    0.00%                0x20   N/A       0   404003      0x7ffdc017c945         0       243       363        2         1  [.] __vdso_clock_gettime  [vdso]  __vdso_clock_gettime+837   0
+
+  -------------------------------------------------------------
+     15        0        3       12        0          0x7e443cc0
+  -------------------------------------------------------------
+           0.00%    0.00%    8.33%    0.00%                 0x0     0       1   404003            0x58ee93         0         0       209        6         1  [.] aegis::AegisAutoTrader::should_auto_trade_this_pos                                                                                                                                                                                                                                                                                                                                               AegisV.2024-09-18_09.42.48  aegis::AegisAutoTrader::should_auto_trade_this_pos+8179                                                                                                                                                                                                                                                                                                                                               0
+            |
+            ---aegis::AegisAutoTrader::should_auto_trade_this_pos
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%   25.00%    0.00%                 0x0     0       1   404003            0x592846         0         0       213        7         1  [.] aegis::AegisAutoTrader::init_trade_target                                                                                                                                                                                                                                                                                                                                                        AegisV.2024-09-18_09.42.48  aegis::AegisAutoTrader::init_trade_target+2454                                                                                                                                                                                                                                                                                                                                                        0
+            |
+            ---aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%    8.33%    0.00%                 0x0     0       1   404003            0x59287f         0         0         0        1         1  [.] aegis::AegisAutoTrader::init_trade_target                                                                                                                                                                                                                                                                                                                                                        AegisV.2024-09-18_09.42.48  aegis::AegisAutoTrader::init_trade_target+2511                                                                                                                                                                                                                                                                                                                                                        0
+            |
+            ---aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%    8.33%    0.00%                 0x0     0       1   404003            0x5928b8         0         0         0        1         1  [.] aegis::AegisAutoTrader::init_trade_target                                                                                                                                                                                                                                                                                                                                                        AegisV.2024-09-18_09.42.48  aegis::AegisAutoTrader::init_trade_target+2568                                                                                                                                                                                                                                                                                                                                                        0
+            |
+            ---aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%   50.00%    0.00%                 0x0     0       1   404003      0x7f39d06e0d11         0         0       140       20         1  [.] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string                                                                                                                                                                                                                                                                                                             libstdc++.so.6.0.19         std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string+113                                                                                                                                                                                                                                                                                                              0
+            |
+            ---std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          
+               |--24.90%--std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--24.67%--aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.02%--aegis::AegisAutoTrader::init_trade_target
+                          aegis::AegisAutoTrader::auto_trade_loop
+                          launcher_poll_loop
+                          AegisGTSWithSentinel
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%   33.33%    0.00%    0.00%                 0x8     0       1   404003            0x5949cc         0       194         0        1         1  [.] std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]  AegisV.2024-09-18_09.42.48  std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]+796   0
+            |
+            ---std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%   33.33%    0.00%    0.00%                 0x8     0       1   404003      0x7f39d0697257         0       174         0        1         1  [.] std::_Rb_tree_increment                                                                                                                                                                                                                                                                                                                                                                          libstdc++.so.6.0.19         std::_Rb_tree_increment+55                                                                                                                                                                                                                                                                                                                                                                            0
+            |
+            ---std::_Rb_tree_increment
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%   33.33%    0.00%    0.00%                 0x8     0       1   404003      0x7f39d17508de         0       235         0        1         1  [.] _intel_fast_memcmp                                                                                                                                                                                                                                                                                                                                                                               liblocal_streamer.so        _intel_fast_memcmp+62                                                                                                                                                                                                                                                                                                                                                                                 0
+            |
+            ---_intel_fast_memcmp
+               aegis::AegisAutoTrader::is_legacy_contract
+               aegis::AegisAutoTrader::should_auto_trade_this_pos
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     16        0        1        0        0          0x7e443600
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x28     0       1   404003      0x7f39d06e0cb8         0       156         0        1         1  [.] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string  libstdc++.so.6.0.19  std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string+24   0
+            |
+            ---std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               aegis::AegisAutoTrader::should_auto_trade_this_pos
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     17        0        1        0        0      0x7f39cfeeccc0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x28     0       1   404003      0x7f39cfb69773         0       160         0        1         1  [.] vfprintf  libc-2.17.so  vfprintf+755   0
+            |
+            ---_IO_vfprintf_internal (inlined)
+               __IO_vsprintf (inlined)
+               __sprintf (inlined)
+               _INTERNAL0c9a3d74::thunder::format_time_date
+               AegisSmartAggAppendOrderMissile<0>::onSignal
+               AegisApol_SA_20220402_agent5_model_0_Model::Progress
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     18        0        1        2        0      0x7f3621e474c0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0       1   321140      0x7f3623fd9bbc         0       115         0        1         1  [.] ci_udp_recvmsg_common  libonload.so  eplock.h:55     0
+            |
+            ---ef_eplock_trylock (inlined)
+               ci_udp_recvmsg_common
+               ci_udp_recvmsg
+               citp_udp_recv
+               onload_recvfrom (inlined)
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%   50.00%    0.00%                 0x0     0       1   321140      0x7f3623fa2142         0         0         0        1         1  [.] ci_netif_unlock        libonload.so  gcc_x86.h:318   0
+            |
+            ---ci_cas64u_succeed (inlined)
+               ci_netif_unlock
+               ci_udp_recvmsg_common
+               ci_udp_recvmsg
+               citp_udp_recv
+               onload_recvfrom (inlined)
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%   50.00%    0.00%                 0x0     0       1   312920      0x7fda63e0b9f3         0         0         0        1         1  [.] ci_tcp_recvmsg         libonload.so  gcc_x86.h:318   0
+            |
+            ---ci_cas64u_succeed (inlined)
+               ef_eplock_trylock (inlined)
+               ci_tcp_recvmsg
+               citp_tcp_recv
+               onload_recv (inlined)
+               TTcpClient::Run
+               TThread::ThreadFunction
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     19        0        1        0        0      0x7f3621e4fbc0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x38     0       1   321140      0x7f3623fed5c7         0       203         0        1         1  [.] ef10_ef_eventq_poll  libonload.so  ef10_event.c:137   0
+            |
+            ---huntington_rx_desc_consumed (inlined)
+               ef10_rx_event (inlined)
+               ef10_ef_eventq_poll
+               ci_netif_poll_evq
+               ci_netif_poll_intf (inlined)
+               ci_netif_poll_n
+               ci_udp_recvmsg_common
+               ci_udp_recvmsg
+               citp_udp_recv
+               onload_recvfrom (inlined)
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     20        0        1        0        0      0x7f3621eb2980
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x24     0       1   321140      0x7f3623fa7326         0       192         0        1         1  [.] for_each_match_common  libonload.so  netif_table.c:144   0
+            |
+            ---for_each_match_common
+               ci_netif_filter_for_each_match
+               ci_udp_handle_rx
+               handle_rx_pkt
+               ci_netif_poll_evq
+               ci_netif_poll_intf (inlined)
+               ci_netif_poll_n
+               ci_udp_recvmsg_common
+               ci_udp_recvmsg
+               citp_udp_recv
+               onload_recvfrom (inlined)
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     21        0        1        0        0      0x7f7f6581a080
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0       1   304702      0x7f7f6bdaa952         0       200         0        1         1  [.] __strlen_sse2_pminub  libc-2.17.so  __strlen_sse2_pminub+98   0
+            |
+            ---__strlen_sse2_pminub
+               thunder::ThunderExcerpt::str
+               thunder::thunderLogger::handleExcerptBySink
+               thunder::thunderLogger::thunderLogEntryHandler
+               thunder::thunderLogger::thunderLoop
+               runThunders
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     22        0        1        0        0      0x7f7f41c78d00
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x1     0       1   304702            0x42654a         0       194         0        1         1  [.] thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext  ThunderClient  thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext+26   0
+            |
+            ---thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+               thunder::thunderLogger::thunderLogEntryHandler
+               thunder::thunderLogger::thunderLoop
+               runThunders
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     23        0        1        0        0      0x7f7f41d00500
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x1     0       1   304702            0x42654a         0        82         0        1         1  [.] thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext  ThunderClient  thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext+26   0
+            |
+            ---thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+               thunder::thunderLogger::thunderLogEntryHandler
+               thunder::thunderLogger::thunderLoop
+               runThunders
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     24        0        1        0        0      0x7f392c7e98c0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x29     0       1   404003      0x7f39d16d8732         0        86         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2146   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     25        0        1        0        0      0x7f392c82b200
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       203         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     26        0        1        0        0      0x7f7eb7418100
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x4     0       1   304702            0x4265ed         0       246         0        1         1  [.] thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext  ThunderClient  thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext+189   0
+            |
+            ---thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+               thunder::thunderLogger::thunderLogEntryHandler
+               thunder::thunderLogger::thunderLoop
+               runThunders
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     27        0        1        0        0      0x7f36f70ffe00
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       173         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     28        0        1        0        0      0x7f392c8b5e00
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       197         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     29        0        1        0        0      0x7f392c8fc400
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       193         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     30        0        1        0        0      0x7f36f7168200
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       156         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     31        0        1        0        0      0x7f392c929a00
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       190         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     32        0        1        0        0      0x7f36f718d240
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0       1   404003      0x7f39d16d8763         0       169         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2195   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     33        0        1        0        0      0x7f392c946200
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       207         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     34        0        1        0        0      0x7f392c9640c0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x29     0       1   404003      0x7f39d16d8732         0        64         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2146   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     35        0        1        0        0      0x7f7eb7529040
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x4     0       1   304702            0x4265f9         0       194         0        1         1  [.] thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext  ThunderClient  thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext+201   0
+            |
+            ---thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+               thunder::thunderLogger::thunderLogEntryHandler
+               thunder::thunderLogger::thunderLoop
+               runThunders
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     36        0        1        0        0      0x7f392c97a600
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       194         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     37        0        1        0        0      0x7f392c98f000
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       223         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     38        0        1        0        0      0x7f36f71fb000
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       187         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     39        0        1        0        0      0x7f392c9d5800
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       184         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     40        0        1        0        0      0x7f392c9e2800
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       183         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     41        0        1        0        0      0x7f392c9f2400
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       187         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     42        0        1        0        0      0x7f36f7272800
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x2     0       1   404003      0x7f39d16d88a8         0       169         0        1         1  [.] AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData  liblocal_streamer.so  AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData+2520   0
+            |
+            ---AegisRealtimeDataStreamer<AegisMarketDataExt>::refreshData
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     43        0        1        0        0      0x7f3622a77f00
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x20     0       1   321140      0x7f3622a3f0fd         0       216         0        1         1  [.] __memcpy_ssse3_back  libc-2.17.so  __memcpy_ssse3_back+1101   0
+            |
+            ---__memcpy_ssse3_back
+               do_copy (inlined)
+               __oo_copy_frag_to_iovec_no_adv (inlined)
+               oo_copy_pkt_to_iovec_no_adv (inlined)
+               ci_udp_recvmsg_get
+               ci_udp_recvmsg_common
+               ci_udp_recvmsg
+               citp_udp_recv
+               onload_recvfrom (inlined)
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     44        0        1        0        0      0x7f39cfee6dc0
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x8     0       1   404003      0x7f39cfb7a10a         0       173         0        1         1  [.] _IO_vfscanf  libc-2.17.so  _IO_vfscanf+26   0
+            |
+            ---__GI__IO_vfscanf (inlined)
+               _IO_vsscanf
+               __GI_sscanf (inlined)
+               __tzset_parse_tz
+               __tzfile_compute
+               __tz_convert
+               _INTERNAL0c9a3d74::thunder::format_time_date
+               AegisSmartAggAppendOrderMissile<0>::onSignal
+               AegisApol_SA_20220402_agent5_model_0_Model::Progress
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     45        0        1    10203        0      0x7f39cfee7740
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x0     0       1   404003      0x7f39cfba6170         0       174         0        1         1  [.] malloc         libc-2.17.so  malloc+16           0
+            |
+            ---__GI___libc_malloc (inlined)
+               operator new
+               std::string::_Rep::_S_create
+               std::string::_S_construct<char const*>
+               std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               AegisApol_SA_20220402_agent5_model_0_Model::getStrategyName
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+           0.00%    0.00%    0.01%    0.00%                0x20     0       1   436093      0x7f786e9a01fa         0         0         0        1         1  [.] malloc         libc-2.17.so  malloc+154          0
+            |
+            ---__GI___libc_malloc (inlined)
+               cmd_record
+
+           0.00%    0.00%    3.46%    0.00%                0x20     0       1   404003      0x7f39cfba61c2         0         0        80     3005         1  [.] malloc         libc-2.17.so  malloc+98           0
+            |
+            ---__GI___libc_malloc (inlined)
+               operator new
+               |          
+               |--3.04%--std::string::_Rep::_S_create
+               |          |          
+               |          |--1.88%--std::string::_Rep::_M_clone
+               |          |          std::string::reserve
+               |          |          |          
+               |          |          |--1.35%--std::string::append
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.53%--aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--0.80%--std::string::_S_construct<char const*>
+               |          |          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          |          |          
+               |          |          |--0.48%--uganda::future_exchange_info::is_index_future_symbol
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.14%--uganda::getInstrumentPrefix
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.10%--uganda::local_meta::get_instrument_id
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.08%--uganda::lock_instr_mgmt::is_locking_instr
+               |          |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--0.19%--std::string::_S_construct<char*>
+               |          |          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          |          |          
+               |          |          |--0.09%--uganda::future_exchange_info::is_index_future_symbol
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.06%--uganda::lock_instr_mgmt::is_locking_instr
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.04%--uganda::getInstrumentPrefix
+               |          |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--0.11%--__gnu_cxx::__to_xstring<std::string, char>
+               |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          launcher_poll_loop
+               |          |          AegisGTSWithSentinel
+               |          |          main
+               |          |          __libc_start_main
+               |          |          _start
+               |          |          
+               |           --0.07%--std::string::_M_mutate
+               |                     std::string::_M_leak_hard
+               |                     uganda::lock_instr_mgmt::is_locking_instr
+               |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |                     aegis::AegisAutoTrader::init_trade_target
+               |                     aegis::AegisAutoTrader::auto_trade_loop
+               |                     launcher_poll_loop
+               |                     AegisGTSWithSentinel
+               |                     main
+               |                     __libc_start_main
+               |                     _start
+               |          
+               |--0.34%--std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--0.12%--std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_M_insert_<unsigned long const&, std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_Alloc_node>
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.03%--uganda::future_exchange_info::is_index_future_symbol
+                          aegis::AegisAutoTrader::should_auto_trade_this_pos
+                          aegis::AegisAutoTrader::init_trade_target
+                          aegis::AegisAutoTrader::auto_trade_loop
+                          launcher_poll_loop
+                          AegisGTSWithSentinel
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%   30.79%    0.00%                0x20     0       1   404003      0x7f39cfba61ee         0         0        76     4110         1  [.] malloc         libc-2.17.so  malloc+142          0
+            |
+            ---__GI___libc_malloc (inlined)
+               operator new
+               |          
+               |--25.43%--std::string::_Rep::_S_create
+               |          |          
+               |          |--15.70%--std::string::_Rep::_M_clone
+               |          |          std::string::reserve
+               |          |          |          
+               |          |          |--11.08%--std::string::append
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --4.63%--aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--6.60%--std::string::_S_construct<char const*>
+               |          |          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          |          |          
+               |          |          |--4.44%--uganda::future_exchange_info::is_index_future_symbol
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--1.00%--uganda::local_meta::get_instrument_id
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.61%--uganda::getInstrumentPrefix
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.55%--uganda::lock_instr_mgmt::is_locking_instr
+               |          |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--1.65%--std::string::_S_construct<char*>
+               |          |          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          |          |          
+               |          |          |--0.58%--uganda::getInstrumentPrefix
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.55%--uganda::future_exchange_info::is_index_future_symbol
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.53%--uganda::lock_instr_mgmt::is_locking_instr
+               |          |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--0.74%--__gnu_cxx::__to_xstring<std::string, char>
+               |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          launcher_poll_loop
+               |          |          AegisGTSWithSentinel
+               |          |          main
+               |          |          __libc_start_main
+               |          |          _start
+               |          |          
+               |           --0.73%--std::string::_M_mutate
+               |                     std::string::_M_leak_hard
+               |                     uganda::lock_instr_mgmt::is_locking_instr
+               |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |                     aegis::AegisAutoTrader::init_trade_target
+               |                     aegis::AegisAutoTrader::auto_trade_loop
+               |                     launcher_poll_loop
+               |                     AegisGTSWithSentinel
+               |                     main
+               |                     __libc_start_main
+               |                     _start
+               |          
+               |--2.55%--std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--1.74%--std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_M_insert_<unsigned long const&, std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_Alloc_node>
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --1.04%--uganda::future_exchange_info::is_index_future_symbol
+                          aegis::AegisAutoTrader::should_auto_trade_this_pos
+                          aegis::AegisAutoTrader::init_trade_target
+                          aegis::AegisAutoTrader::auto_trade_loop
+                          launcher_poll_loop
+                          AegisGTSWithSentinel
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%    0.01%    0.00%                0x20     0       1   321140      0x7f36229701cd         0         0         0        1         1  [.] malloc         libc-2.17.so  malloc+109          0
+            |
+            ---__GI___libc_malloc (inlined)
+               operator new
+               std::string::_Rep::_S_create
+               std::string::_Rep::_M_clone
+               std::string::reserve
+               std::string::push_back
+               RD::ContractFilter::isMathed
+               ZdfclHandler<XS2OptAgg>::handle_l2
+               zce_lv2_radar::ZCELv2Receiver::OnInstrumentDepth<ZdfclHandler<XS2OptAgg> >
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%    0.04%    0.00%                0x20     0       1   321140      0x7f36229701fa         0         0         0        4         1  [.] malloc         libc-2.17.so  malloc+154          0
+            |
+            ---__GI___libc_malloc (inlined)
+               operator new
+               std::string::_Rep::_S_create
+               std::string::_Rep::_M_clone
+               std::string::reserve
+               std::string::push_back
+               RD::ContractFilter::isMathed
+               ZdfclHandler<XS2OptAgg>::handle_l2
+               zce_lv2_radar::ZCELv2Receiver::OnInstrumentDepth<ZdfclHandler<XS2OptAgg> >
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%    0.02%    0.00%                0x20     0       1   304702      0x7f7f6bcc11fa         0         0         0        2         1  [.] malloc         libc-2.17.so  malloc+154          0
+            |
+            ---__GI___libc_malloc (inlined)
+               operator new
+               std::string::_Rep::_S_create
+               std::string::_S_construct<char const*>
+               std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               thunder::format_time_date
+               |          
+               |--0.01%--thunder::thunderLogEntryHandlers::marketDataHandlerL5
+               |          thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+               |          thunder::thunderLogger::thunderLogEntryHandler
+               |          thunder::thunderLogger::thunderLoop
+               |          runThunders
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.00%--thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+                          thunder::thunderLogger::thunderLogEntryHandler
+                          thunder::thunderLogger::thunderLoop
+                          runThunders
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%    0.01%    0.00%                0x20     0       1    16440      0x7fdfab924bf0         0         0         0        1         1  [.] __libc_calloc  libc-2.17.so  __libc_calloc+112   0
+            |
+            ---__calloc (inlined)
+               0x55a0c4977956
+               0x55a0c4a59d0c
+               0x55a0c4978224
+               0x55a0c4a5e04a
+               0x55a0c49687e7
+               __libc_start_main
+               0x55a0c4968854
+
+           0.00%    0.00%   28.07%    0.00%                0x24     0       1   404003      0x7f39cfba200a         0         0        91     5092         1  [.] _int_free      libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_free
+               |          
+               |--12.03%--aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--5.14%--uganda::future_exchange_info::is_index_future_symbol
+               |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--3.87%--aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--3.69%--std::string::reserve
+               |          std::string::append
+               |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--1.77%--uganda::lock_instr_mgmt::is_locking_instr
+               |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--0.97%--std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_M_erase
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.63%--uganda::getInstrumentPrefix
+                          aegis::AegisAutoTrader::should_auto_trade_this_pos
+                          aegis::AegisAutoTrader::init_trade_target
+                          aegis::AegisAutoTrader::auto_trade_loop
+                          launcher_poll_loop
+                          AegisGTSWithSentinel
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%    0.02%    0.00%                0x24     0       1   304702      0x7f7f6bcbd00b         0         0         0        2         1  [.] _int_free      libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_free
+               |          
+               |--0.00%--thunder::thunderLogEntryHandlers::marketDataHandlerL1
+               |          thunder::thunderLogEntryHandlers::marketDataHandlerL1Ext
+               |          thunder::thunderLogger::thunderLogEntryHandler
+               |          thunder::thunderLogger::thunderLoop
+               |          runThunders
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.00%--thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+                          thunder::thunderLogger::thunderLogEntryHandler
+                          thunder::thunderLogger::thunderLoop
+                          runThunders
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%    7.27%    0.00%                0x30     0       1   404003      0x7f39cfba2071         0         0       102     3079         1  [.] _int_free      libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_free
+               |          
+               |--3.05%--aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--1.22%--uganda::future_exchange_info::is_index_future_symbol
+               |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--1.09%--std::string::reserve
+               |          std::string::append
+               |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--1.08%--aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--0.59%--uganda::lock_instr_mgmt::is_locking_instr
+               |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+               |--0.16%--std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_M_erase
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.13%--uganda::getInstrumentPrefix
+                          aegis::AegisAutoTrader::should_auto_trade_this_pos
+                          aegis::AegisAutoTrader::init_trade_target
+                          aegis::AegisAutoTrader::auto_trade_loop
+                          launcher_poll_loop
+                          AegisGTSWithSentinel
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%   29.32%    0.00%                0x30     0       1   404003      0x7f39cfba3166         0         0        74     4921         1  [.] _int_malloc    libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_malloc
+               __GI___libc_malloc (inlined)
+               operator new
+               |          
+               |--25.22%--std::string::_Rep::_S_create
+               |          |          
+               |          |--15.48%--std::string::_Rep::_M_clone
+               |          |          std::string::reserve
+               |          |          |          
+               |          |          |--10.89%--std::string::append
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --4.59%--aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--6.63%--std::string::_S_construct<char const*>
+               |          |          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          |          |          
+               |          |          |--4.46%--uganda::future_exchange_info::is_index_future_symbol
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.87%--uganda::local_meta::get_instrument_id
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.70%--uganda::lock_instr_mgmt::is_locking_instr
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.59%--uganda::getInstrumentPrefix
+               |          |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--1.70%--std::string::_S_construct<char*>
+               |          |          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               |          |          |          
+               |          |          |--0.68%--uganda::getInstrumentPrefix
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |          |--0.55%--uganda::future_exchange_info::is_index_future_symbol
+               |          |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          |          launcher_poll_loop
+               |          |          |          AegisGTSWithSentinel
+               |          |          |          main
+               |          |          |          __libc_start_main
+               |          |          |          _start
+               |          |          |          
+               |          |           --0.46%--uganda::lock_instr_mgmt::is_locking_instr
+               |          |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |                     aegis::AegisAutoTrader::init_trade_target
+               |          |                     aegis::AegisAutoTrader::auto_trade_loop
+               |          |                     launcher_poll_loop
+               |          |                     AegisGTSWithSentinel
+               |          |                     main
+               |          |                     __libc_start_main
+               |          |                     _start
+               |          |          
+               |          |--0.87%--__gnu_cxx::__to_xstring<std::string, char>
+               |          |          aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |          |          aegis::AegisAutoTrader::init_trade_target
+               |          |          aegis::AegisAutoTrader::auto_trade_loop
+               |          |          launcher_poll_loop
+               |          |          AegisGTSWithSentinel
+               |          |          main
+               |          |          __libc_start_main
+               |          |          _start
+               |          |          
+               |           --0.54%--std::string::_M_mutate
+               |                     std::string::_M_leak_hard
+               |                     uganda::lock_instr_mgmt::is_locking_instr
+               |                     aegis::AegisAutoTrader::should_auto_trade_this_pos
+               |                     aegis::AegisAutoTrader::init_trade_target
+               |                     aegis::AegisAutoTrader::auto_trade_loop
+               |                     launcher_poll_loop
+               |                     AegisGTSWithSentinel
+               |                     main
+               |                     __libc_start_main
+               |                     _start
+               |          
+               |--2.99%--std::__detail::_Map_base<std::string, std::pair<std::string const, int>, std::allocator<std::pair<std::string const, int> >, std::__detail::_Select1st, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[]
+               |          aegis::AegisAutoTrader::init_trade_target
+               |          aegis::AegisAutoTrader::auto_trade_loop
+               |          launcher_poll_loop
+               |          AegisGTSWithSentinel
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --1.06%--std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_M_insert_<unsigned long const&, std::_Rb_tree<unsigned long, unsigned long, std::_Identity<unsigned long>, std::less<unsigned long>, std::allocator<unsigned long> >::_Alloc_node>
+                          aegis::AegisAutoTrader::init_trade_target
+                          aegis::AegisAutoTrader::auto_trade_loop
+                          launcher_poll_loop
+                          AegisGTSWithSentinel
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%    0.03%    0.00%                0x30     0       1   321140      0x7f362296c072         0         0         0        3         1  [.] _int_free      libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_free
+               |          
+               |--0.01%--RD::ContractFilter::isMathed
+               |          ZdfclHandler<XS2OptAgg>::handle_l2
+               |          zce_lv2_radar::ZCELv2Receiver::OnInstrumentDepth<ZdfclHandler<XS2OptAgg> >
+               |          main
+               |          __libc_start_main
+               |          _start
+               |          
+                --0.00%--std::string::reserve
+                          std::string::push_back
+                          RD::ContractFilter::isMathed
+                          ZdfclHandler<XS2OptAgg>::handle_l2
+                          zce_lv2_radar::ZCELv2Receiver::OnInstrumentDepth<ZdfclHandler<XS2OptAgg> >
+                          main
+                          __libc_start_main
+                          _start
+
+           0.00%    0.00%    0.20%    0.00%                0x38     0       1   404003      0x7f39cfba2071         0         0       112       61         1  [.] _int_free      libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_free
+               uganda::future_exchange_info::is_index_future_symbol
+               aegis::AegisAutoTrader::should_auto_trade_this_pos
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%    0.74%    0.00%                0x38     0       1   404003      0x7f39cfba3166         0         0        53      128         1  [.] _int_malloc    libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_malloc
+               __GI___libc_malloc (inlined)
+               operator new
+               uganda::future_exchange_info::is_index_future_symbol
+               aegis::AegisAutoTrader::should_auto_trade_this_pos
+               aegis::AegisAutoTrader::init_trade_target
+               aegis::AegisAutoTrader::auto_trade_loop
+               launcher_poll_loop
+               AegisGTSWithSentinel
+               main
+               __libc_start_main
+               _start
+
+           0.00%    0.00%    0.02%    0.00%                0x38     0       1   304702      0x7f7f6bcbe167         0         0         0        2         1  [.] _int_malloc    libc-2.17.so  malloc.c:0          0
+            |
+            ---_int_malloc
+               __GI___libc_malloc (inlined)
+               operator new
+               std::string::_Rep::_S_create
+               std::string::_S_construct<char const*>
+               std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               thunder::format_time_date
+               thunder::thunderLogEntryHandlers::marketDataHandlerL5
+               thunder::thunderLogEntryHandlers::marketDataHandlerL5Ext
+               thunder::thunderLogger::thunderLogEntryHandler
+               thunder::thunderLogger::thunderLoop
+               runThunders
+               main
+               __libc_start_main
+               _start
+
+
+  -------------------------------------------------------------
+     46        0        1        0        0      0x7f39d0912280
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x18     0       1   404003      0x7f39d067aea0         0       196         0        1         1  [.] operator new@plt  libstdc++.so.6.0.19  operator new@plt+0   0
+            |
+            ---operator new@plt
+               std::string::_Rep::_S_create
+               std::string::_S_construct<char const*>
+               std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+               _INTERNAL0c9a3d74::thunder::format_time_date
+               AegisSmartAggAppendOrderMissile<0>::onSignal
+               AegisApol_SA_20220402_agent5_model_0_Model::Progress
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     47        0        1        0        0            0x915f80
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                 0x8     0       1   404003            0x5edd9d         0       226         0        1         1  [.] thunder::ThunderExcerpt::operator<< <char [19]>  AegisV.2024-09-18_09.42.48  thunder::ThunderExcerpt::operator<< <char [19]>+45   0
+            |
+            ---thunder::ThunderExcerpt::operator<< <char [19]>
+
+
+  -------------------------------------------------------------
+     48        0        1        0        0      0x7f39d11a1e00
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x38     0       1   404003      0x7f39d1129c70         0       245         0        1         1  [.] floor@plt  libonline_agent.so  floor@plt+0   0
+            |
+            ---floor@plt
+               apol::round_to_tick<false>
+               AegisApol_SA_20220402_agent5_model_0_Model::obtainSignal
+               AegisApol_SA_20220402_agent5_model_0_Model::Progress
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     49        0        1        0        0      0x7f38bcac8500
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x10     0       1   404003      0x7f38bb4bda20         0       223         0        1         1  [.] Uganda::GPTsDelay<double, 64ul>::operator()@plt  libctest_3.so  Uganda::GPTsDelay<double, 64ul>::operator()@plt+0   0
+            |
+            ---Uganda::GPTsDelay<double, 64ul>::operator()@plt
+               Uganda::GPTsRunCov<double, 512ul, 3ul, 64ul>::operator()
+               env_gp_5006
+               AegisApol_SA_20220402_agent5_model_0_Model::mapDep_SA_v2_Data
+               AegisApol_SA_20220402_agent5_model_0_Model::Progress
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
+
+  -------------------------------------------------------------
+     50        0        1        0        0      0x7f38bcad0300
+  -------------------------------------------------------------
+           0.00%  100.00%    0.00%    0.00%                0x20     0       1   404003      0x7f38bb4cd640         0       186         0        1         1  [.] Uganda::GPTsMax<double, 32ul>::operator()@plt  libctest_3.so  Uganda::GPTsMax<double, 32ul>::operator()@plt+0   0
+            |
+            ---Uganda::GPTsMax<double, 32ul>::operator()@plt
+               Uganda::GPTsStandardize<double, 32ul>::operator()
+               env_gp_2687
+               AegisApol_OI_20210423_agent5_model_1_Model::obtainSignal
+               AegisApol_OI_20210423_agent5_model_1_Model::Progress
+               aegis::AegisMissileReactor::one_loop
+               aegis::AegisMissileReactor::Run
+               execute_native_thread_routine
+               start_thread
+               __clone
+
