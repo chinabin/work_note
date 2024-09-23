@@ -138,3 +138,36 @@ $ dmidecode -s system-product-name
 # 查看CPU详细信息
 $ dmidecode -t processor
 ```
+
+```
+1、查看内存条数目
+
+dmidecode | grep -P -A5 "Memory\s+Device" | grep Size | grep -v Range | grep -v "No Module Installed" | wc -l
+
+2、查看每个内存条大小
+
+dmidecode | grep -P -A5 "Memory\s+Device" | grep Size | grep -v Range | grep -v "No Module Installed"
+
+3、查看每个内存条频率
+
+dmidecode | grep -A16 "Memory Device" | grep 'Speed'
+
+4、查看内存条厂商
+
+dmidecode | grep -A16 "Memory Device" | grep Manufacturer
+
+5、查看内存条类型DDR3、DDR4
+
+dmidecode | grep -A16 "Memory Device" | grep "Type:"
+
+6、查看内存通道数
+dmidecode | grep -A17 "Memory Device" | grep "Rank:"
+
+7、计算总的内存
+
+dmidecode | grep -P -A5 "Memory\s+Device" | grep Size | grep -v Range | grep -v "No Module Installed" | awk 'BEGIN{sum=0}{sum+=$2};END{print sum $3}'
+
+7、查看当前插槽数
+
+dmidecode | grep -P -A5 "Memory Device" | grep Size | wc -l
+```
