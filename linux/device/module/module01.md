@@ -90,7 +90,13 @@ linux 内核使用的是 `kbuild` 编译系统，在编译可加载模块时，�
 
 `obj-m` 表示编译生成可加载模块。相对应的，obj-y 表示直接将模块编译进内核。obj-m 和 obj-y 是 GNU make 提供的扩展语法，并不是 gcc 的通用语法。
 
-`make -C $KDIR M=$PWD [target]`
+```
+构建模块：
+make -C <path to kernel src> M=$PWD
+
+安装模块：
+make -C <path to kernel src> M=$PWD modules_install
+```
 
 1. `$KDIR：/lib/modules/$(shell uname -r)/build/`，指定内核源码（其实并不需要内核源码，需要的是目标机的内核头文件）的位置。
 2. `M=$(PWD)`：需要编译的模块源文件地址，M= 选项使 makefile 在试图建立模块目标前, 回到你的模块源码目录。
@@ -109,12 +115,75 @@ bbro_pcie-objs := bbro_pcie_dev.o bbro_pcie_pci.o
 
 注意，有时候报错 `could not insert module xquote.ko: Invalid module format` 或者 dmesg 显示 `compat: disagrees about version of symbol module_layout` 原因是由于当前使用的内核和模块是重新编译过的，导致 /usr/src/linux-headers-5.15.0-56-generic/Module.symvers 里的 module_layout 值和当前使用的内核(及模块) module_layout 值不匹配，所以在编译的时候，指定 KLIB 和 KLIB_BUILD 为当前内核源码的路径去编译，问题即可解决。
 
-或者：
-
-用内核源码路径下编译生成的 Module.symvers 替换掉 /usr/src/linux-headers-5.15.0-56-generic/Module.symvers ，再编译模块即可。
-
 ```
 KDIR = /lib/modules/$(shell uname -r)/build
 KLIB = /lib/modules/$(shell uname -r)/build
 KLIB_BUILD = /lib/modules/$(shell uname -r)/build
+```
+
+/usr/src/kernels/ 为空的解决
+```
+$ sudo make                    
+make  -C /lib/modules/5.14.0-284.11.1.el9_2.x86_64/build M=/home/alfred/tab/u50/driver modules       
+make[1]: *** /lib/modules/5.14.0-284.11.1.el9_2.x86_64/build: 没有那个文件或目录。 停止。            
+make: *** [Makefile:10：all] 错误 2
+       
+[alfred@localhost driver]$ ls -hl /lib/modules/5.14.0-284.11.1.el9_2.x86_64/build 
+lrwxrwxrwx. 1 root root 45  5月 10  2023 /lib/modules/5.14.0-284.11.1.el9_2.x86_64/build -> /usr/src/kernels/5.14.0-284.11.1.el9_2.x86_64
+
+[alfred@localhost driver]$ ls -hlrt /usr/src/kernels/   
+总用量 0   
+[alfred@localhost driver]$ sudo dnf update
+[alfred@localhost driver]$ sudo dnf install -y kernel
+[alfred@localhost driver]$ sudo dnf install -y kernel-devel
+
+重启，很关键！！！！
+
+$ ls -hlrt /usr/src/kernels/
+总用量 4.0K
+drwxr-xr-x. 25 root root 4.0K 10月 28 09:29 5.14.0-427.40.1.el9_4.x86_64
+
+$ cd /lib/modules/5.14.0-284.11.1.el9_2.x86_64/
+$ sudo ln -sf /usr/src/kernels/5.14.0-427.40.1.el9_4.x86_64 build
+```
+
+Skipping BTF generation, pahole：未找到命令
+```
+$ sudo dnf install dwarves -y
+```
+
+签名
+```
+$ grep CONFIG_MODULE_SIG /boot/config-$(uname -r)
+CONFIG_MODULE_SIG_FORMAT=y
+CONFIG_MODULE_SIG=y
+# CONFIG_MODULE_SIG_FORCE is not set
+CONFIG_MODULE_SIG_ALL=y
+# CONFIG_MODULE_SIG_SHA1 is not set
+# CONFIG_MODULE_SIG_SHA224 is not set
+# CONFIG_MODULE_SIG_SHA256 is not set
+# CONFIG_MODULE_SIG_SHA384 is not set
+CONFIG_MODULE_SIG_SHA512=y
+CONFIG_MODULE_SIG_HASH="sha512"
+CONFIG_MODULE_SIG_KEY="certs/signing_key.pem"
+
+
+$ cd /usr/src/kernels/uname -r/certs
+$ vim x509.genkey
+[ req ]
+default_bits = 4096
+distinguished_name = req_distinguished_name
+prompt = no
+string_mask = utf8only
+x509_extensions = myexts
+
+[ req_distinguished_name ]
+CN = Modules
+
+[ myexts ]
+basicConstraints=critical,CA:FALSE
+keyUsage=digitalSignature
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid
+$ sudo openssl req -new -nodes -utf8 -sha512 -days 36500 -batch -x509 -config x509.genkey -outform DER -out signing_key.x509 -keyout signing_key.pem
 ```

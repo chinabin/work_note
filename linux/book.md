@@ -24,6 +24,8 @@ circuits: 电子电路
 
 [想自学《计算机体系结构：量化研究方法》这本书，有什么配套网络课程？](https://www.zhihu.com/question/427089616)
 
+[github: Computer-Science-Textbooks](https://github.com/kaitoukito/Computer-Science-Textbooks)
+
 目前准备看的书籍：
 1. 计算机组成与设计：硬件/软件接口( Computer Organization and Design, Hardware/Software Interface ) 
    
@@ -45,16 +47,16 @@ circuits: 电子电路
 
 可以看的视频：
 
-1. 前导课程： [CS61C 计算机组成原理 20200816](https://www.bilibili.com/video/BV1fC4y147iZ/?spm_id_from=333.337.search-card.all.click&vd_source=55019cf38cd2bfef2ff9bcd83a1f91df)
+1. 前导课程： [CS 61C 计算机组成原理 20200816](https://www.bilibili.com/video/BV1fC4y147iZ/?spm_id_from=333.337.search-card.all.click&vd_source=55019cf38cd2bfef2ff9bcd83a1f91df), 这是 summer 版本，[[CS61C SU20] Great Ideas in Computer Architecture](https://www.bilibili.com/video/BV1PV411U7Hv?vd_source=55019cf38cd2bfef2ff9bcd83a1f91df&spm_id_from=333.788.videopod.episodes&p=85) 这两个视频可以交叉看，互相弥补生成字幕问题。还有一个版本，可能是 2020 fall 版本 [伯克利大学《计算机体系结构》(2020)](https://www.bilibili.com/video/BV17b42177VG/?spm_id_from=333.788.recommend_more_video.0&vd_source=55019cf38cd2bfef2ff9bcd83a1f91df)
 
-2. 继续： [Princeton] ELE 475 or  [UCB] CS152，推荐前者
+2. 继续： [Princeton] ELE 475 or  [UCB] CS 152(151 是 digital system design, 152 是 hardware design)，推荐前者
 
     cs152 252A Computer Architecture and Engineering 有几个版本:  
     - [Spring 2021](https://www.bilibili.com/video/BV1pK4y1d7ff/?p=1&vd_source=24a420d00426dd75084e83baa33680ab)  
     - [Spring 2023 Sophia Shao](https://www.bilibili.com/video/BV1yP411U7xh?p=1&vd_source=55019cf38cd2bfef2ff9bcd83a1f91df)
 
     ELE 475:
-    - [Prof. David Wentzlaff 的 Computer Architecture](https://www.youtube.com/watch?v=nx2m0GrDQN0&list=PLUDvczyXAbgnY-ij0lzrs-9hzqDocOUfm&index=1&ab_channel=ENGEGY)
+    - [Prof. David Wentzlaff 的 Computer Architecture](https://www.coursera.org/learn/comparch/lecture/Ouq7L/course-introduction)
 
 3. 一枝独秀，[苏黎世联邦理工（ETH Zurich）的 Onur Mutlu 教授的计算机系统结构, 2019](https://www.youtube.com/watch?v=UC_ROevjIuM&list=PL5Q2soXY2Zi-DyoI3HbqcdtUm9YWRR_z-&ab_channel=OnurMutluLectures)
    

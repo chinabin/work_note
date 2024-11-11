@@ -79,6 +79,7 @@ Cache 主要由两部分组成，Tag 部分和 Data 部分：
     - Compulsory, 第一次访问失效，可以使用 prefetch 来解决
     - Capcity, 由于 cache 满引发的 miss
     - Conflict, 有多个数据映射到 cache 同一个位置，可以使用 Victim Cache 来解决
+    - Coherency, 由于多线程和多核的缓存刷新引入了第四个 C, 之所以进行缓存刷新是为了保持多处理器中多个缓存的一致性。 内容来自计算机体系结构量化研究方法第五版第二章。
 
 # 0x02. Cache Placement
 

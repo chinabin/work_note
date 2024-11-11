@@ -15,7 +15,7 @@ gcc 包含在 Development Tools 这个组中。所以 scl 中的 gcc/g++ 软件�
 
 安装 gcc 9 版本的命令是
 ```bash
-$ sudo yum install devtoolset-9-gcc*
+$ sudo yum install devtoolset-9-gcc
 ```
 注意，多个版本不冲突，可以同时存在 gcc6 gcc 7 gcc8 。   
 
