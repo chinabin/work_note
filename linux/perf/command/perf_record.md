@@ -29,7 +29,10 @@ perf record [options] [command]
 
 ```
 # 默认情况下，perf stat 是一秒要采集 4000 次（软件事件频率）。
-perf record -F 99 -g -p 11488 --switch-events
+perf record -F 99 -g -p 11488
+
+# 如果 svg 图出现 unknown 函数，注意，图会很大
+sudo perf record -e cpu-clock --call-graph dwarf -p pid
 ```
 
 ## 2.2 -g 或 --call-graph

@@ -197,3 +197,20 @@ cache 被分成 2 路，每路包含 4 行 cache line 。我们将所有索引�
 
 ![1](../../pic/linux/memory/内存管理-Cache.png)
 
+## 3.3 网络好例子
+
+![Alt text](../../pic/linux/memory/cache_example.png)
+
+在全相联映射中，我们将主存分成了 m 块，将 Cache 分成了 n 行，Cache 和主存之间是多对多的关系，也就是说 Cache 中的任意一行可以存放主存中的任意一块。
+
+![Alt text](../../pic/linux/memory/cache_example-1.png)
+![Alt text](../../pic/linux/memory/cache_example-2.png)
+
+在直接映射中，我们将主存中分成了 m 块，每若干块组成了一个区，其中一个区中的块数取决于Cache中的行数。 Cache 中有多少行，我们的一个区就由多少块组成。（这里为了方便以 Cache 中只有 4 行举例，因为 Cache 只有 4 行，所以我们一个区也由 4 块组成 ）
+如图所示，在直接映射中，每个区的第 0 块只能映射到Cache中的第 0 行，每个区的第 3 块只能映射到Cache中的第 3 行，也就是说 主存中每个区的第 i 块会映射到Cache中的第 i 行，Cache 与主存之间是一对多的关系，这就是直接映射方式。
+
+![Alt text](../../pic/linux/memory/cache_example-3.png)
+
+组相联映射基本和直接映射一样，也是将主存划分成了很多个区，唯一的不同就是 Cache 中若干个连续的行组成了一组，如下图所示。其中每个区中的第 i 块对应Cache中的第 i 组( 在直接映射中是每个区中的第 i 块对应Cache中的第 i 行，这点注意 )，在组相联映射中，我们可以将主存中每个区的一块随意存放在 Cache 中某一组的任意一行中。
+
+![Alt text](../../pic/linux/memory/cache_example-4.png)

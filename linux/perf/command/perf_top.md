@@ -41,3 +41,10 @@ sudo perf top -p 69598 --call-graph dwarf -g
 第二列：符号所在的 DSO(Dynamic Shared Object)，可以是应用程序、内核、动态链接库、模块。  
 第三列：DSO 的类型。[.]表示此符号属于用户态的ELF文件，包括可执行文件与动态链接库。[k]表述此符号属于内核或模块。  
 第四列：符号名。有些符号不能解析为函数名，只能用地址表示。  
+
+
+
+调用 syscall 数量的 top 排行榜
+```
+perf top -F 49 -e raw_syscalls:sys_enter --sort comm,dso --show-nr-samples
+```

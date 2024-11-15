@@ -55,6 +55,8 @@ sar是 System Activity Reporter （系统活动情况报告）的缩写。 sar �
 	   将命令结果以二进制格式存放在指定文件中
 ```
 
+![Alt text](../../pic/linux/sar.png)
+
 ## 2.1 举例
 
 ### 2.1.1 网络
