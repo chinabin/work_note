@@ -1,6 +1,8 @@
 # 0x00. 导读
 [Documentation/cpu-freq/intel-pstate.txt](https://www.kernel.org/doc/Documentation/cpu-freq/intel-pstate.txt)
 
+**感觉如果需要使用 intel 那些睿频技术的话才需要使用这个驱动，不然就算了**
+
 1. intel_pstate 驱动程序会自动用于现代 Intel CPU, 用来控制 P-states.
 2. `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver` 查看 intel_pstate 是否启动
 3. 设置 performance 模式就能获得稳定频率。

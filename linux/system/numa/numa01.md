@@ -1,3 +1,28 @@
+# 0x00. 导读
+
+# 0x01. 简介
+
+从硬件的角度来看，NUMA（non-uniform memory access，非一致性内存访问）是一个计算机平台，它包含多个组件/集成片，每个组件/集成片包含多个CPU、本地内存和I/O总线。
+
+```bash
+$ numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+node 0 size: 63981 MB
+node 0 free: 1545 MB
+node 1 cpus: 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+node 1 size: 64492 MB
+node 1 free: 6071 MB
+node distances:
+node   0   1 
+  0:  10  12 
+  1:  12  10
+```
+
+所谓的非一致内存访问NUMA，就是指这里的 local access 和 remote access 了，它们的路径长短不一样，成不不一样，所以是非一致的。
+
+# 0x02.
+
 1. numa = Non-uniform memory access
 2. numa 是一个共享内存架构，每个 CPU 分配了属于自己的本地内存，并且可以访问属于其它 CPU 的内存。   
     本地内存的访问具有低延迟，高带宽性能，远程内存的访问具有高延迟，低带宽性能。
@@ -5,7 +30,7 @@
 3. 多处理器系统之前使用的是 交叉开关(crossbar switch) ，但这种设计的复杂性会随着处理器的增加而增加。后来改为使用 总线(bus) ，处理器通过在总线上发送请求来访问内存空间，但是这种系统也存在问题：   
     - 每个 CPU 的可用带宽会随着 CPU 数量的增加而减少
     - 添加 CPU 会使得总线长度增加，从而增加延迟   
-![01](./pic/numa/01.png)
+![01](../../../pic/numa/01.png)
 
 4. CPU 性能的增长，使得处理器和内存之间的性能差距让人头痛。想到的一个办法是添加缓存，这又引入了新的麻烦。   
 给每个 CPU 附加一个 cache 能够提升性能：降低平均内存访问时间，降低 memory bus 上的带宽负载。   
@@ -16,7 +41,7 @@
 
 6. 在 UMA 系统中，CPU 是通过 FSB(Front-Side Bus) 连接到北桥。北桥包含内存控制器，所有进出内存的通信都必须通过北桥。I/O 控制器，也连接在北桥。因此，每个 I/O 都必须经过北桥才能到达 CPU。但是，由于北桥内部的带宽以及早期的缓存窥探协议的原因，UMA 的可扩展性是有限的。
 
-![02](./pic/numa/02.png)
+![02](../../../pic/numa/02.png)
 
 7. 为了进一步提高扩展性和性能，对 共享内存的多处理器架构(shared-memory multiprocessors architecture) 进行了三点改造：
     - 非统一性内存访问组织(Non-Uniform Memory Access organization)
@@ -24,13 +49,13 @@
     - 可扩展的缓存一致性解决方案
 
 8. 非统一性内存访问组织   
-    ![03](./pic/numa/03.png)   
+    ![03](../../../pic/numa/03.png)   
     CPU1 的内存控制器连接的内存是本地内存，CPU2 的内存控制器连接的内存对于 CPU1 而言是远程内存。远程内存访问是有额外开销的。由于内存位置的不同，该系统存在 不均匀(non-uniform) 的内存访问时间。
 
 9. 点对点互联   
-    ![04](./pic/numa/04.png)  
+    ![04](../../../pic/numa/04.png)  
     QuickPath point-to-point Interconnect (QPI)
 
 10. 可扩展的缓存一致性解决方案   
-    ![05](./pic/numa/05.png)  
+    ![05](../../../pic/numa/05.png)  
     上面的红色环可以参考: [Ring Bus到Mesh网络](https://zhuanlan.zhihu.com/p/32216294)

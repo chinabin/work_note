@@ -121,6 +121,8 @@ static struct clocksource i8253_cs = {
 
 ## 3.4 acpi_pm(ACPI power management timer)
 
+acpi_pm 时钟源的优点是其频率不会根据 power management code 而改变，但由于它以 3.58MHz 运行（每 279 ns 一次滴答）。
+
 几乎所有 ACPI-based 的主板上都会有该设备。频率为 3.579545 MHz
 ```c
 static struct clocksource clocksource_acpi_pm = {

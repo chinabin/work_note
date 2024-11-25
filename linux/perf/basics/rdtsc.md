@@ -87,6 +87,11 @@ cat /proc/cpuinfo | grep rdtscp
         $ cat /proc/cpuinfo | grep -E "constant_tsc|nonstop_tsc"
         flags：... tsc rdtscp constant_tsc nonstop_tsc ...
 
+        tsc: 系统有一个 TSC 时钟。
+        rdtscp: RDTSCP 指令可用
+        constant_tsc: TSC 在所有 sockets/cores 之间同步
+        nonstop_tsc: TSC 不受 power management code 影响。
+
 ## 2. 多核 TSC 不同步
     Q: 
         在同一处理器的多个核心之间，以及不同处理器的不同核心之间，rdtsc 的结果是否是同步的呢？例如核心 A 是 t1 开始计时，B 是 t2 开始计时，两个值就没有比较的意义。

@@ -169,6 +169,17 @@ cpupower 设置 performance：
 查看频率
 `grep -E '^model name|^cpu MHz' /proc/cpuinfo`
 
+`cpupower idle-info` 命令列出支持的 C-State.
+注意：系统必须加载了 intel_idle 驱动之后才能使用 -m Idle_Stats 模块，才能列出支持的 C-state，否则输出如下：
+```
+$sudo cpupower idle-info
+CPUidle driver: none
+CPUidle governor: menu
+
+Analyzing CPU 0:
+CPU 0: No idle states
+```
+
 # 0x0. 意外
 
 [Linux性能调优之用电调优(Power Usage Tuning)](https://zhuanlan.zhihu.com/p/556462556)
