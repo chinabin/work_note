@@ -1,5 +1,8 @@
 # 0x00. 导读
 
+[频率.md](../../memory/DRAM/频率.md) 很给力。  
+[饶萌开源的时间戳程序](https://github.com/MengRao/tscns/blob/master/tscns.h)
+
 # 0x01. 简介
 
 系统启动后， Linux 从 RTC（Real Time Clock）获取当前时间时。RTC 是一个由主板纽扣电池供电的硬件时钟，因此即使机器断电，它也能继续运行。在大多数情况下，RTC 不是特别准确，因为它是由廉价的晶体振荡器驱动的，其频率会根据温度和其他环境因素变化。 Linux 系统从RTC 查询得到的启动时间，并存储在内核内存中，稍后将启动时间用作偏移量，合并TSC 保留的滴答计数推导出（当前的）挂钟时间（Wall-clock time）。

@@ -1,5 +1,9 @@
 # 0x00. 导读
 
+ELF（Executable and Linkable Format）是一种行业标准的二进制数据封装格式，主要用于封装可执行文件、动态库、object 文件和 core dumps 文件。用 readelf 可以查看 ELF 文件的基本信息，用 objdump 可以查看 ELF 文件的反汇编输出。
+
+ELF 格式的概述可以参考 [这里](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)，完整定义可以参考 [这里](https://refspecs.linuxbase.org/elf/elf.pdf)。其中最重要的部分是：ELF 文件头、SHT（section header table）、PHT（program header table）。
+
 ELF (Executable and Linking Format)，即“可执行可连接格式”，作为一种可移植的格式，有比较广泛的适用性，通用的二进制接口定义使之可以平滑地移植到多种不同的操作环境上。  
 这样，不需要为每一种操作系统都定义一套不同的接口，因此减少了软件的重复编码与编译，加强了软件的可移植性。
 
@@ -10,6 +14,8 @@ ELF 规范中把 ELF 文件宽泛地称为 **目标文件 (object file)**，这�
 [Understanding_ELF.pdf](https://paper.seebug.org/papers/Archive/refs/elf/Understanding_ELF.pdf)  
 [elf-introduce](http://chuquan.me/2018/05/21/elf-introduce/)  
 `man elf`
+
+[Android PLT hook 概述](https://github.com/iqiyi/xHook/blob/master/docs/overview/android_plt_hook_overview.zh-CN.md)
 
 # 0x01. 简介
 
@@ -47,16 +53,21 @@ readelf 可以配合 -W 选项，使得输出尽量在一行
 
 ### 2.1.1. ELF Header 
 
-作用：文件开始处是 ELF 头部 (ELF Header) ，它给出了整个文件的组织情况。  
+作用：文件开始处是 ELF 头部 (ELF Header) ，它给出了整个文件的组织情况。ELF 文件的起始处，有一个固定格式的定长的文件头（32 位架构为 52 字节，64 位架构为 64 字节）。ELF 文件头以 magic number `0x7F 0x45 0x4C 0x46` 开始（其中后 3 个字节分别对应可见字符 `E L F`）。
 
 `readelf -h Bifrost-dmastk` 可以查看。
 
-### 2.1.2. Program Header Table
+### 2.1.2. Program Header Table, PHT
 
 作用：告诉系统如何创建进程。  
 **用于生成进程的目标文件必须具有程序头部表，但是重定位文件不需要这个表。**  
 
-`readelf -l Bifrost-dmastk` 可以查看。
+`readelf -l Bifrost-dmastk` or `-h` 可以查看。
+
+```
+-h --file-header       Display the ELF file header, 看 ELF 文件头
+-l --program-headers   Display the program headers, 看 PHT
+```
 
 1. PHDR，描述了 program header table 自身的信息。  
     从这里的内容看出，示例程序的 program header table 在文件中的偏移为 0x40 ，即 64 号字节处；  
@@ -103,6 +114,10 @@ readelf 可以配合 -W 选项，使得输出尽量在一行
 ```
 
 `readelf -s Bifrost-dmastk` 可以查看 符号表 信息。
+```
+-s --syms              Display the symbol table
+-S --section-headers   Display the sections' header
+```
 
 ### 2.1.4. Section Header Table
 
@@ -110,6 +125,19 @@ readelf 可以配合 -W 选项，使得输出尽量在一行
 **用于链接的目标文件必须有节区头部表，其它目标文件则无所谓，可以有，也可以没有。**  
 
 `readelf -S Bifrost-dmastk` 可以查看。然后可以使用 `readelf -x 24 Bifrost-dmastk` 将对应的 section 数据打印出来，一般对于 STRTAB 有用。
+
+比较重要，且和 hook 关系比较大的几个 section 是：
+
+- .dynstr: 保存了所有的字符串常量信息。
+- .dynsym: 保存了符号（symbol）的信息（符号的类型、起始地址、大小、符号名称在 .dynstr 中的索引编号等）。函数也是一种符号。
+- .text: 程序代码经过编译后生成的机器指令。
+- .dynamic: 供动态链接器使用的各项信息，记录了当前 ELF 的外部依赖，以及其他各个重要 section 的起始位置等信息。
+- .got: Global Offset Table。用于记录外部调用的入口地址。动态链接器（linker）执行重定位（relocate）操作时，这里会被填入真实的外部调用的绝对地址。
+- .plt: Procedure Linkage Table。外部调用的跳板，主要用于支持 lazy binding 方式的外部调用重定位。（Android 目前只有 MIPS 架构支持 lazy binding）
+- .rel.plt: 对外部函数直接调用的重定位信息。
+- .rel.dyn: 除 .rel.plt 以外的重定位信息。（比如通过全局函数指针来调用外部函数）
+
+![Alt text](../../pic/linux/ELF/SHT.png)
 
 ## 2.2 执行视图
 

@@ -1,5 +1,9 @@
 # 0x00. 导读
 
+[ssh端口转发](https://www.lsx.cool/archives/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91)
+
+[SSH+rsync实现服务器的自动备份](https://www.lsx.cool/archives/sshrsync-shi-xian-fu-wu-qi-de-zi-dong-bei-fen)
+
 # 0x01. 简介
 
 > SSH 之所以能够保证安全，原因在于它采用了公钥加密。需要指出的是，SSH 只是一种协议，存在多种实现，既有商业实现，也有开源实现。我们这里主要针对的是 OpenSSH 工具。
