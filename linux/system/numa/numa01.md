@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+[NUMA系列文章](https://frankdenneman.nl/2016/07/11/numa-deep-dive-part-3-cache-coherency/)
+
 # 0x01. 简介
 
 从硬件的角度来看，NUMA（non-uniform memory access，非一致性内存访问）是一个计算机平台，它包含多个组件/集成片，每个组件/集成片包含多个CPU、本地内存和I/O总线。

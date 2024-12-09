@@ -13,6 +13,11 @@
 
 在步骤一性能剖析阶段，最常用的工具就是 perf。
 
+Intel 在 Broadwell 之后的 CPU 架构引入了 Processor Trace 技术，但是 Linux 在 4.1 版本之后的 perf tools 开始支持了 Intel PT. Intel 通过专门的硬件，以较小的性能损失记录程序控制流信息，并将其编码压缩成一系列的 packet 流，packet 的内容包括：
+
+- 程序控制流信息，记录了每次的 branch 跳转。
+- 统计信息，如指令执行时的时间戳。
+- 
 # 0x02. perf 是什么
 
 perf 是由 Linux 官方提供的系统性能分析工具，最开始叫 Performance Counters for Linux, PCL 。我们通常说的 perf 实际上包含两部分：

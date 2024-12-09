@@ -16,4 +16,4 @@ $ ls da_stk_radar/ | grep -v "CoreLog\|log" | xargs -i cp -r da_stk_radar/{} /op
 $ ls skyroad/ | grep -v "skyroad_td.2023*\|sr_log_raw*"
 ```
 
-for file in SkyRoadTool SkyRoadClient ThunderClient; do cp "$file" "$file.20241120"; done
+for file in SRMUYdDceFut SkyRoadTool SkyRoadClient ThunderClient; do cp "$file" "$file.20241205"; done

@@ -246,8 +246,8 @@ Intel 采用 QuickPath ，也就是 QuickPath point-to-point Interconnect (QPI)�
 ![3](./pic/CPU/quick_path.png)
 
 Ring Bus实际上是两个环，一个顺时针环和一个逆时针环。各个模块一视同仁的通过 Ring Stop 挂接在Ring Bus上。如此设计带来很多好处：
-1. 双环设计可以保证任何两个ring stop之间距离不超过Ring Stop总数的一半，延迟较低。
-2. 各个模块之间交互方便，不需要Core中转。这样一些高级加速技术，如DCA（Direct Cache Access), Crystal Beach等等应运而生。
+1. 双环设计可以保证任何两个 ring stop 之间距离不超过Ring Stop总数的一半，延迟较低。
+2. 各个模块之间交互方便，不需要 Core 中转。这样一些高级加速技术，如 DCA(Direct Cache Access), Crystal Beach 等等应运而生。
 3. 高速的ring bus保证了性能的极大提高。Core to Core latency 只有60ns左右，而带宽则高达数百G(记得Nehalem是192GB/s).
 方便灵活。增加一个Core，只要在Ring上面加个新的ring stop就好，不用像以前一样考虑复杂的互联问题。
 

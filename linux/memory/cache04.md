@@ -2,6 +2,8 @@
 
 多核 cache 如何保持一致性。  
 
+[Yizhou Shan's Home Page Practical Cache Coherence](http://lastweek.io/notes/cache_coherence/)
+
 # 0x01. 简介
 
 我们知道每个 CPU 都有一个私有的 L1 Cache 。假设一个 2 核的系统，我们将会有 2 个 L1 Cache 。这就引入了一个问题，不同 CPU 之间的 L1 Cache 如何保证一致性呢？

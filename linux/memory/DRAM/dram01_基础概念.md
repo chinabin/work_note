@@ -1,8 +1,13 @@
 # 0x00. 导读
 
-[DRAM原理](https://www.bilibili.com/video/BV1T3411T73E/?spm_id_from=333.788.top_right_bar_window_custom_collection.content.click&vd_source=55019cf38cd2bfef2ff9bcd83a1f91df)
+[DRAM原理](https://www.bilibili.com/video/BV1T3411T73E/?spm_id_from=333.788.top_right_bar_window_custom_collection.content.click&vd_source=55019cf38cd2bfef2ff9bcd83a1f91df)  
+[dynamic random access memory (dram) ](https://www.youtube.com/watch?v=I-9XWtdW_Co&ab_channel=ComputerScienceLessons)
 
 [DDR 探密二：深入剖析 DRAM 芯片的存储原理](https://zhuanlan.zhihu.com/p/663697786)
+
+[coredumped 博主, DRAM](https://www.youtube.com/watch?v=7WnbIeMgWYA&list=PL9vTTBa7QaQOoMfpP3ztvgyQkPWDPfJez&index=3&ab_channel=CoreDumped)  
+[how does computer memory work](https://www.youtube.com/watch?v=7J7X7aZvMXQ&ab_channel=BranchEducation)  
+[时钟信号](https://www.youtube.com/watch?v=PVNAPWUxZ0g&list=PL9vTTBa7QaQOoMfpP3ztvgyQkPWDPfJez&index=3&ab_channel=CoreDumped)
 
 解释 memory cell, memory array, bank, chip, rank, channel 分别是什么。
 

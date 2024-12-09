@@ -28,6 +28,8 @@ Host 主机别名（随意起名）
     Port 端口号（如22）
     IdentityFile  私钥文件路径（如 ~/.ssh/我的私钥）
 chmod 400 私钥文件路径
+
+$ ssh HWZCH4 'ls'
 ```
 
 # 0x002. 免密登录
@@ -228,10 +230,14 @@ Host server
 
 ```bash
 # 每隔一分钟，客户端就会向远程服务器发一个KeepAlive请求，这样中断就不会因为超时空闲而断开链接。
+
 Host *
-    ServerAliveInterval 60
+    ServerAliveInterval 300
+    ServerAliveCountMax 1200
     StrictHostKeyChecking no
     GSSAPIAuthentication no
+    IdentityFile ~/.ssh/id_rsa.104
+    User alfred
 ```
 
 # 0x05. parallel-ssh
