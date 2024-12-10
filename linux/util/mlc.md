@@ -159,9 +159,25 @@ Writer Numa Node     0       1
 
 ```
 通用选项：
--r 随机访问，以获得延迟数据。这个选项主要是当 prefetcher 不能被禁用的时候用。
--e MLC在所有测量中都不会修改硬件预取器。这个参数适合在虚拟机内部测试（无法修改MSR）
+-r 随机访问，以获得延迟数据。
+-e MLC在所有测量中都不会修改硬件预取器。
 -X 每个 core 只用一个线程
+```
+
+
+```
+-r 参数表示 MLC 会进行随机访问。顺序读写会提高硬件预取器的命中率，所以也会相应地降低访问延时。这里要注意，当采用 -r 参数的时候，stride size 也就是步进也会更改为 128byte，以避免预取器常用的下一行预取的行为。
+```
+
+```
+-e 参数表示 MLC 在测试时不会修改硬件预取器的相关设定。因为硬件预取对于 cache 和内存的性能有较大的影响，因此 MLC 在 root 权限下运行时，会默认关闭硬件预取器。
+
+因此 - e 表示不修改相关设定，表示 MLC 不会按照默认的方式关闭硬件预取。如果用户也没有修改 BIOS 选项的话，那么对于大多数人来说，-e 表示硬件预取器是打开的状态。
+
+所以这里相关的建议就是：
+
+- 如果你要测试 cache，内存的准确数据，不要使用 - e，请在 root 权限下，由 MLC 关闭硬件预取进行测试；
+- 如果你要测试不同数据大小情况下的实际性能，请使用 - e，部分数据会受益于硬件预取的性能提升；
 ```
 
 ```
@@ -169,8 +185,16 @@ Writer Numa Node     0       1
 ./mlc --latency_matrix [-a] [-bn] [-Dn] [-e] [-ln] [-L|-h] [-tn] [-r] [-tn] [-xn] [-X]
 
 -a 测试所有可用 CPU 的 idle 延迟
--b 设置每个 CPU 的分配缓存大小（KB），default=100000
+
+-b 设置每个 CPU 的分配缓存大小（KB），default=100000. 通过选取适当的 buffer size，可以测试 CPU 不同层级的存储延时和带宽。比如选取 100KB 的 buffer size，这个 buffer 的大小可以放进 L2 中，因此就可以测试出 L2 的带宽和延时。
+
 -c 将 **延迟测试的线程** pin 到指定 CPU 。所有内存访问都将从这个特定的CPU发出
+
 -d delay cycles injected between requests to memory (default-0), higher value lowers bandwidth
+
 -i initialize memory from core #n (determines where requested memory resides)
+
+-D 为了减少 TLB 的 miss 情况，随机访问并不是在整个 buffer 大小上进行的，而是把 buffer 又切分成多个 block，-D 参数就是决定了这个 block 的大小，-D 的数字表示 128byte 的倍数。随机访问首先在 block 的范围内随机读取，读完之后再去下一个 block 进行同样的操作。
+
+-l 参数用于指定步进大小（stride size），默认为 64byte。
 ```

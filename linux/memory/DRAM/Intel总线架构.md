@@ -24,6 +24,8 @@
 
 现在处理器都有 片上网络(Network-on-Chip, NoC), 在 die, cores, cache slices (large LLC is usually divided into slices), memory controllers 等部件的内部，都是通过一个 on-chip network(e.g., a ring in old-generation Xeon, or a mesh in Xeon Scalable) 连接起来的。
 
+人们习惯于将连接多台独立计算机的网络称为 Network, 而将芯片内部或者多个芯片之间的互联网称为 Fabric. 片外访存网络（或者说片间互联）：Intel 的 QPI、IBM 的 SMI 和 OpenCAPI、ARM 的 CCIX、HP 的 GenZ。Intel 的 QPI 经过多个版本演进，如今改名为 UPI 了。
+
 TODO:  
 1. 11
 2. 每个架构对应的缓存一致性策略，例如 snooping。
@@ -38,7 +40,7 @@ TODO:
 
 Intel 的 uncore 设计源于北桥。Intel 的 uncore 重新组织了对核心至关重要的功能，使它们在物理上更接近片上核心，从而减少了访问延迟。
 
-Specifically, the microarchitecture of the Intel uncore is broken down into a number of modular units. The main uncore interface to the core is the so-called cache box (**CBox**), which interfaces with the last level cache (LLC) and is responsible for managing cache coherency. Multiple internal and external QPI links are managed by physical-layer units, referred to as PBox. Connections between the PBox, CBox, and one or more iMCs (MBox) are managed by the system configuration controller (UBox) and a router (RBox).
+Specifically, the microarchitecture of the Intel uncore is broken down into a number of modular units. The main uncore interface to the core is the so-called cache box (**CBox**, 大话计算机2 P473 中说 CBox 是 L3 缓存控制器), which interfaces with the last level cache (LLC) and is responsible for managing cache coherency. Multiple internal and external QPI links are managed by physical-layer units, referred to as PBox. Connections between the PBox, CBox, and one or more iMCs (MBox) are managed by the system configuration controller (UBox) and a router (RBox).
 
 ## 1.2 命名规则
 

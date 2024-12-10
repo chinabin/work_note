@@ -20,6 +20,8 @@ Base Clock 基频的工作机制也比较简单，举个例子，它就像溪水
 
 前端总线( FSB ) 是一种计算机通信接口 (总线)，在 20 世纪 90 年代和 2000 年代经常用于基于 Intel 芯片的计算机。 EV6 总线为 AMD CPU 提供相同的功能。两者通常在 CPU 和内存控制器集线器（称为北桥）之间传输数据。这种前端总线架构被 HyperTransport 、 Intel QuickPath Interconnect 和 Direct Media Interface 所取代了，再后来就是 Intel Ultra Path Interconnect 和 AMD 的 Infinity Fabric 了。
 
+更多的时候我们称 Infinity Fabric 叫做 CCX 总线。其实 Infinity Fabric 并不是什么深奥的东西，它由 HT 总线衍生而来，但是相比 HT 总线技术对外开放，Infinity Fabric 总线则是 AMD 的专利技术，你想用，先交授权费。Infinity Fabric 可以说是 AMD 这个时代的基石，它的传速速率从 30GB/s 到 512GB/s，并且不和 HT 总线兼容。Infinity Fabric 分为 SCF 和 SDF。SDF 负责数据传输，而 SCF 则负责控制传输命令。SDF 部分就是 HT 总线衍生的产物了。而 Infinity Fabric 和 HT 总线一样，也不仅仅限制于 CPU 上进行使用，包括 CPU，GPU，APU 这些都可以使用，只不过它们的 SDF 层是不一样的。
+
 前端总线有时也称为 系统总线。
 
 从前的时候，前端总线通常通过芯片组（chipset）来连接 CPU 和其余硬件，这个所谓的 chipset 英特尔将其实现为北桥和南桥。外围组件互连(PCI)、加速图形端口(AGP) 和内存总线等其他总线都连接到芯片组，以便数据在连接的设备之间流动。这些辅助系统总线通常以源自前端总线时钟的速度运行，但不一定与其同步。
