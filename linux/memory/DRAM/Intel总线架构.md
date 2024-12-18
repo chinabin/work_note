@@ -65,6 +65,12 @@ Specifically, the microarchitecture of the Intel uncore is broken down into a nu
 
 ![Alt text](../../../pic/linux/memory/DRAM/example13.png)
 
+[编程考古-CPU(上)](https://zhuanlan.zhihu.com/p/11340114858)  
+[编程考古-CPU(中)](https://zhuanlan.zhihu.com/p/12540407426)  
+[编程考古-CPU(下)](https://zhuanlan.zhihu.com/p/12705805467)  
+[至强Xeon工作站CPU介绍，洋垃圾为何大行其道](https://zhuanlan.zhihu.com/p/12340105587)
+[晶体管的奋斗史（一文搞懂芯片晶体管发展历程）](https://zhuanlan.zhihu.com/p/1688492575)
+
 处理器列表：[List_of_Intel_processors](https://en.wikipedia.org/wiki/List_of_Intel_processors), 微架构列表：[List_of_Intel_CPU_microarchitectures](https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures)
 
 ```
