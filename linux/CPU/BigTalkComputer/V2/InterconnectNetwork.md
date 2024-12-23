@@ -4,27 +4,29 @@
 
 [很多概念解释的蛮清楚](./18_interconnects.pdf)
 
-[结合NOC讲](https://www.cs.cmu.edu/afs/cs/academic/class/15418-s21/www/lectures/15_interconnects.pdf)
+[结合 NOC 讲](https://www.cs.cmu.edu/afs/cs/academic/class/15418-s21/www/lectures/15_interconnects.pdf)
 
 # 0x01. 简介
 
 互连网络（Interconnection network）用于将节点连接到其他节点，其中节点可以是单个处理器或处理器组，甚至是路由器、交换机。
 
-![Alt text](image-11.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_01.png)
 
 intra=内部。
 
 芯片内部、核之间、系统之间。你要的互联是哪个级别的？要经常问自己这个问题，才不会陷入迷雾。
 
-![Alt text](image-12.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_02.png)
 
-![Alt text](image-13.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_03.png)
+
+**The topology determines the roadmap, the routing method steers(驾驶，引导) the car, and the ﬂow control controls the trafﬁc lights, determining when a car can advance over the next stretch of road (channels)(下一段道路上前进) or when it must pull off into a parking lot (buffer) to allow other cars to pass.**
 
 # 0x02. 三要素
 
 从 Topology 开始。
 
-![Alt text](image-19.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_04.png)
 
 ## 2.1 拓扑结构
 
@@ -32,7 +34,7 @@ intra=内部。
 
 下面说的 bus、Point-to-Point、Crossbar 等就只是列举出一些 拓扑结构 实例，并没有进行归类或者统计，就好比你问我食物，我回答你汉堡、饺子、米饭、西瓜这些。这些回答是可以分类的，例如中餐西餐，水果，南方，北方等。
 
-![Alt text](image-14.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_05.png)
 
 衡量 拓扑结构 的一些指标：
 - Cost
@@ -45,7 +47,7 @@ intra=内部。
 
 ### 2.1.1 Bus
 
-![Alt text](image-15.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_06.png)
 
 All nodes connected to a single link
 
@@ -60,7 +62,7 @@ All nodes connected to a single link
 
 ### 2.1.2 Point-to-Point
 
-![Alt text](image-16.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_07.png)
 
 Every node connected to every other with direct/isolated links
 
@@ -76,7 +78,7 @@ Every node connected to every other with direct/isolated links
 
 ### 2.1.3 Crossbar
 
-![Alt text](image-17.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_08.png)
 
 - Every node connected to every other with a shared link for each destination
 - Enables concurrent transfers to non-conflicting destinations
@@ -135,13 +137,13 @@ Each node connected to 4 neighbors (N, E, S, W)
 
 随着输出数量的增加，开关数量增加 n 倍。对于大型网络来说这将是一个问题。该方案的替代方案是分阶段切换（staged switching）。
 
-![Alt text](image-7.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_09.png)
 
 ### 2.2.2 Single Stage Interconnect Network
 
 在单级互连网络中，输入节点通过单级开关连接到输出。
 
-![Alt text](image-8.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_10.png)
 
 ### 2.2.3 Multistage Interconnect Network
 
@@ -157,13 +159,13 @@ Each node connected to 4 neighbors (N, E, S, W)
 多级互连网络举例：
 
 Omega network  
-![Alt text](image-20.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_11.png)
 
 Clos network  
-![Alt text](image-21.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_12.png)
 
 Benes network  
-![Alt text](image-22.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_13.png)
 
 
 ## 2.3 路由算法
@@ -172,7 +174,7 @@ Benes network
 
 当两个 packets 想要同时使用同一个线路，其中一个包被支开去到其它线路。
 
-![Alt text](image-10.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_14.png)
 
 三种类型的路由算法：
 - Deterministic, 确定性路由: always chooses the same path for a communicating source-destination pair. 所有从节点 A 向节点 B 移动的数据包都通过相同的路径。
@@ -180,7 +182,7 @@ Benes network
 - Adaptive, 自适应路由: can choose different paths, adapting to the state of the network. 一个数据包从节点 A 移动到节点 B 的路径取决于当前的网络流量（traffic）情况。
 
 注意避免死锁  
-![Alt text](image-18.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_15.png)
 
 ## 2.4 Buffering and flow control
 
@@ -188,7 +190,7 @@ Benes network
 
 在大型网络（这个网络可大可小，核间通信也算）中，从发送方到接收方可能存在多条路径。交换技术（Switching techniques）将决定数据传输的最佳路径。交换技术用于连接系统以进行一对一的通信。
 
-![Alt text](image-4.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_16.png)
 
 1. 电路交换（Circuit Switching）是一种在发送方和接收方之间建立专用路径的交换技术。一旦建立连接，专用路径将保持存在，直到连接终止。在电路交换技术的情况下，当任何用户想要发送数据时，请求信号被发送到接收器，然后接收器发回确认以确保专用路径的可用性。收到确认后，专用路径传输数据。电路交换可以使用以下两种技术之一：
     1. Space Division Switches, 空分开关：
@@ -196,14 +198,14 @@ Benes network
         - Multistage Switch  多级开关
     2. Time Division Switches
 2. 消息交换（Message Switching），其中消息作为一个完整的单元进行传输，并通过存储和转发的中间节点进行路由。
-    ![Alt text](image-5.png)
+    ![Alt text](../../../../pic/CPU/bigtalkv2_17.png)
 3. 数据包交换（Packet Switching），一个包可以被分成更小的块，并且它们被单独发送（很可能是通过不同的路径）。
-    ![Alt text](image-6.png)
+    ![Alt text](../../../../pic/CPU/bigtalkv2_18.png)
     数据包交换有两种方法：
     - Datagram Packet switching, 数据报包交换
     - Virtual Circuit Switching, 虚拟电路交换
 
-![Alt text](image-9.png)
+![Alt text](../../../../pic/CPU/bigtalkv2_19.png)
 
 ## 3.1 Switching vs Topology
 
