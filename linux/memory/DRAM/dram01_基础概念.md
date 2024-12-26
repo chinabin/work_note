@@ -9,6 +9,8 @@
 [how does computer memory work](https://www.youtube.com/watch?v=7J7X7aZvMXQ&ab_channel=BranchEducation)  
 [时钟信号](https://www.youtube.com/watch?v=PVNAPWUxZ0g&list=PL9vTTBa7QaQOoMfpP3ztvgyQkPWDPfJez&index=3&ab_channel=CoreDumped)
 
+[SRAM 存储器的实现原理有哪些？](https://www.zhihu.com/question/575098999/answer/61386893900)
+
 解释 memory cell, memory array, bank, chip, rank, channel 分别是什么。
 
 解释 位线、字线、读取放大器、RAS、CAS、WE、burst 的作用，预充电、刷新、内存交错的概念。

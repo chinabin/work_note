@@ -10,6 +10,8 @@
 
 # 0x02. MESI
 
+[MESI 交互网站](https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/MESIHelp.htm)
+
 ## 2.1 Bus Snooping
 
 当 CPU0 修改自己私有的 Cache 时，硬件就会广播通知到总线上其他所有的 CPU 。对于每个 CPU 来说会有特殊的硬件监听广播事件，并检查是否有相同的数据被缓存在自己的 CPU 。如果 CPU1 私有 Cache 已经缓存即将修改的数据，那么 CPU1 的私有 Cache 也需要更新对应的 cache line 。这个过程就称作 `bus snooping` 。

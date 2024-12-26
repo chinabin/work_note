@@ -12,9 +12,9 @@
 
 ![Alt text](../../../../pic/CPU/bigtalkv2_01.png)
 
-intra=内部。
+intra=内部, inter=间。
 
-芯片内部、核之间、系统之间。你要的互联是哪个级别的？要经常问自己这个问题，才不会陷入迷雾。
+芯片内部、核之间、系统之间。你要的互联是哪个级别的？要经常问自己这个问题，以及当前的互联技术/架构的三要素分别是什么，才不会陷入迷雾。
 
 ![Alt text](../../../../pic/CPU/bigtalkv2_02.png)
 
@@ -121,6 +121,10 @@ Each node connected to 4 neighbors (N, E, S, W)
 
 缺点：
 - 暂无，不是没有
+
+### 2.1.6 HyperCude
+
+**HyperCube 超立方是 Intel QPI 网络（多个 CPU 芯片间的互联）所使用的拓扑。**
 
 ## 2.2 继续 topology
 

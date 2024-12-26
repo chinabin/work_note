@@ -24,13 +24,9 @@
 
 现在处理器都有 片上网络(Network-on-Chip, NoC), 在 die, cores, cache slices (large LLC is usually divided into slices), memory controllers 等部件的内部，都是通过一个 on-chip network(e.g., a ring in old-generation Xeon, or a mesh in Xeon Scalable) 连接起来的。
 
-人们习惯于将连接多台独立计算机的网络称为 Network, 而将芯片内部或者多个芯片之间的互联网称为 Fabric. 片外访存网络（或者说片间互联）：Intel 的 QPI、IBM 的 SMI 和 OpenCAPI、ARM 的 CCIX、HP 的 GenZ。Intel 的 QPI 经过多个版本演进，如今改名为 UPI 了。
+人们习惯于将连接多台独立计算机的网络称为 Network, 而将芯片内部或者多个芯片之间的互联网称为 Fabric. 片外访存网络（或者说片间互联）：Intel 的 QPI、IBM 的 SMI 和 OpenCAPI、ARM 的 CCIX、HP 的 GenZ。Intel 的 QPI 经过多个版本演进，如今升级为 UPI 了。
 
-TODO:  
-1. 11
-2. 每个架构对应的缓存一致性策略，例如 snooping。
-3. 带宽计算
-4. uncore
+On-Chip Interconnect, Off-Chip Interconnect
 
 ## 1.1 uncore
 
@@ -71,7 +67,7 @@ Specifically, the microarchitecture of the Intel uncore is broken down into a nu
 [至强Xeon工作站CPU介绍，洋垃圾为何大行其道](https://zhuanlan.zhihu.com/p/12340105587)
 [晶体管的奋斗史（一文搞懂芯片晶体管发展历程）](https://zhuanlan.zhihu.com/p/1688492575)
 
-处理器列表：[List_of_Intel_processors](https://en.wikipedia.org/wiki/List_of_Intel_processors), 微架构列表：[List_of_Intel_CPU_microarchitectures](https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures)
+处理器列表：[List_of_Intel_processors](https://en.wikipedia.org/wiki/List_of_Intel_processors), 微架构列表：[List_of_Intel_CPU_microarchitectures](https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures), 为了方便 [wiki/Xeon](https://en.wikipedia.org/wiki/Xeon).
 
 ```
 64位架构：core -> Nehalem -> Sandy Bridge -> Haswell -> Skylake -> Palm Cove -> Sunny Cove -> Cypress Cove -> Willow Cove -> Golden Cove -> Raptor Cove
@@ -113,6 +109,24 @@ Raptor Cove, 2021.11:
 ```
 
 ![Alt text](../../../pic/linux/memory/DRAM/example15.png)
+
+## 例子
+
+工作和 Xeon 打交道较多，我多介绍一下，更多[看我](https://zh.wikipedia.org/wiki/%E8%87%B3%E5%BC%BA#Xeon%E7%B3%BB%E5%88%97)：
+> Xeon（至强）主要供服务器及工作站使用。以前的 Xeon 分为 E3、E5、E7 三个系列，现在的 Xeon 分为 Xeon E、Xeon W、Xeon D、Xeon Scalable（分为青铜级 Bronze、白银级 Silver、黄金级 Gold 和铂金级 Platinum） 几个系列。另有加速卡 Xeon Phi。只有部分 Xeon E3、Xeon E 和 Xeon W 处理器内置 GPU。
+
+通过 CPU 型号找微架构，例如 Intel Xeon W7-2495X, 首先看得出来这是 Xeon W 系列：
+1. 打开 [wiki/Xeon](https://en.wikipedia.org/wiki/Xeon), 搜索 2400 ，得到答案 Sapphire Rapids-based Xeon
+2. **推荐**：直接搜 Intel Xeon W7-2495X 的 [Intel 官方](https://www.intel.com/content/www/us/en/products/sku/233416/intel-xeon-w72495x-processor-45m-cache-2-50-ghz/specifications.html), Code Name Products formerly Sapphire Rapids, 得到答案
+3. 打开 [wiki/List_of_Intel_processors](https://en.wikipedia.org/wiki/List_of_Intel_processors)， 搜索 Xeon W 得到答案。
+
+例如 Intel Platinum 8580, 直接谷歌进入 [Intel 官网](https://www.intel.com/content/www/us/en/products/sku/237250/intel-xeon-platinum-8580-processor-300m-cache-2-00-ghz/specifications.html)，得到 Code Name Products formerly Emerald Rapids, 答案 Emerald Rapids.
+
+注意，Intel 官网使用 "Products formerly xxx" 来描述 Code Name, 原因是 [Why use the ‘formerly’ word for something that is still around?](https://www.quora.com/Why-does-Intel-mark-their-CPUs-as-Products-formerly-Kaby-Lake-etc-even-for-the-series-that-are-still-in-production-Why-use-the-formerly-word-for-something-that-is-still-around)
+> Kaby Lake、Skylake、Haswell 等是英特尔设计芯片时使用的开发名称。官方说法，Intel 将 Kaby Lake 一代称为“第七代核心架构”，而不是 Kaby Lake。英特尔所说的“以前的 kabylake”指的是这些芯片的开发代号是kabylake。
+> 以前叫五道口技术学院，现在叫清华。
+> 神经病
+
 
 ## core 架构
 
@@ -177,83 +191,3 @@ Intel 推出新的总线技术势在必行。　
 
 # 0x03. QPI
 
-快速通道互联（Intel QuickPath Interconnect, QPI），是一种由 Intel 开发并使用的点对点处理器互联架构，**用来实现 CPU 之间的互联**。尽管多数时候被称作 总线，但是 QPI 是一种点对点互联结构。它被设计成与 AMD 自 2003 年使用的 超传输（HyperTransport）总线 竞争。
-
-Intel 在 2008 年开始用 QPI 取代以往用于至强、安腾处理器的前端总线（FSB）。初期，Intel 给这种连接架构的名称是 公共系统界面（Common System Interface ，CSI），是一种包传输的串行式高速点对点连接技术，用来实现：
-- 芯片之间的直接互连，而非通过 FSB 连接到北桥，并且，其数据传输速率相较于 FSB 有大幅提升
-- QPI 还用于处理器与 IOH（IO Hub）的互连（内存控制器已集成于处理器中）
-- QPI 也常用于最末级缓存（Last Level Cache, LLC）（通常是 L3）的**缓存代理（CA, Caching Agent）**和**宿主代理（HA, Home Agent）**之间的通信。如果目的 HA 不在本处理器中，则也需要通过处理器间的QPI交互。
-
-Cache Agent主要实现CPU Cache的管理，并且发起对内存的访问功能，并且响应其他请求的侦听请求。Home Agent主要实现多个CA对同一地址的串行化访问和对不同地址的并行化访问。
-
-Intel 在发布 Sandy Bridge-EP 核心（Romley 平台）后，也顺势公布首代 QPI 的改进版 QPI 1.1 版本。Intel 于 2017 年发布的 SkyLake-SP Xeon 中，用 UPI（UltraPath Interconnect）取代 QPI。
-
-![Alt text](../../../pic/linux/memory/DRAM/example37.png)
-
-## 带宽
-
-一组 QPI 具有具有 20 条数据传输线，以及发送 (TX) 和接收方 (RX) 的时钟信号。一个 QPI 数据包包含 80 位，需要两个时钟周期或四次传输完成整个数据包的传送。在每次传输的 20bit 数据中，有 16bit 是真实有效的数据，其余四位用于循环冗余校验，以提高系统的可靠性。由于 QPI 是双向的，在发送的同时也可以接收另一端传输来的数据，这样，每个 QPI 总线总带宽=每秒传输次数(即 QPI 频率) × 每次传输的有效数据(即 16bit/8=2Byte) × 双向。所以 QPI 频率为 4.8GT/s 的 总带宽 = 4.8GT/s × 2Byte × 2 = 19.2GB/s， QPI 频率为 6.4GT/s 的总带宽 = 6.4GT/s × 2Byte × 2 = 25.6GB/s。
-
-## QPI架构分层
-
-QPI 协议层制订了一系列规则，用于保证分布式共享存储系统的缓存同一性。常见的 QPI 缓存同一性协议分为 Home Snoop（宿主侦听）和 Source Snoop（数据源侦听）两种。
-
-![Alt text](../../../pic/linux/memory/DRAM/example38.png)
-
-从下到上是：物理层，链路层，路由层，传输层，协议层；(基本上认为是四层协议)
-- 物理层：负责收发0,1；传输的单位是20bit，也被称为是physical unit 或者phit
-    - 4.8GT/s的话，带宽是：4.8GT/s*16bit/8*2 direction=19.2GB/s
-    - 可以工作在full half quarter宽度，full宽度的时候2个phit组成为1个flit
-- 链路层：负责可靠传输和流控，传输的单位是80bit，也被称为是flow control unit或者flit
-    - 支持14个消息类型，但是又一部分没使用；实际上可能只使用6个；
-    - 支持3个虚拟网络，最大就是14*3=42个虚拟通道；
-    - 流速控制使用令牌；发送者的令牌减少，接收者的令牌增加，每转发完成返回令牌；
-    - 每80bit需要8wbit进行crc校验；
-- 路由层：指导包的传输
-    - 基本是FW写路由表实现；
-- 传输层：负责可靠端到端传输，为可靠性预留；
-- 协议层：各种flit包的传输
-    - 实现一致性
-    - 基于MESI(messy)协议，增加一个forward状态成MESIF协议；
-    - 核心上是CA(Cache Agent),内存侧是HA(Home Agent)
-    - 请求行为分为两种倾向：source snoop和home snoop，简单来讲就是少核心的时候使用source snoop ,多核心的时候使用home snoop；
-        - source snoop是two hop snoop，二跳探听，在第二次的时候收到数据；
-        - home snoop是three hop snoop，三跳探听，在第三次的时候收到数据；
-
-# 0x04. UPI
-
-UPI，即 Intel 的 Ultra Path Interconnect，是英特尔开发的点对点处理器互连技术( **Package 之间互联，并非物理 CPU 核之间的互联** )，取代 QPI 的技术。拥有更高的通信速率、效率、更低的功耗。
-
-UPI only supports directory-based coherency, unlike previous QPI processors which supported multiple snoop modes (no snoop, early snoop, home snoop, and directory).
-
-![Alt text](../../../pic/linux/memory/DRAM/example33.png)
-
-## UPI 架构优化
-
-在分布式共享存储处理机（Distributed shared memory, aka. DSM）中需要维护缓存一致性（Cache coherence），为保持缓存一致性有两种策略，snooping 或者 directory-based（译作“侦听”和“基于目录”）。与以前支持多种窥探模式(no snoop, early snoop, home snoop, and directory) 的 QPI 处理器不同，UPI 仅支持基于 `directory-based` 的一致性. 一个结合了 Caching and Home Agent(CHA, Caching Agent and Home Agent are combined as CHA) 的组件负责解决多个处理器之间的一致性问题，以及来自处理器核心和本地及远程代理的 Snoop 请求. 为了根据核心数量、内存控制器或子 NUMA 聚类模式提高可扩展性，单独的物理 CHA 被放置在每个处理器核心和最后一级缓存(LLC) Bank 中. 地址空间在不同的 CHA 之间交错，这些 CHA 表现得像一个单一的逻辑代理.
-
-AMD 用 MOESI, Intel 用 [MESIF](https://en.wikipedia.org/wiki/MESIF_protocol), 其中的 F 是 Forward，同样是把更新过的数据转发给别的 CPU Cache 但是，MOESI 中的 Owner 状态 和MESIF 中的 Forward 状态有一个非常大的不一样—— Owner状态下的数据是dirty的，还没有写回内存，Forward状态下的数据是clean的，可以丢弃而不用另行通知。所以，F 状态主要是针对 CPU L3 Cache 设计的（前面我们说过，L3是所有CPU核心共享的）。
-
-- Directory 协议。这种方法的典型实现是要设计一个集中式控制器，它是主存储器控制器的一部分。其中有一个目录存储在主存储器中，其中包含有关各种本地缓存内容的全局状态信息。当单个CPU Cache 发出读写请求时，这个集中式控制器会检查并发出必要的命令，以在主存和CPU Cache之间或在CPU Cache自身之间进行数据同步和传输。
-- Snoopy 协议。这种协议更像是一种数据通知的总线型的技术。CPU Cache通过这个协议可以识别其它Cache上的数据状态。如果有数据共享的话，可以通过广播机制将共享数据的状态通知给其它CPU Cache。这个协议要求每个CPU Cache 都可以“窥探”数据事件的通知并做出相应的反应。如下图所示，有一个Snoopy Bus的总线。
-
-![Alt text](../../../pic/linux/memory/DRAM/example35.png)
-
-
-[MESI交互网站](https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/MESIHelp.htm)
-
-## CHA
-
-Cache Agent主要实现CPU Cache的管理，并且发起对内存的访问功能，并且响应其他请求的侦听请求。Home Agent主要实现多个CA对同一地址的串行化访问和对不同地址的并行化访问。
-  
-Cache Agent（CA），连接到 L3 Cache 端，cache misses 的时候为 cache line 数据制作请求发送给 HA
-
-![Alt text](../../../pic/linux/memory/DRAM/example36.png)
-
-内存中的一份数据在处理器的多个 core 的 cache line 中存在的时候，这些 core 中的每个 core 称为一个 client。
-
-为了实现缓存一致性，一个 client 对 cache 的操作必须按照顺序传播到所有其他的 client。
-
-实现缓存一致性的两种方法：
-- Snooping, 侦听方法；可以理解成广播方法，一个 client 的请求和响应必须广播到所有的 client 上，缺点是 client 多的时候，要求的总线带宽比较大，优点是更快，更加简单。目前广泛是用在核心少的处理器的缓存一致性机制的实现里面。
-- Directories Based，基于目录的方法；可以理解成基于请求的方法，需要维护一致性的 cache 被放在一个 dir 中，client 发出请求，被允许之后，dir 更新，其他地方的都置无效。
