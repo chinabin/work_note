@@ -18,3 +18,5 @@ ip头部(20字节) + tcp/udp头部(20字节) + 应用层数据 --->
 `sock`: stores the networking information for sockets
 
 ![Alt text](../../pic/linux/net/7protocols.png)
+
+![Alt text](image.png)
