@@ -110,6 +110,44 @@ Raptor Cove, 2021.11:
 
 ![Alt text](../../../pic/linux/memory/DRAM/example15.png)
 
+```
+2006年90、65纳米工艺酷睿core Yonah上市，32位架构，仍然算是奔腾Pro系列；2006推出酷睿处理器是介于NetBurst和Core之间，其实是NetBurst的改版，Core 2是第一个基于Core架构的原生双核处理器，65nm工艺，使得AMD K8架构优势全无，直接投入开发原生四核架构K10去了。
+
+2006年7月酷睿2处理器代号为“Conroe”，采用x86-64指令集与65纳米双核心架构。该处理器基于全新的酷睿微架构，虽然时脉大大降低，但在效率方面和性能方面有了重大改进。从这一时期开始，在深度流水线和资源混乱的运行引擎上维持每个周期的高指令（IPC）
+
+2008年的 Nehalem （酷睿i7）是采用 45nm 工艺的新架构，主要优势来自重新设计的I/O和存储系统，这些系统具有新的Intel QuickPath Interconnect和集成的内存控制器，可支持三通道的DDR3内存。引入片内4-12MB的L3 Cache；重新加入超线程；分支预测分级；取消北桥，IMC(集成内存控制器）从北桥挪到片内
+
+2009年的 Westmere 升级到 32nm；退出第一代I5/I3，Xeon 系列也开始推出第一代E命名的E7-x8xx系列。
+
+2010年的 Lynnfield/Clarkdale 基于 45nm/32nm 工艺的新架构，第一代智能酷睿处理器；
+
+2011年的 Sandy Bridge ，基于 32nm 工艺的新架构，第二代智能酷睿处理器，增加AVX指令集扩展， 对虚拟化提供更好支持；实现了GPU和CPU的融合
+
+2012年的 IVY Bridge，是 Sandy Bridge 的 22nm 升级版，第三代智能酷睿处理器，Tick级改进；
+
+2013年的 Haswell ，基于 22nm 工艺的新架构，第四代智能酷睿处理器，Tock级改进；
+
+2014年的 Broadwell，是 Haswell 的 14nm 升级版，第五代智能酷睿处理器；
+
+2015年则推出 SkyLake，基于 14nm 工艺的新架构， Tock级改进，Ring-Bus改成了Mesh架构，第6代Core i系列，8163就是这款；socket之间UPI互联，内存频率通道增强。不再使用Xeon命名，而是改用Bronze/Silver/Gold/Platinum 4个系列。青铜和白银系列支持双路（原本的 E5-24xx、E7-28xx 系列），黄金系列支持四路（原本的 E5-46xx、E7-48xx 系列），白金系列支持八路（原本的 E7-88xx 系列）；
+
+2019年的Cascade Lake(X2XX命名)也是Skylake的优化，是Intel首个支持基于3D XPoint的内存模块的微体系结构。同年也正式宣布了十代酷睿处理器，即i9-10900k，还是Skylake微内核不变。
+
+2020年的10nm Ice Lake自家工厂无能，改由台积电加工。
+
+2023年 Intel 发布代号Sapphire Rapids（SPR）的第四代英特尔至强（Intel Xeon）可扩展处理器，其核心数最多可达60个，比代号Ice Lake(-SP)的第三代至强可扩展处理器高出50%。相应的，公开款的TDP指标上限，也从270瓦（W）一跃而至350瓦。这一波核数增长的关键是，大英（终于）从单片式（monolithic）的die，转为四等分的die拼接(跟随了 AMD 的策略)
+
+Core 架构代号是 Yonah，把 NetBurst 做深了的流水线级数又砍下来了，主频虽然降下来了（而且即使后来工艺提升到 45nm 之后也没有超过 NetBurst 的水平），但是却提高了整个流水线中的资源利用率，所以性能还是提升了；把奔腾 4 上曾经用过的超线程也砍掉了；对各个部分进行了强化，双核共享 L2 cache 等等。
+
+从 Core 架构开始是真的走向多核了，就不再是以前 “胶水粘的” 伪双核了，这时候已经有最高 4 核的处理器设计了。
+
+Core 从 65nm 改到 45nm 之后，基于 45nm 又推出了新一代架构叫 Nehalem，新架构Nehalem采用 Intel QPI 来代替原来的前端总线，PCIE 和 DMI 控制器直接做到片内了，不再需要北桥。
+
+2006年Intel也提出了Tick-Tock架构战略。Tick年改进制程工艺，微架构基本不做大改，重点在把晶体管的工艺水平往上提升;Tock年改进微架构设计，保持工艺水平不变，重点在用更复杂、更高级的架构设计。然后就是一代 Tick 再一代 Tock交替演进。
+
+从2006年酷睿架构开始，基本是摁着AMD在地上摩擦，直到2017年的AMD Zen杀回来，性能暴增。
+```
+
 ## 例子
 
 工作和 Xeon 打交道较多，我多介绍一下，更多[看我](https://zh.wikipedia.org/wiki/%E8%87%B3%E5%BC%BA#Xeon%E7%B3%BB%E5%88%97)：
@@ -127,6 +165,9 @@ Raptor Cove, 2021.11:
 > 以前叫五道口技术学院，现在叫清华。
 > 神经病
 
+![Alt text](image.png)
+
+![Alt text](image-1.png)
 
 ## core 架构
 

@@ -15,7 +15,7 @@ $ sudo perf list
 - Software event
 - Tracepoint event.
 
-每个具体事件的含义在perf_event_open的man page中有说明：
+每个具体事件的含义在 [perf_event_open](https://man7.org/linux/man-pages/man2/perf_event_open.2.html) 的 man page 中有说明：
 
 - cpu-cycles: 统计cpu周期数，cpu周期：指一条指令的操作时间。
 - instructions:  机器指令数目

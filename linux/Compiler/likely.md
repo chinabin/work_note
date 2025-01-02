@@ -4,6 +4,11 @@
 
 # 0x02. 
 
+__builtin_expect(EXP, N)。意思是：EXP == N 的概率很大。那么上面 likely 和 unlikely 这两句的具体含义就是：
+
+- __builtin_expect(!!(x),1) x 为真的可能性更大
+- __builtin_expect(!!(x),0) x 为假的可能性更大
+
 ```c
 // 条件被认为是非常非常有可能满足时
 #define likely(x) __builtin_expect(!!(x), 1)

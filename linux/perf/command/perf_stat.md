@@ -225,3 +225,91 @@ CPU5                   3,968      branch-misses             #    0.07% of all br
       2. 基准数据：
 
          与其他特定事件（例如缓存命中/未命中事件）结合使用时，可以帮助你计算和分析缓存命中率、未命中率以及内存访问延迟等重要性能指标。
+
+## 3.2 cache 相关
+
+A L2 cache hit ratio below 95% is considered to be catastrophic（灾难性的）! (=5% miss), 应该大于 99%
+
+Basic information about your program
+- The amount of:
+   - instructions executed, 执行的指令数
+   - processor cycles spent on the program, 花费的 cycles
+   - transactions on the bus, 事务数
+
+- The amount/percentage of:
+   - memory loads and stores, 内存存取数
+   - floating point operations, 浮点操作数
+   - vector operations (SIMD), SIMD 数
+   - branch instructions, 分支指令
+   - cache misses
+
+Advanced information about your program
+- The amount and type of:
+   - micro-ops executed, 微指令执行数
+   - SIMD instructions executed
+   - resource stalls within the CPU, 滞留时间
+- Cache access characteristics
+   - A rich set on Intel Core CPUs
+   - Demand
+   - Requests (missed / hit / total / exclusive or shared / store
+or read)
+   - Lines modified / evicted / prefetched
+
+
+```
+perf stat -e branch-misses,bus-cycles,cache-misses,cache-references,cpu-cycles,instructions,stalled-cycles-backend,stalled-cycles-frontend,alignment-faults,context-switches,cpu-clock,cpu-migrations,emulation-faults,major-faults,minor-faults,page-faults,task-clock,L1-dcache-load-misses,L1-dcache-loads,L1-dcache-store-misses,L1-dcache-stores,L1-icache-load-misses,L1-icache-loads,branch-load-misses,branch-loads,dTLB-load-misses,dTLB-loads,iTLB-load-misses,iTLB-loads ./xxxxx
+
+
+branch-misses: 
+bus-cycles: 见下面
+cache-misses: 
+cache-references: cache 命中次数
+cpu-cycles: 统计 cpu 周期数。cpu 周期：指一条指令的操作时间。
+instructions: 执行的指令条数
+stalled-cycles-backend: CPU 停滞统计，一种浪费，CPU 必须等待资源（通常是内存）或完成长延迟指令（例如sqrt、倒数、除法等）。
+stalled-cycles-frontend: CPU 停滞统计，一种浪费，这意味着前端没有向后端提供 micro-operations。这可能意味着指令缓存中存在缺失，或者 micro-operations 缓存中尚未解码的复杂指令。
+alignment-faults: 统计内存对齐错误发生的次数，当访问的非对齐的内存地址时，内核会进行处理，已保存不会发生问题，但会降低性能
+context-switches: 上下文切换次数
+cpu-clock: cpu clock 的统计，每个 cpu 都有一个高精度定时器
+cpu-migrations: 进程运行过程中从一个 cpu 迁移到另一 cpu 的次数
+emulation-faults: GPT: 当硬件性能计数器无法直接计数某个事件时，可能会使用软件模拟的方式来模拟计数操作，而在这一过程中可能会发生缺页异常。它的意义在于帮助开发者或系统管理员了解由于模拟或仿真导致的内存访问问题。
+major-faults: 页错误，内存页已经被 swap 到硬盘上，需要换回
+minor-faults: 页错误，内存页在物理内存中，只是没有和逻辑页进行映射
+page-faults: 页错误的统计
+task-clock: cpu 处理 task 所消耗的时间，单位 ms, 该值越高代表程序是CPU bound而非IO bound 类型。
+L1-dcache-load-misses: 
+L1-dcache-loads: 
+L1-dcache-store-misses: 
+L1-dcache-stores: 
+L1-icache-load-misses: 
+L1-icache-loads: 
+branch-load-misses: 
+branch-loads: 
+dTLB-load-misses: 
+dTLB-loads: 
+iTLB-load-misses: 
+iTLB-loads: 
+```
+
+cycles, ref-cycles 区别
+```
+cycles: 时钟周期数；
+ref-cycles: 时钟周期数，不受动态频率影响的那种。例如 reference cycles 很可能是与 TSC 保持一致的频率
+例如程序 A 花了 100 个 core clocks, 程序 B 花了 200 个 core clocks, 由于动态频率的影响，没法直接说 A 和 B 耗费的时间的快慢。但是如果用 ref-cycles 来衡量，谁大谁就肯定花的时间多。
+```
+
+在 Intel 中对应三个别名：
+- cpu-cycles OR cycles 对应 CPU_CLK_UNHALTED.THREAD
+- ref-cycles 对应 CPU_CLK_UNHALTED.REF_TSC
+- bus-cycles 对应 CPU_CLK_UNHALTED.REF_XCLK
+
+关于 bus-cycles, 首先 
+```
+$ perf stat -e bus-cycles,cpu_clk_unhalted.ref_xclk -- sleep 10
+Performance counter stats for 'sleep 10':
+
+            11,570      bus-cycles:u                                                
+            11,570      cpu_clk_unhalted.ref_xclk:u
+```
+测试确实是相等的，麻烦在于 bus-cycles 的定义，没有找到一个准确解释，从 GPT 和豆包得到的答案类似：
+> 代表的是对总线周期的计数。总线周期是指 CPU 与内存、I/O 设备等通过系统总线进行一次数据传输所需要的时间周期（总线周期通常由若干个时钟周期组成）。每完成一次这样的数据传输，总线周期计数器就会增加，而 bus-cycles 正是用于标识这个计数器。

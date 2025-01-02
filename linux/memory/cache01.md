@@ -50,6 +50,66 @@ LEVEL4_CACHE_ASSOC                 0
 LEVEL4_CACHE_LINESIZE              0
 ```
 
+或者 
+
+```
+inde0-3 分别是：L1数据缓存 L1指令缓存 L2数据缓存 L3数据缓存
+coherency_line_size: cache line 大小 Byte，一般是 64
+id:
+level: cache 属于第几层，L1 L2 L3 的意思
+number_of_sets: set 数
+physical_line_partition: 一个 tag 对应几个 cache line, 一般是 1
+shared_cpu_list: 表示当前 Cache 由哪些 CPU 共享，一般是 L3 才会共享
+shared_cpu_map: 和上面一个意思，看上面那个参数就行
+size: 大小 KB, ways_of_associativity * coherency_line_size * number_of_sets / 1024 = size KB
+type: 是 DCache 还是 ICache
+ways_of_associativity: 几路组相连
+```
+
+```bash
+$ grep . /sys/devices/system/cpu/cpu*/cache/index*/* | vim -
+/sys/devices/system/cpu/cpu0/cache/index0/coherency_line_size:64
+/sys/devices/system/cpu/cpu0/cache/index0/id:0
+/sys/devices/system/cpu/cpu0/cache/index0/level:1
+/sys/devices/system/cpu/cpu0/cache/index0/number_of_sets:64
+/sys/devices/system/cpu/cpu0/cache/index0/physical_line_partition:1
+/sys/devices/system/cpu/cpu0/cache/index0/shared_cpu_list:0
+/sys/devices/system/cpu/cpu0/cache/index0/shared_cpu_map:001
+/sys/devices/system/cpu/cpu0/cache/index0/size:32K
+/sys/devices/system/cpu/cpu0/cache/index0/type:Data
+/sys/devices/system/cpu/cpu0/cache/index0/ways_of_associativity:8
+/sys/devices/system/cpu/cpu0/cache/index1/coherency_line_size:64
+/sys/devices/system/cpu/cpu0/cache/index1/id:0
+/sys/devices/system/cpu/cpu0/cache/index1/level:1
+/sys/devices/system/cpu/cpu0/cache/index1/number_of_sets:64
+/sys/devices/system/cpu/cpu0/cache/index1/physical_line_partition:1
+/sys/devices/system/cpu/cpu0/cache/index1/shared_cpu_list:0
+/sys/devices/system/cpu/cpu0/cache/index1/shared_cpu_map:001
+/sys/devices/system/cpu/cpu0/cache/index1/size:32K
+/sys/devices/system/cpu/cpu0/cache/index1/type:Instruction
+/sys/devices/system/cpu/cpu0/cache/index1/ways_of_associativity:8
+/sys/devices/system/cpu/cpu0/cache/index2/coherency_line_size:64
+/sys/devices/system/cpu/cpu0/cache/index2/id:0
+/sys/devices/system/cpu/cpu0/cache/index2/level:2
+/sys/devices/system/cpu/cpu0/cache/index2/number_of_sets:512
+/sys/devices/system/cpu/cpu0/cache/index2/physical_line_partition:1
+/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_list:0
+/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_map:001
+/sys/devices/system/cpu/cpu0/cache/index2/size:256K
+/sys/devices/system/cpu/cpu0/cache/index2/type:Unified
+/sys/devices/system/cpu/cpu0/cache/index2/ways_of_associativity:8
+/sys/devices/system/cpu/cpu0/cache/index3/coherency_line_size:64
+/sys/devices/system/cpu/cpu0/cache/index3/id:0
+/sys/devices/system/cpu/cpu0/cache/index3/level:3
+/sys/devices/system/cpu/cpu0/cache/index3/number_of_sets:16384
+/sys/devices/system/cpu/cpu0/cache/index3/physical_line_partition:1
+/sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_list:0-5
+/sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_map:03f
+/sys/devices/system/cpu/cpu0/cache/index3/size:20480K
+/sys/devices/system/cpu/cpu0/cache/index3/type:Unified
+/sys/devices/system/cpu/cpu0/cache/index3/ways_of_associativity:20
+```
+
 现代的超标量处理器都是哈佛结构，为了增加流水线的执行效率，L1 Cache 一般都包括两个物理的存在：指令 Cache(I-Cache) 和数据 Cache(D-Cache), 本质上来说，它们的原理都是一样的，但是 D-Cache 不仅需要读取，还需要考虑写入，而 I-Cache 只会被读取，因此 D-Cache 要复杂些。
 
 对于 L1 Cache 来说，**快**就是硬道理，一旦不能和处理器保持速度上的相近，L1 Cache 就失去了意义（所以注定其容量不会很大，因为容量大的 SRAM 需要更长的时间来找到一个指定地址的内容）。

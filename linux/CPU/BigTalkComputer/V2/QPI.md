@@ -30,7 +30,19 @@ QPI 是用来片间互联的，点对点的。不要和 NoC 的 ring/mesh 混淆
 
 ## 2.1 IOH ICH PCI
 
-第一代 Intel Core i7 （Nehalem, 45nm）抛弃了传统的北桥，并且将 memory controller 集成到了 CPU 内部。当时，Intel 没法把 PCI Express controller 也集成进去，只能将它放在一个单独的 chip, 称为 I/O Hub (IOH). 北桥虽然没有了，南桥 (I/O controller hub, ICH) 还是保留了。并且使用 QPI 代替 FSB 来连接 CPU 与 IOH.
+早期CPU core和内存硬盘的连接方式(FSB 是瓶颈)
+
+![Alt text](image-19.png)
+
+实物图
+
+![Alt text](image-20.png)
+
+第一代 Intel Core i7 （Nehalem, 45nm）抛弃了传统的北桥，并且将 memory controller 集成到了 CPU 内部。当时，Intel 没法把 PCI Express controller 也集成进去，只能将它放在一个单独的 chip, 称为 I/O Hub (IOH). 北桥虽然没有了，南桥 (I/O controller hub, ICH) 还是保留了（主要是因为：集成后Die增大不少，生产良品率下降成本上升；不集成两者采用不同的工艺；另外就是CPU引脚不够了！）。并且使用 QPI 代替 FSB 来连接 CPU 与 IOH.
+
+由于FSB变成了系统性能的瓶颈和对多CPU的制约，在台式机和笔记本电脑中，MCH(Memory Control Hub)被请进CPU中，服务器市场虽然短暂的出现了IOH。
+
+![Alt text](image-21.png)
 
 ![Alt text](../../../../pic/CPU/bigtalkv2_29.png)
 
@@ -46,6 +58,81 @@ Sandy Bridge 淘汰了 second die, 将 GPU、PCI Express Controller、memory con
 > Integrated PCIe Controller
 
 Uncore 里集成了过去 x86 UMA 架构时代北桥芯片的基本功能。在 Nehalem 时代，内存控制器被集成到 CPU 里，叫做 iMC(Integrated Memory Controller)。 而 PCIe Root Complex 还做为独立部件在 IO Hub 芯片里。到了 Sandy Bridge 时代，PCIe Root Complex 也被集成到了 CPU 里。 现今的 Uncore 部分，除了 iMC，PCIe Root Complex，还有 QPI(QuickPath Interconnect) 控制器， L3缓存，CBox(负责缓存一致性)，及其它外设控制器。
+
+SoC（System on Chip）：南桥北桥都集成在CPU中，单芯片解决方案。
+
+![Alt text](image-22.png)
+
+
+
+如果要实现一台48core的计算能力的服务器，可以有如下三个方案
+
+方案1：一个大Die集成48core：
+
+![Alt text](image-26.png)
+
+方案2：一个CPU封装8个Die，也叫MCM（Multi-Chip-Module），每个Die 6个core
+
+![Alt text](image-27.png)
+
+四个Die之间的连接方法：
+
+![Alt text](image-28.png)
+
+上图最下面的方案为Intel采用的EMIB（Embedded Multi-die Interconnect Bridge）方案，cost 最低。中间的方案是使用“硅中介层”(Interposer，AMD采用的方案)。这意味着你能在两枚主要芯片的下面放置和使用第三枚芯片。这枚芯片的目的是使得多个设备的连接更加容易，但是也带来了更高的成本。
+
+方案3：四个物理CPU（多Socket），每个物理CPU（Package）里面一个Die，每个Die12个core：
+
+![Alt text](image-29.png)
+
+三者的比较：性能肯定是大Die最好，但是良品率低、成本高；方案2的多个Die节省了主板上的大量布线和VR成本，总成本略低，但是方案3更容易堆出更多的core和内存
+
+
+早期core不多统一走北桥总线访问内存，对所有core时延统一
+
+![Alt text](image-30.png)
+
+左右两边的是内存条，每个NUMA的cpu访问直接插在自己CPU上的内存必然很快，如果访问插在其它NUMA上的内存条还要走QPI，所以要慢很多。
+
+![Alt text](image-31.png)
+
+如上架构是4路CPU，每路之间通过QPI相连，每个CPU内部8core用的是双Ring Bus相连，Memory Control Hub集成到了Die里面。一路CPU能连4个SMB，每个SMB有两个channel，每个channel最多接三个内存条（图中只画了2个）。
+
+2012年英特尔发布了业界期待已久的Intel Sandy Bridge架构至强E5-2600系列处理器。该系列处理器采用 Intel Sandy Bridge微架构和32nm工艺，与前一代的至强5600系列相比，具有更多的内核、更大的缓存、更多的内存通道，Die内采用的是Ring Bus。
+
+Ring Bus设计简单，双环设计可以保证任何两个ring stop之间距离不超过Ring Stop总数的一半，延迟控制在60ns，带宽100G以上，但是core越多，ring bus越长性能下降迅速，在12core之后性能下降明显。
+
+于是采用如下两个Ring Bus并列，然后再通过双向总线把两个Ring Bus连起来。
+
+在至强HCC(High Core Count, 核很多版)版本中，又加入了一个ring bus。两个ring bus各接12个Core，将延迟控制在可控的范围内。俩个Ring Bus直接用两个双向Pipe Line连接，保证通讯顺畅。与此同时由于Ring 0中的模块访问Ring 1中的模块延迟明显高于本Ring，亲缘度不同，所以两个Ring分属于不同的NUMA（Non-Uniform Memory Access Architecture）node。这点在BIOS设计中要特别注意。
+
+![Alt text](image-32.png)
+
+或者这个更清晰点的图：
+
+![Alt text](image-33.png)
+
+Intel在Skylake和Knight Landing中引入了新的片内总线：Mesh。它是一种2D的Mesh网络：
+
+![Alt text](image-34.png)
+
+Mesh网络引入片内总线是一个巨大的进步，它有很多优点：
+
+- 首先当然是灵活性。新的模块或者节点在Mesh中增加十分方便，它带来的延迟不是像ring bus一样线性增加，而是非线性的。从而可以容纳更多的内核。
+- 设计弹性很好，不需要1.5 ring和2ring的委曲求全。
+- 双向mesh网络减小了两个node之间的延迟。过去两个node之间通讯，最坏要绕过半个ring。而mesh整体node之间距离大大缩减。
+- 外部延迟大大缩短
+
+在 intel 的 CPU 中，core比较多的时候，core之间通信采取的是mesh架构，实际在BIOS中的NUMA NODE设置上（SUB_NUMA Cluster enabled），还有个sub_numa的设置，开启后，一个Die拆成了两个node
+```bash
+$ lscpu
+...
+NUMA 节点0 CPU：    0-3,7-9,13-15,20-22,52-55,59-61,65-67,72-74
+NUMA 节点1 CPU：    4-6,10-12,16-19,23-25,56-58,62-64,68-71,75-77
+NUMA 节点2 CPU：    26-29,33-35,39-41,46-48,78-81,85-87,91-93,98-100
+NUMA 节点3 CPU：    30-32,36-38,42-45,49-51,82-84,88-90,94-97,101-103
+...
+```
 
 # 0x03. QPI
 
