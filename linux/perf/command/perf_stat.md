@@ -277,8 +277,8 @@ major-faults: 页错误，内存页已经被 swap 到硬盘上，需要换回
 minor-faults: 页错误，内存页在物理内存中，只是没有和逻辑页进行映射
 page-faults: 页错误的统计
 task-clock: cpu 处理 task 所消耗的时间，单位 ms, 该值越高代表程序是CPU bound而非IO bound 类型。
-L1-dcache-load-misses: 
-L1-dcache-loads: 
+L1-dcache-load-misses: 一级数据缓存读取失败次数。
+L1-dcache-loads: 一级数据缓存读取次数。
 L1-dcache-store-misses: 
 L1-dcache-stores: 
 L1-icache-load-misses: 
@@ -289,6 +289,8 @@ dTLB-load-misses:
 dTLB-loads: 
 iTLB-load-misses: 
 iTLB-loads: 
+LLC-loads: last level cache 读取次数。
+LLC-load-misses: last level cache 读取失败次数。
 ```
 
 cycles, ref-cycles 区别
