@@ -6,7 +6,7 @@
 
 调试信息是由编译器在编译机器代码时一起生成的，**它是可执行文件和源代码之间关系的一种描述。调试信息根据预定义的格式被编码到机器代码中。**
 
-在过去的年代，对应于各种架构，有很多格式被发明了出来。最经典和广泛使用的格式（stabs(symbol table strings)，COFF，PE-COFF，OMF，IEEE-695）就是 `DWARF` ，在 Linux 平台和类 Unix(Unix-y) 平台上，`DWARF` 被用来描述 `ELF` 格式可执行文件的调试信息，可以说，它无处不在。
+在过去的年代，对应于各种架构，有很多格式被发明了出来。最经典和广泛使用的格式（stabs(symbol table strings)，COFF，PE-COFF，OMF，IEEE-695）就是 `DWARF` ，在 Linux 平台和类 Unix(Unix-y) 平台上，`DWARF` 被用来描述 `ELF` 格式可执行文件的调试信息，可以说，它无处不在，或者说 DWARF 数据内嵌在ELF文件中。
 
 # 0x01. 简介
 

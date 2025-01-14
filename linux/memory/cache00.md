@@ -64,5 +64,3 @@
     一般缓存的搭配是这样的：
     - 写穿 & 写不分配 (Write Through & No-Write Allocate) 
     - 写回 & 写分配  (Write Back & Write Allocate) 
-
-# 0x03. perf 检测

@@ -2,7 +2,7 @@
 
 ELF（Executable and Linkable Format）是一种行业标准的二进制数据封装格式，主要用于封装可执行文件、动态库、object 文件和 core dumps 文件。用 readelf 可以查看 ELF 文件的基本信息，用 objdump 可以查看 ELF 文件的反汇编输出。
 
-ELF 格式的概述可以参考 [这里](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)，完整定义可以参考 [这里](https://refspecs.linuxbase.org/elf/elf.pdf)。其中最重要的部分是：ELF 文件头、SHT（section header table）、PHT（program header table）。
+ELF 格式的概述可以参考 [这里](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)，完整定义可以参考 [这里](https://refspecs.linuxbase.org/elf/elf.pdf)。其中最重要的部分是：ELF 文件头、SHT（section header table）、PHT（program header table）。（感兴趣的话还有 内嵌在 ELF 文件中的 DWARF 数据）
 
 ELF (Executable and Linking Format)，即“可执行可连接格式”，作为一种可移植的格式，有比较广泛的适用性，通用的二进制接口定义使之可以平滑地移植到多种不同的操作环境上。  
 这样，不需要为每一种操作系统都定义一套不同的接口，因此减少了软件的重复编码与编译，加强了软件的可移植性。

@@ -22,6 +22,15 @@ intra=内部, inter=间。
 
 **The topology determines the roadmap, the routing method steers(驾驶，引导) the car, and the ﬂow control controls the trafﬁc lights, determining when a car can advance over the next stretch of road (channels)(下一段道路上前进) or when it must pull off into a parking lot (buffer) to allow other cars to pass.**
 
+
+对于总线，当前在 linux 中真的管理了很多类型。
+- 低速的：就有 i2c, i3c, uart, SPI, QSPI 等
+- 中高速的：pci/pcie, usb 等
+- 工厂用的：CAN , Modbus 等
+- 片上的：AMBA（AHB, AXI, APB）等，或者 FSB, QPI, DMI 等。
+
+不同的类型，琳琅满目，低速的相对比较简单，中高速的相对就复杂了，比如对于 pci ，可以养活一个产业。2023 年还引入新的 cdx 总线。
+
 # 0x02. 三要素
 
 从 Topology 开始。
@@ -232,3 +241,12 @@ Benes network
 - Topology 侧重于网络中节点之间的连接方式，影响了数据传输的路径和网络的组织结构。
 
 在实际应用中，Switching 和 Topology 是互相依赖的，一个良好的网络设计会同时考虑交换方式和拓扑结构，以确保高效、可靠的数据传输。
+
+# 0x0. 有趣的图
+
+![Alt text](image-36.png)
+
+![Alt text](image-35.png)
+
+![Alt text](image-37.png)  
+![Alt text](image-38.png)

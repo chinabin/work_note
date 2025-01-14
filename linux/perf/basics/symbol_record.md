@@ -61,7 +61,7 @@ BPF 工具一般使用另一种 stack unwinding 技术：frame pointer（帧指�
 
 有三种方法可以修复这个问题，这里不做展开，这些称为 stack walking techniques ：
 
-- using dwarf data to unwind the stack。需要在编译时添加-g参数。
+- using dwarf data to unwind the stack。需要在编译时添加-g参数。利用内嵌在 ELF 文件中的 DWARF 数据。
 - using last branch record (LBR) if available (a processor feature)。Intel的最后分支记录（LBR）调用图深度不如前两种方法。
 - returning the frame pointers 。帧指针（fp）需要消耗一个寄存器，成本较高，但可实现开销较低的栈展开，适用于性能剖析。
 
