@@ -23,7 +23,7 @@ SoC 由硬件功能单元组成，包括运行软件代码的微处理器，以�
 > 片上网络（ NoC ）是集成电路上基于网络的通信子系统，最常见的是用于在片上系统（ SoC ）中的模块之间。 The network on chip is a router-based packet switching network between SoC modules.
 > NoC 技术将计算机网络的理论和方法应用到片上通信中，相对于传统的总线（bus）和交叉开关（crossbar）通信架构带来了显着的改进。片上网络有多种网络拓扑，其中许多截至 2018 年仍处于实验阶段。
 
-**NoC 技术的诞生就是为了能够让 IP 核之间的通信能够实现高效、高吞吐量、低功耗的目的**。因此 NoC 技术主要研究对象就是各种互连方法、互连结构，以及 IP 核互联网络中路由算法。在 NoC 架构中，每一个模块都连接到片上路由器，而模块传输的数据则是形成了一个个数据包，通过路由器去送达数据包的目标模块。
+**NoC 技术的诞生就是为了能够让 IP 核之间的通信能够实现高效、高吞吐量、低功耗的目的**。因此 NoC 技术主要研究对象就是各种互连方法、互连结构，以及 IP 核互联网络中路由算法。在 NoC 架构中，每一个模块都连接到片上路由器，而模块传输的数据则是形成了一个个数据包，通过路由器去送达数据包的目标模块。（NoC 是多核系统的最佳互联机制，NoC 领域最经典的教材 [Principles and Practices of Interconnection Networks.pdf](https://github.com/timewh/NoC/blob/main/Principles%20and%20Practices%20of%20Interconnection%20Networks.pdf)。）
 
 在NoC中可以实现更多有趣的特色技术，比如 QoS (Quality of Service)，也就是决定先转发哪个请求，后转发哪个，每个节点 Crossbar 的接收和发送端口上可以增加队列缓冲，以实现 QoS 优先级控制；再如实现更先进的流量控制策略，更加充分地利用队列；利用更先进的路由算法和拥塞判断算法，算出从哪条路走到目标节点更加顺畅。
 

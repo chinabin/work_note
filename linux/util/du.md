@@ -17,3 +17,12 @@ du [option] 文件/目录
 $ du –hs xxxx          显示目录总大小，不会列出目录中的每一个文件
 $ du –hs xxxx/*        列出 xxxx下每个目录和文件所占容量
 ```
+
+```bash
+$ sudo du -sh *              
+4.0K    blaklist.py
+8.0K    command.md
+48K     cpp
+24K     CPU02.md
+73M     linux
+```

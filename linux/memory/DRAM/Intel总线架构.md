@@ -230,5 +230,62 @@ ring bus 架构的缺点很明显，即便是分成了两个环，依旧会有�
 
 Intel 推出新的总线技术势在必行。　
 
-# 0x03. QPI
+# 0x03. 计算架构的演进
 
+[计算架构的演进](https://zhuanlan.zhihu.com/p/17277378229)
+
+## 3.1 super-scalar 时期（1990s）
+
+超标量时期主要关注单核性能，主要使用的方法有：
+- ILP（Instruction Level Parallelism）
+- DLP（Data Level Parallelism）
+
+### 3.1.1 ILP
+
+ILP 顾名思义就是挖掘指令性并行的机会，从而增加指令吞吐。指令吞吐的度量是: IPC（Instructions Per Cycle） 即每个时钟周期可以执行的指令数。在未做 ILP 的时候 IPC = 1
+
+增加 IPC 主要通过 pipeline 技术来完成。pipeline 技术把指令的执行过程分成多个阶段（stages），然后通过一个同步时钟来控制，使得每过一拍，指令都会往前行进到 pipeline 的下一个阶段，这样，理想情况下可以保证同一个周期可容纳 $d$ 条指令在 pipeline 内，使得 pipeline 的所有 stage 都是忙碌的， $d$ 称为 pipeline 的深度（depth）。
+
+有了 pipeline，就可以通过增加 pipeline width 的方式提高指令并行度，即：使得 pipeline 可以在同一个时钟周期取、译、发射（issue, 即将指令提交给 execution engine 执行）多个指令的方式来达成 ILP。物理上，需要多路 ID/IF 以及多个 execution engine。如果一个核在一个时钟周期最多可以 issue $m$ 条指令，我们就叫这个架构为 m-wide 的 multi-issue core，也叫 superscalar core。
+
+下图为 x86 SunnyCove core（Skylake 的 core）示意图。可以看到，它有 4 个计算 ports（即 execution engine），我们可以称它为 4-wide multi-issue core，即它的最大可达 IPC 为 4。
+
+![Alt text](image-2.png)
+
+### 3.1.2 DLP
+
+提高数据并行度的主要方式是增加 execution engine 每个时钟周期能处理的数据个数。传统的 CPU 每个时钟周期只能处理一个标量的运算，我们叫它 scalar core。增加 DLP 的方式是使得每个时钟周期能处理一个特定长度的向量数据，这就是 vector core。目前 vector core 主要通过 SIMD（Single Instruction Multiple Data） 技术来实现数据并行，如 ARM 的 NEON，X86 的 SSE、AVX（Advanced Vector eXtensions）、AVX2、AVX512，以及 GPU SIMT（Single Instruction Multiple Data） 技术的 execution engine 其实都是 SIMD。
+
+下图 SunnyCove core 的 port 5 有一个 AVX512 的 FMA512（512-bit Fused MultiplyAdd） 它可以带来 16 个 FP32 乘加运算的 DLP。
+
+![Alt text](image-3.png)
+
+## 3.2 Heterogeneous Parallelism, 异构并行
+
+主要体现在标量和向量的异构并行上。
+
+## 3.3 Multi Core 时期（2000s）
+
+多核时期在继续抠 ILP、DLP 的同时，慢慢开始重视 TLP（Thread Level Parallelism）。主要想法是通过堆同构（homogeneous）核，横向扩展并行计算能力。
+
+Physical Multi-Core 就很简单了，就是纯氪金，对 CPU 和 GPU 而言都是堆核，只不过 GPU 把核叫作 SM（Streaming Multiprocessor，NV），SubSlice（Intel）或 Shader Array（AMD）。
+
+相比 Physical Multi-Core，Hardware Threading 就是挖掘存量了。它的基本假设是：现有单程序会因为各种依赖会造成各种 pipeline stall，导致 pipeline bubble，从而很难打满 pipeline 的利用率。所以，需要考虑跨程序挖掘并行度。基于这个假设，一个自然的想法就是增加多个程序 context，如果一个程序 stall 了，pipeline 就切到另一个，从而增加打满 pipeline 的概率。
+
+![Alt text](image-4.png)
+
+这就可以看出为啥叫 threading 了，就是不增加实际 pipeline 硬件，只增加 execution context 的白嫖，这是 threading 的精髓。跟 software threading 不一样的地方是，这个 execution context 的维护和使用是硬件做的，而不是软件做的，因此叫 hardware threading。
+
+因为有多个 context 对应于同一个 pipeline，因此如何调度 Front End 间的 issue 指令方式也有两种方式：
+
+- SMT（Simultaneous Multi-Threading）
+
+    Each clock, the pipeline chooses instructions from multiple threads to run on ALUs。典型的 SMT 就是 Intel X86 CPU 的 Hyper Threading Technology（HT or HTT），每个核有 2 个 SMT threads；另一个例子是 NV GPU 的 warp。
+
+- IMT（Interleaved Multi-Threading）
+
+    Each clock, the pipeline chooses a thread, and runs an instruction from the thread on the core's ALUs.
+
+Intel Gen GPU 采用的 SMT 和 IMT 的混合技术。
+
+## 3.4 Heterogeneous Computing 时期（2010s+）
