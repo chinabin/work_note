@@ -2,9 +2,38 @@
 
 # 0x01. 简介
 
+当程序发生内存越界访问等行为时，会触发 OS 的保护机制，此时 OS 会产生一个信号 (signal) 发送给对应的进程。当进程从内核态到用户态切换时，该进程会处理这个信号。此类信号（比如 SEGV ）的默认处理行为生成一个 coredump 文件。
+
+```
+Signal     Value     Action   Comment
+──────────────────────────────────────────────────────────
+SIGHUP        1       Term    Hangup detected on controlling terminal
+                              or death of controlling process
+SIGINT        2       Term    Interrupt from keyboard
+SIGQUIT       3       Core    Quit from keyboard
+SIGILL        4       Core    Illegal Instruction
+SIGABRT       6       Core    Abort signal from abort(3)
+SIGFPE        8       Core    Floating point exception
+SIGKILL       9       Term    Kill signal
+SIGSEGV      11       Core    Invalid memory reference
+SIGPIPE      13       Term    Broken pipe: write to pipe with no
+                              readers
+SIGALRM      14       Term    Timer signal from alarm(2)
+SIGTERM      15       Term    Termination signal
+SIGUSR1   30,10,16    Term    User-defined signal 1
+SIGUSR2   31,12,17    Term    User-defined signal 2
+SIGCHLD   20,17,18    Ign     Child stopped or terminated
+SIGCONT   19,18,25    Cont    Continue if stopped
+SIGSTOP   17,19,23    Stop    Stop process
+SIGTSTP   18,20,24    Stop    Stop typed at terminal
+SIGTTIN   21,21,26    Stop    Terminal input for background process
+SIGTTOU   22,22,27    Stop    Terminal output for background process
+```
+3、4、6、8、11 都能产生的信号， 默认都会产生 core 行为。
+
 # 0x02. 
 
-查看是否设置了产生
+查看是否设置了 core 文件大小限制, core file size
 ```bash
 $ ulimit -a  
 core file size          (blocks, -c) unlimited
@@ -29,12 +58,13 @@ file locks                      (-x) unlimited
 
 ## 2.1 配置
 
-`/proc/sys/kernel/core_uses_pid` 可以控制 core 文件的文件名中是否添加pid作为扩展。  
+`/proc/sys/kernel/core_uses_pid` 可以控制 core 文件的文件名中是否添加 pid 作为扩展。  
 ```bash
 $ echo "1" > /proc/sys/kernel/core_uses_pid 
 ```
 
-`/proc/sys/kernel/core_pattern` ，可以控制 core 文件保存位置和文件名格式。
+
+`/proc/sys/kernel/core_pattern` ，可以控制 core 文件保存位置和文件名格式，缺省值是 core，表示将 core 文件存储到当前目录。
 
 ```
 echo "/corefile/core-%e-%p-%t" > core_pattern，可以将core文件统一生成到/corefile目录下，产生的文件名为core-命令名-pid-时间戳
@@ -49,6 +79,22 @@ echo "/corefile/core-%e-%p-%t" > core_pattern，可以将core文件统一生成�
 %e - insert coredumping executable name into filename 添加命令名
 
 ```
+
+
+`/proc/$pid/coredump_filter` 设置那些内存会被 dump 出来，需要在程序启动之后进行设置。
+```
+bit 0  Dump anonymous private mappings.
+bit 1  Dump anonymous shared mappings.
+bit 2  Dump file-backed private mappings.
+bit 3  Dump file-backed shared mappings.
+bit 4 (since Linux 2.6.24)
+       Dump ELF headers.
+bit 5 (since Linux 2.6.28)
+       Dump private huge pages.
+bit 6 (since Linux 2.6.28)
+       Dump shared huge pages.
+```
+默认设置是 33(0010 0001), 也就是保留了 bit 位对应的 0 和 5 对应的内存。另外， core 文件的 save 遵循如下原则：内存映射的 IO 页不会被 dump；vdso 始终会被dump。
 
 ## 2.2 core 产生原因
 

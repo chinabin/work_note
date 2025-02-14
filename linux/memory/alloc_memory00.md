@@ -5,6 +5,7 @@
 [mmap](./alloc_memory03.md)  
 [malloc](./alloc_memory04.md)  
 
+[内核页表和linux的伙伴系统是不是有冲突？](https://www.zhihu.com/question/52711172/answer/273826964)
 
 # 0x01. 简介
 
