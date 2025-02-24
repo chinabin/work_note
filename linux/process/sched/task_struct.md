@@ -1,5 +1,7 @@
 # 0x00. 导读
 
+[Linux-进程描述符 task_struct 详解](https://www.cnblogs.com/JohnABC/p/9084750.html)
+
 # 0x01. 简介
 
 # 0x02. 详解
