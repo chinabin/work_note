@@ -1,7 +1,5 @@
 # 0x00. 导读
 
-[Hung-yi Lee](https://www.youtube.com/watch?v=ugWDIIOHtPA&list=PLJV_el3uVTsOK_ZK5L0Iv_EQoL1JefRL4&index=62&ab_channel=Hung-yiLee), 这人讲的蛮好的。
-
 Transformer架构 已在 TensorFlow、PyTorch 等标准深度学习框架中实现。
 
 Transformers 是由 Hugging Face 制作的一个库，提供基于 Transformer 的架构和预训练模型。
