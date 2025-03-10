@@ -168,19 +168,20 @@ As a rule of thumb(根据经验) the buses used by the processors are:
 
 ![Alt text](../../../../pic/CPU/bigtalkv2_33.png)
 
-每个 QPI 包含两个 point-to-point 的数据链路，每个数据链路包含 20 个通道（lane），每个方向一个（全双工），每个方向都有一个单独的时钟对（clock pair）（发送 (TX) 和接收方 (RX) 的时钟信号），总共 42 个信号。每个信号都是差分对（ differential pair），因此引脚总数为 84。20 个数据通道被分为四个“象限（quadrants）”，每个象限有 5 个通道。传输的基本单位是 80 位 flit(In computer networking, a flit (flow control unit or flow control digit) is a link-level atomic piece that forms a network packet or stream) ，其中 8 位用于错误检测，8 位用于“链路层标头（link-layer header）”，64 位用于数据。一个 80 位 flit 在两个时钟周期内传输（四次 20 位传输，每个时钟周期两次）。QPI 带宽是通过计算每个方向上每两个时钟周期传输 64 位（8 字节）数据来公布的。
+每个 QPI 包含两个 point-to-point 的数据链路，每个数据链路包含 20 个通道（lane），每个方向一个（全双工），传输的基本单位是 80 位 flit(In computer networking, a flit (flow control unit or flow control digit) is a link-level atomic piece that forms a network packet or stream) ，其中 8 位用于错误检测，8 位用于“链路层标头（link-layer header）”，64 位用于数据。一个 80 位 flit 在两个时钟周期内传输（**四次 20 位传输，每个时钟周期两次**）。QPI 带宽是通过计算每个方向上每两个时钟周期传输 64 位（8 字节）数据来公布的。
 
 Intel 通过计算每个 80 位 flit 中的 64 位数据有效负载来描述数据吞吐量（以 GB/s 为单位）。然而，英特尔随后将结果加倍，因为单向发送和接收链路对可以同时处于活动状态。因此，英特尔将具有 3.2 GHz 时钟的 20 通道 QPI 链路对（发送和接收）描述为具有 25.6 GB/s(3.2 * 8) 的数据速率。 2.4 GHz 时钟速率可产生 19.2(2.4 * 8) GB/s 的数据速率。更一般地说，根据此定义，双链路 20 通道 QPI 每个时钟周期传输 8 个字节，每个方向 4 个字节。
 
-```
-3.2 GHz
-× 2 bits/Hz （DDR）
-× 20 （QPI连接宽度）
-× (64/80) （数据比特数/数据包比特数）
-× 2 （各向发送和接收作业同步进行）
-÷ 8 （bits -> Byte）
-= 25.6 GB/s
-```
+一个QPI数据包包含80位，需要两个时钟周期或四次传输完成整个数据包的传送(QPI的时钟信号速率是传输速率的一半)。在每次传输的20bit数据中，有16bit是真实有效的数据，其余四位用于循环冗余校验，以提高系统的可靠性。由于QPI是双向的，在发送的同时也可以接收另一端传输来的数据，这样，每个QPI总线总带宽=每秒传输次数(即QPI频率)×每次传输的有效数据(即16bit/8=2Byte)×双向。所以QPI频率为4.8GT/s的总带宽=4.8GT/s×2Byte×2=19.2GB/s，QPI频率为6.4GT/s的总带宽=6.4GT/s×2Byte×2=25.6GB/s。(bit-位，Byte-字节，1Byte=8bit)
+
+UPI，即Intel的Ultra Path Interconnect，取代QPI的技术。拥有更高的通信速率、效率、更低的功耗。
+
+一条8GT/s的QPI的**单向**带宽：8GT/s*16bit/8=16GB/s  
+一条9.6GT/s的QPI的**单向**带宽：9.6GT/s*16bit/8=19.2GB/s  
+一条10.4GT/s的UPI的**单向**带宽：10.4GT/s*16bit/8=20.8GB/s
+
+[现代计算架构中的互联带宽](https://zhuanlan.zhihu.com/p/701997225)
+[计算系统中的互联](https://www.cnblogs.com/Matrix_Yao/p/8065005.html)
 
 ## 3.2 QPI 架构分层
 

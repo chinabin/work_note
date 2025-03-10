@@ -6,31 +6,6 @@ yum -y install numactl
 
 # 0x01. 简介
 
-- 在 bios 层面 numa 关闭时，无论 os 层面的 numa 是否打开，都不会影响性能。
-
-    ```bash
-    # 判断 bios 层是否开启 numa
-    $ grep -i numa /var/log/dmesg
-        No NUMA configuration found       # 这就是没有开启
-
-    # 这就是开启了
-
-    [    0.000000] mempolicy: Enabling automatic NUMA balancing. Configure with numa_balancing= or the kernel.numa_balancing sysctl
-    [    1.639727] pci_bus 0000:00: on NUMA node 0
-    [    1.642406] pci_bus 0000:40: on NUMA node 1
-    [    1.645181] pci_bus 0000:3f: on NUMA node 0
-    [    1.647692] pci_bus 0000:7f: on NUMA node 1
-    ```
-
-- 在 os 层 numa 关闭时，打开 bios 层的 numa 会影响性能，QPS会下降15-30%;
-
-    ```bash
-    # OS 层是否开启判断
-    $ cat /proc/cmdline | grep -i numa
-    BOOT_IMAGE=/vmlinuz-4.9.14-1.el7.centos.x86_64 root=UUID=c42731a1-ffb6-4aed-a1ec-0758d79c5bee ro crashkernel=auto rhgb quiet LANG=en_US.UTF-8
-    ```
-    如果出现 `numa=off` ，则表明在操作系统启动的时候就把 numa 给关掉了；否则就没有没有关闭；
-
 
 # 0x02. 
 

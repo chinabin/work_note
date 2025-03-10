@@ -69,6 +69,19 @@ Specifically, the microarchitecture of the Intel uncore is broken down into a nu
 
 处理器列表：[List_of_Intel_processors](https://en.wikipedia.org/wiki/List_of_Intel_processors), 微架构列表：[List_of_Intel_CPU_microarchitectures](https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures), 为了方便 [wiki/Xeon](https://en.wikipedia.org/wiki/Xeon).
 
+在 wiki 某种架构介绍页面，其实也说了 CPU 多路情况，可以留心看看。例如 
+```
+Sapphire Rapids-SP (Scalable Performance)
+With its maximum of 60 cores, Sapphire Rapids-SP competes with AMD's Epyc 8004/9004 Genoa with up to 96 cores and Bergamo with up to 128 cores. Sapphire Rapids Xeon server processors are scalable from single-socket configurations up to **8 socket** configurations.
+
+关键词 Maximum scalability
+
+[What Does Scalability Mean for Intel® Xeon Processors?](https://www.intel.com/content/www/us/en/support/articles/000089873/processors/intel-xeon-processors.html)
+
+Scalability refers to the system's socket configuration number onto which a CPU can be installed and the maximum number of processors supported that the CPU can scale to in the configuration.
+For instance, a CPU that supports 2S scalability (e.g.: Intel® Xeon® Gold 6248R Processor) can be used in a motherboard or server with up to two sockets.
+```
+
 ```
 64位架构：core -> Nehalem -> Sandy Bridge -> Haswell -> Skylake -> Palm Cove -> Sunny Cove -> Cypress Cove -> Willow Cove -> Golden Cove -> Raptor Cove
 
